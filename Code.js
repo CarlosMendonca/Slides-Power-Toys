@@ -101,37 +101,47 @@ function isPageSelected() {
 }
 
 function alignToOuterLeft() {
-  // This behavior is fundamentally different from the native alignment tools,
-  // because here order matters (instead of position of elements on page)
-  if (isPageSelected())
-    return;
-
-  var elementArray = getElementArray();
-
-  if (elementArray.length <= 1)
-    return;
-
-  for (var i = 1; i < elementArray.length; i++)
-  {
-    // This ignores the first element; consider expanding functionality to 
-    // allow reference on Nth element
-    elementArray[i].setLeft(elementArray[0].getLeft() - elementArray[i].getWidth());
-  }
+  align(PositionX.LEFT, PositionY.NOT_SET, true);
 }
 
 function alignToOuterRight() {
+  align(PositionX.RIGHT, PositionY.NOT_SET, true);
+}
+
+function align(positionX, positionY, isOuterEdge) {
+  // This behavior is fundamentally different from the native alignment tools,
+  // because here order matters (instead of position of elements on page)
   if (isPageSelected())
-    return;
+    return; // no selection array to get
 
-  var elementArray = getElementArray();
+    var elementArray = getElementArray();
+    if (elementArray.length <= 1)
+      return; // no reference element to get
 
-  if (elementArray.length <= 1)
-    return;
+      for (var i = 1; i < elementArray.length; i++)
+      {
+        // This ignores the first element; consider expanding functionality to 
+        // allow reference on Nth element
+        alignShape(elementArray[0].asShape(), elementArray[i].asShape(), positionX, positionY, isOuterEdge);
+      }
+}
 
-  for (var i = 1; i < elementArray.length; i++)
-  {
-    // This ignores the first element; consider expanding functionality to 
-    // allow reference on Nth element
-    elementArray[i].setLeft(elementArray[0].getLeft() + elementArray[0].getWidth());
-  }
+function alignShape(referenceShape, targetShape, positionX, positionY, isOuterEdge) {
+  if (positionX == PositionX.LEFT)
+    targetShape.setLeft(referenceShape.getLeft() - targetShape.getWidth());
+  
+  if (positionX == PositionX.RIGHT)
+    targetShape.setLeft(referenceShape.getLeft() + referenceShape.getWidth());
+}
+
+var PositionX = {
+  NOT_SET: 0,
+  LEFT: 1,
+  RIGHT: 2
+}
+
+var PositionY = {
+  NOT_SET: 0,
+  TOP: 1,
+  BOTTOM: 2
 }
