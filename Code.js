@@ -4,6 +4,8 @@ function onOpen(event) {
   SlidesApp.getUi().createAddonMenu()
     .addItem('Paranoia!', 'applyParanoia')
     .addItem('Center on page', 'centerOnPage')
+    .addSubMenu(SlidesApp.getUi().createMenu('Align')
+      .addItem('Outer left', 'alignToOuterLeft'))
     .addSeparator()
     .addItem('Preferences', 'showPreferencesSidebar')
     .addToUi();
@@ -87,7 +89,31 @@ function centerOnPage() {
   }
 
   elementArray.forEach(function(e) {
-    // This will center the first element to itself if there are multiple, but who cares...
+    // This will center the first element to itself if there are multiple, but 
+    // who cares...
     centerShapeToCoordinates(e.asShape(), centerPointX, centerPointY);
   });
+}
+
+function isPageSelected() {
+  return SlidesApp.getActivePresentation().getSelection().getSelectionType() == SlidesApp.SelectionType.CURRENT_PAGE;
+}
+
+function alignToOuterLeft() {
+  // This behavior is fundamentally different from the native alignment tools,
+  // because here order matters (instead of position of elements on page)
+  if (isPageSelected())
+    return;
+
+  var elementArray = getElementArray();
+
+  if (elementArray.length <= 1)
+    return;
+
+  for (var i = 1; i < elementArray.length; i++)
+  {
+    // This ignores the first element; consider expanding functionality to 
+    // allow reference on Nth element
+    elementArray[i].setLeft(elementArray[0].getLeft() - elementArray[i].getWidth());
+  }
 }
