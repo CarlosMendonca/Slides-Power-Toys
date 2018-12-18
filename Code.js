@@ -31,32 +31,11 @@ function applyParanoiaToShape(shape) {
 }
 
 function applyParanoia() {
-  var presentation = SlidesApp.getActivePresentation();
-  var selection = presentation.getSelection();
-  var elementArray;
+  var elementArray = getElementArray();
   
-  switch (getSelectionType()) {
-    case (SlidesApp.SelectionType.CURRENT_PAGE):
-      // Page is selected, so apply to all elements in page
-      elementArray = selection.getCurrentPage().getPageElements();
-      Logger.log("Applying paranoia to all elements on page.");
-      break;
-    case (SlidesApp.SelectionType.PAGE_ELEMENT):
-      // Elements are selected, so apply only to them
-      elementArray = selection.getPageElementRange().getPageElements();
-      Logger.log("Applying paranoia to selection.");
-      break;
-    default:
-      return;
-  }
-
-  var i = 0;
   elementArray.forEach(function(e) {
     applyParanoiaToShape(e.asShape());
-    i++;
   });
-  
-  Logger.log("Applied paranoia to " + i + " shape(s).");
 }
 
 function showPreferencesSidebar() {
