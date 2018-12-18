@@ -65,3 +65,49 @@ function showPreferencesSidebar() {
   SlidesApp.getUi().showSidebar(ui);
 }
 
+function centerShapeToCoordinates(shape, x, y) {
+  shape.setLeft(x - shape.getWidth()/2);
+  shape.setTop(y - shape.getHeight()/2);
+}
+
+function getElementArray() {
+  var selection = SlidesApp.getActivePresentation().getSelection();
+  var elementArray = [];
+  
+  switch (selection.getSelectionType()) {
+    case (SlidesApp.SelectionType.CURRENT_PAGE):
+      // Page is selected, so apply to all elements in page
+      elementArray = selection.getCurrentPage().getPageElements();
+      Logger.log("Applying to all elements on page.");
+      break;
+    case (SlidesApp.SelectionType.PAGE_ELEMENT):
+      // Elements are selected, so apply only to them
+      elementArray = selection.getPageElementRange().getPageElements();
+      Logger.log("Applying to selected shapes on page.");
+      break;
+    }
+
+    return elementArray;
+}
+
+function centerOnPage() {
+  var centerPointX, centerPointY;
+  var elementArray;
+
+  if (elementArray.lenght > 1) {
+    // Then center (x,y) is at first element; consider expanding functionality 
+    // to allow reference on Nth element
+    centerPointX = elementArray[0].getLeft() + elementArray[0].getWidth() / 2;
+    centerPointY = elementArray[0].getTop() + elementArray[0].getHeight() / 2;
+  }
+  else {
+    // Then center (x,y) is at center of page
+    centerPointX = SlidesApp.getActivePresentation().getPageWidth() / 2;
+    centerPointY = SlidesApp.getActivePresentation().getPageHeight() / 2;
+  }
+
+  elementArray.forEach(function(e) {
+    // This will center the first element to itself if there are multiple, but who cares...
+    centerShapeToCoordinates(e.asShape(), centerPointX, centerPointY);
+  });
+}
