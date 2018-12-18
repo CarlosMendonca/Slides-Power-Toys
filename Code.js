@@ -3,6 +3,7 @@ var PPI = 72;
 function onOpen(event) {
   SlidesApp.getUi().createAddonMenu()
     .addItem('Paranoia!', 'applyParanoia')
+    .addItem('Center on page', 'centerOnPage')
     .addSeparator()
     .addItem('Preferences', 'showPreferencesSidebar')
     .addToUi();
@@ -92,9 +93,9 @@ function getElementArray() {
 
 function centerOnPage() {
   var centerPointX, centerPointY;
-  var elementArray;
+  var elementArray = getElementArray();
 
-  if (elementArray.lenght > 1) {
+  if (elementArray.length > 1) {
     // Then center (x,y) is at first element; consider expanding functionality 
     // to allow reference on Nth element
     centerPointX = elementArray[0].getLeft() + elementArray[0].getWidth() / 2;
