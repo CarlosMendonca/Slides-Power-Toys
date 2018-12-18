@@ -5,7 +5,8 @@ function onOpen(event) {
     .addItem('Paranoia!', 'applyParanoia')
     .addItem('Center on page', 'centerOnPage')
     .addSubMenu(SlidesApp.getUi().createMenu('Align')
-      .addItem('Outer left', 'alignToOuterLeft'))
+      .addItem('Outer left', 'alignToOuterLeft')
+      .addItem('Outer right', 'alignToOuterRight'))
     .addSeparator()
     .addItem('Preferences', 'showPreferencesSidebar')
     .addToUi();
@@ -115,5 +116,22 @@ function alignToOuterLeft() {
     // This ignores the first element; consider expanding functionality to 
     // allow reference on Nth element
     elementArray[i].setLeft(elementArray[0].getLeft() - elementArray[i].getWidth());
+  }
+}
+
+function alignToOuterRight() {
+  if (isPageSelected())
+    return;
+
+  var elementArray = getElementArray();
+
+  if (elementArray.length <= 1)
+    return;
+
+  for (var i = 1; i < elementArray.length; i++)
+  {
+    // This ignores the first element; consider expanding functionality to 
+    // allow reference on Nth element
+    elementArray[i].setLeft(elementArray[0].getLeft() + elementArray[0].getWidth());
   }
 }
