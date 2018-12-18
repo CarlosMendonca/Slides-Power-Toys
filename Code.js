@@ -3,6 +3,8 @@ var PPI = 72;
 function onOpen(event) {
   SlidesApp.getUi().createAddonMenu()
     .addItem('Paranoia!', 'applyParanoia')
+    .addSeparator()
+    .addItem('Preferences', 'showPreferencesSidebar')
     .addToUi();
 }
 
@@ -54,5 +56,12 @@ function applyParanoia() {
   });
   
   Logger.log("Applied paranoia to " + i + " shape(s).");
+}
+
+function showPreferencesSidebar() {
+  var ui = HtmlService
+    .createHtmlOutputFromFile('sidebar')
+    .setTitle('slidesKFA Preferences');
+  SlidesApp.getUi().showSidebar(ui);
 }
 
