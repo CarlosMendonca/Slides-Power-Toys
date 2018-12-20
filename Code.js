@@ -37,6 +37,8 @@ function onOpen(event) {
       .addItem('Horizontally', 'flipH')
       .addItem('Vertically', 'flipV')
       .addItem('Both', 'flipHandV'))
+    .addSeparator()
+    .addItem('About', 'showAboutSidebar')
     .addToUi();
 }
 
@@ -46,10 +48,10 @@ function tableDebug() {
   elements[0].asTable().setColumnWidth(0, 200);
 }
 
-function showPreferencesSidebar() {
+function showAboutSidebar() {
   var ui = HtmlService
-    .createHtmlOutputFromFile('sidebar')
-    .setTitle('slidesKFA Preferences');
+    .createHtmlOutputFromFile('about')
+    .setTitle('Google Slides Power Toys');
   SlidesApp.getUi().showSidebar(ui);
 }
 
