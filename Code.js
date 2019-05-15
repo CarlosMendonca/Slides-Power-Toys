@@ -6,9 +6,9 @@ function onOpen(event) {
       .addItem('To dimension', 'applyParanoiaToDimension')
       .addItem('To position', 'applyParanoiaToPosition')
       .addItem('To rotation', 'applyParanoiaToRotation')
-      .addItem('Straighten elements', 'applyZeroRotation')
-      .addSeparator()
-      .addItem('[ß] Distribute table columns', 'distributeTableColumns')) 
+      .addItem('Straighten elements', 'applyZeroRotation'))
+      //.addSeparator()
+      //.addItem('[ß] Distribute table columns', 'distributeTableColumns'))
     .addSubMenu(SlidesApp.getUi().createMenu('Copy')
       .addItem('Width', 'copyWidth')
       .addItem('Height', 'copyHeight')
@@ -51,7 +51,7 @@ function tableDebug() {
 function showAboutSidebar() {
   var ui = HtmlService
     .createHtmlOutputFromFile('about')
-    .setTitle('Google Slides Power Toys');
+    .setTitle('Slides Power Toys');
   SlidesApp.getUi().showSidebar(ui);
 }
 
@@ -196,17 +196,17 @@ function getElementArray() {
     case (SlidesApp.SelectionType.CURRENT_PAGE):
       // Page is selected, so fallback to all elements in page
       elementArray = selection.getCurrentPage().getPageElements();
-      Logger.log("Applying to all elements on page.");
+      //Logger.log("Applying to all elements on page.");
       break;
     case (SlidesApp.SelectionType.TEXT):
       // Text is selected, so fallback to parent container
       elementArray = selection.getPageElementRange().getPageElements();
-      Logger.log("Applying to container of selected text.");
+      //Logger.log("Applying to container of selected text.");
       break;
     case (SlidesApp.SelectionType.PAGE_ELEMENT || SlidesApp.SelectionType.TEXT):
       // Elements are selected, so apply only to them
       elementArray = selection.getPageElementRange().getPageElements();
-      Logger.log("Applying to selected shapes on page.");
+      //Logger.log("Applying to selected shapes on page.");
       break;
     }
 
