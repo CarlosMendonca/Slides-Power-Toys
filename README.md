@@ -16,7 +16,7 @@ Collection of commands to place shapes side by side and align them to the center
 Collection of alignment commands to arrange shapes always using the last selected object as the reference.
 
 ### Flip commands
-Commands to swap position of the last two selected shapes,
+Commands to swap position of the last two selected shapes.
 
 ## License
 Licensed under the GNU GPL v2.0 license.

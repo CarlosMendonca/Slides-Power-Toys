@@ -7,8 +7,6 @@ function onOpen(event) {
       .addItem('To position', 'applyParanoiaToPosition')
       .addItem('To rotation', 'applyParanoiaToRotation')
       .addItem('Straighten elements', 'applyZeroRotation'))
-      //.addSeparator()
-      //.addItem('[ß] Distribute table columns', 'distributeTableColumns'))
     .addSubMenu(SlidesApp.getUi().createMenu('Copy')
       .addItem('Width', 'copyWidth')
       .addItem('Height', 'copyHeight')
@@ -62,29 +60,6 @@ function roundTo(number, digits) {
 
 function getSelectionType() {
   return SlidesApp.getActivePresentation().getSelection().getSelectionType();
-}
-
-function distributeTableColumns() {
-  /*
-  var tableArray = getElementArray()
-    .filter(function(e) { return e.getPageElementType() == PageElementType.TABLE; })
-    .map(function(e) { return e.asTable(); });
-  
-  if (tableArray.lenght == 0)
-    return;
-  
-  tableArray.foreach(function(t) {
-    var numColumns = t.getNumColumns();
-    var columnArray = Array.from({length: t.getNumColumns()}, function(_, i) { return t.getColumn(i)});
-    var totalWidth = columnArray.reduce(function(acc, el) { return acc + el.getWidth(); });
-    
-    var equalColumnWidth = totalWidth / numColumns;
-    for (var i = 0; i < numColumns; i++) {
-      t.setColumnWidth(i, equalColumnWidth);
-    }
-  });
-  */
-  SlidesApp.getUi().alert("If only Google Apps Script supported either a setColumn method on the TableColumn class or a setColumnWidth method on the Table class like DocumentApp classes do, this operation would work great. Maybe open a feature suggestion to the Slides team to get this prioritized? :)");
 }
 
 function applyParanoiaToPosition() {
@@ -201,12 +176,10 @@ function getElementArray() {
     case (SlidesApp.SelectionType.TEXT):
       // Text is selected, so fallback to parent container
       elementArray = selection.getPageElementRange().getPageElements();
-      //Logger.log("Applying to container of selected text.");
       break;
     case (SlidesApp.SelectionType.PAGE_ELEMENT || SlidesApp.SelectionType.TEXT):
       // Elements are selected, so apply only to them
       elementArray = selection.getPageElementRange().getPageElements();
-      //Logger.log("Applying to selected shapes on page.");
       break;
     }
 
@@ -296,10 +269,6 @@ function align(positionX, positionY, isOuterEdge) {
 }
 
 function alignShape(referenceShape, targetShape, positionX, positionY, isOuterEdge) {  
-  //Array.from({length: 5}, (_, i) => i);
-  //Logger.log(Array.from({length: table.getNumColumns()}, (_, i) => i).reduce((acc, index) => acc + table.getColumn(index).getWidth()),0);
-  //Logger.log(targetShape.asTable().getColumn().reduce(function(acc, column) { return acc + column.getWidth(); }, 0));
-  
   if (positionX == PositionX.LEFT)
     targetShape.setLeft(referenceShape.getLeft() - targetShape.getWidth()*isOuterEdge);
   
