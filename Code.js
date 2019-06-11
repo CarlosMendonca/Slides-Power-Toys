@@ -1,5 +1,9 @@
 var PPI = 72;
 
+function doGet() {
+  return ContentService.createTextOutput('I just successfully handled your GET request.');
+}
+
 function onOpen(event) {
   SlidesApp.getUi().createAddonMenu()
     .addSubMenu(SlidesApp.getUi().createMenu('Paranoia!')
