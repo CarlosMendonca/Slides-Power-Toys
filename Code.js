@@ -40,6 +40,17 @@ function onOpen(event) {
       .addItem('Vertically', 'flipV')
       .addItem('Both', 'flipHandV'))
     .addSeparator()
+    .addSubMenu(SlidesApp.getUi().createMenu('Set transparency')
+      .addItem('100% (transparent)', 'setAlpha0')
+      .addItem('90%', 'setAlpha10')
+      .addItem('75%', 'setAlpha25')
+      .addItem('66%', 'setAlpha33')
+      .addItem('50%', 'setAlpha50')
+      .addItem('33%', 'setAlpha66')
+      .addItem('25%', 'setAlpha75')              
+      .addItem('10%', 'setAlpha90')              
+      .addItem('0% (opaque)', 'setAlpha100'))
+    .addSeparator()
     .addItem('About', 'showAboutSidebar')
     .addToUi();
 }
@@ -256,7 +267,7 @@ function centerOnPage() {
 
 function align(positionX, positionY, isOuterEdge) {
   // This behavior is fundamentally different from the native alignment tools,
-  // because here order matters (instead of position of elements on page)
+  //   because here order matters (instead of position of elements on page)
 
   var elementArray = getElementArray();
 
@@ -337,4 +348,66 @@ var PositionY = {
   TOP: 1,
   BOTTOM: 2,
   CENTER: 3
+}
+
+function setAlpha0() {
+  setAlpha(0);
+}
+
+function setAlpha10() {
+  setAlpha(0.1);
+}
+
+function setAlpha25() {
+  setAlpha(0.25);
+}
+
+function setAlpha33() {
+  setAlpha(0.33);
+}
+
+function setAlpha50() {
+  setAlpha(0.5);
+}
+
+function setAlpha66() {
+  setAlpha(0.66);
+}
+
+function setAlpha75() {
+  setAlpha(0.75);
+}
+
+function setAlpha90() {
+  setAlpha(0.9);
+}
+
+function setAlpha100() {
+  setAlpha(1);
+}
+
+function setAlpha(amount) {
+  if (isPageSelected())
+    return; // no selection array to get, so won't be able to get a reference element
+  
+  var elementArray = getElementArray();  
+  var n = elementArray.length;
+  
+  for (var i = 0; i < n; i++) {
+    switch (elementArray[i].getPageElementType()) {
+      
+      // No idea how to set the transparency of anything other than SHAPE. TABLE would require
+      //   iterating through every cell, which doesn't sound efficient and IMAGE exposes no method
+      //   to adjust transparency. I welcome suggestions here. Also, another cool thing to explore
+      //   is whether it's possible to get rid of the custom color swatch that gets added on every
+      //   invokation of this command.
+      case(SlidesApp.PageElementType.SHAPE):
+        var shape = elementArray[i].asShape();
+        var fill = shape.getFill();
+        
+        if (fill.getType() == SlidesApp.FillType.SOLID)
+          fill.setSolidFill(fill.getSolidFill().getColor(), amount);
+      break;
+    }
+  }
 }
