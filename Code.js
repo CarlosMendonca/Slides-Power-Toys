@@ -6,12 +6,12 @@ function doGet() {
 
 function onOpen(event) {
   SlidesApp.getUi().createAddonMenu()
-    .addSubMenu(SlidesApp.getUi().createMenu('Paranoia!')
+    .addSubMenu(SlidesApp.getUi().createMenu('Precision snap')
       .addItem('To dimension', 'applyParanoiaToDimension')
       .addItem('To position', 'applyParanoiaToPosition')
       .addItem('To rotation', 'applyParanoiaToRotation')
       .addItem('Straighten elements', 'applyZeroRotation'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Copy')
+    .addSubMenu(SlidesApp.getUi().createMenu('Copy attributes')
       .addItem('Width', 'copyWidth')
       .addItem('Height', 'copyHeight')
       .addItem('Width and height', 'copyWidthAndHeight')
