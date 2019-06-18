@@ -50,6 +50,10 @@ function onOpen(event) {
       .addItem('25%', 'setAlpha75')              
       .addItem('10%', 'setAlpha90')              
       .addItem('0% (opaque)', 'setAlpha100'))
+    .addSubMenu(SlidesApp.getUi().createMenu('Set color')
+      .addItem('Swap text with background', 'setColorSwap')
+      .addItem('Invert background colors', 'setColorInvert')
+      .addItem('Max text contrast', 'setColorMaxTextContrast'))
     .addSeparator()
     .addItem('About', 'showAboutSidebar')
     .addToUi();
@@ -387,6 +391,7 @@ function setAlpha100() {
 }
 
 function setAlpha(amount) {
+  // TODO: this doesn't make sense; this function doesn't need a reference element
   if (isPageSelected())
     return; // no selection array to get, so won't be able to get a reference element
   
@@ -410,4 +415,41 @@ function setAlpha(amount) {
       break;
     }
   }
+}
+
+function setColorSwap() {
+  var elementArray = getElementArray();  
+  var n = elementArray.length;
+
+  for (var i = 0; i < n; i++) {
+    switch (elementArray[i].getPageElementType()) {
+      
+      // Like on other functions, this only applies to SHAPE. Also, this function will ignore transparency,
+      //   will only consider the color of the first text element and will will NOT consider background
+      //   text color.
+      case(SlidesApp.PageElementType.SHAPE):
+        var shape = elementArray[i].asShape();
+        var fill = shape.getFill();
+
+        // Using getLength() > 1 because isEmpty() is broken; it's probably counting the new line character
+        //   that documentation (https://developers.google.com/apps-script/reference/slides/shape#gettext) 
+        //   says always exists, which is a non-sensical behavior. I can see this breaking some day.
+        if (fill.getType() == SlidesApp.FillType.SOLID && shape.getText().getLength() > 1) { // must have SOLID fill and some text
+          var textStyle = shape.getText().getRuns()[0].getTextStyle();
+          var textColor = textStyle.getForegroundColor();
+          
+          textStyle.setForegroundColor(fill.getSolidFill().getColor());
+          fill.setSolidFill(textColor);
+        }
+      break;
+    }
+  }
+}
+
+function setColorInvert() {
+
+}
+
+function setColorMaxTextContrast() {
+
 }
