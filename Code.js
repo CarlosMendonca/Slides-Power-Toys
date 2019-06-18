@@ -450,6 +450,39 @@ function setColorInvert() {
 
 }
 
-function setColorMaxTextContrast() {
+function calculateLuminosity(color) {
+  var r = color.asRgbColor().getRed() / 255;
+  var g = color.asRgbColor().getGreen() / 255;
+  var b = color.asRgbColor().getBlue() / 255;
+  
+  var max = Math.max(r, g, b), min = Math.min(r, g, b);
+  return (max + min) / 2;
+}
 
+function setColorMaxTextContrast() {
+  var elementArray = getElementArray();  
+  var n = elementArray.length;
+
+  for (var i = 0; i < n; i++) {
+    switch (elementArray[i].getPageElementType()) {
+      
+      // Like on other functions, this only applies to SHAPE. Also, this function will ignore transparency,
+      //   will only consider the color of the first text element and will will NOT consider background
+      //   text color.
+      case(SlidesApp.PageElementType.SHAPE):
+        var shape = elementArray[i].asShape();
+        var fill = shape.getFill();
+
+        // Using getLength() > 1 because isEmpty() is broken; it's probably counting the new line character
+        //   that documentation (https://developers.google.com/apps-script/reference/slides/shape#gettext) 
+        //   says always exists, which is a non-sensical behavior. I can see this breaking some day.
+        if (fill.getType() == SlidesApp.FillType.SOLID && shape.getText().getLength() > 1) { // must have SOLID fill and some text
+          if (calculateLuminosity(fill.getSolidFill().getColor()) >= 0.5)
+            shape.getText().getTextStyle().setForegroundColor(0, 0, 0);
+          else
+            shape.getText().getTextStyle().setForegroundColor(255, 255, 255);
+        }
+      break;
+    }
+  }
 }
