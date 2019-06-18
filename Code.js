@@ -41,19 +41,19 @@ function onOpen(event) {
       .addItem('Both', 'flipHandV'))
     .addSeparator()
     .addSubMenu(SlidesApp.getUi().createMenu('Set transparency')
-      .addItem('100% (transparent)', 'setAlpha0')
-      .addItem('90%', 'setAlpha10')
-      .addItem('75%', 'setAlpha25')
-      .addItem('66%', 'setAlpha33')
-      .addItem('50%', 'setAlpha50')
-      .addItem('33%', 'setAlpha66')
-      .addItem('25%', 'setAlpha75')              
-      .addItem('10%', 'setAlpha90')              
-      .addItem('0% (opaque)', 'setAlpha100'))
+      .addItem('100% (transparent)', 'menuSetTransparency0')
+      .addItem('90%', 'menuSetTransparency10')
+      .addItem('75%', 'menuSetTransparency25')
+      .addItem('66%', 'menuSetTransparency33')
+      .addItem('50%', 'menuSetTransparency50')
+      .addItem('33%', 'menuSetTransparency66')
+      .addItem('25%', 'menuSetTransparency75')              
+      .addItem('10%', 'menuSetTransparency90')              
+      .addItem('0% (opaque)', 'menuSetTransparency100'))
     .addSubMenu(SlidesApp.getUi().createMenu('Set color')
-      .addItem('Swap text with background', 'setColorSwap')
-      .addItem('Invert background colors', 'setColorInvert')
-      .addItem('Max text contrast', 'setColorMaxTextContrast'))
+      .addItem('Swap text with background', 'menuSetColorSwap')
+      .addItem('Invert background colors', 'menuSetColorInverse')
+      .addItem('Max text contrast', 'menuSetColorMaxContrast'))
     .addSeparator()
     .addItem('About', 'showAboutSidebar')
     .addToUi();
@@ -354,70 +354,24 @@ var PositionY = {
   CENTER: 3
 }
 
-function setAlpha0() {
-  setAlpha(0);
-}
+function menuSetTransparency0() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0 }); }
+function menuSetTransparency10() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.1 }); }
+function menuSetTransparency25() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.25 }); }
+function menuSetTransparency33() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.33 }); }
+function menuSetTransparency50() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.5 }); }
+function menuSetTransparency66() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.67 }); }
+function menuSetTransparency75() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.75 }); }
+function menuSetTransparency90() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.9 }); }
+function menuSetTransparency100() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 1 }); }
 
-function setAlpha10() {
-  setAlpha(0.1);
-}
+function menuSetColorSwap() { doStuffWithSelectedOrAllShapesOnPage(doColorSwap); }
+function menuSetColorInverse() { doStuffWithSelectedOrAllShapesOnPage(doColorInversion); }
+function menuSetColorMaxContrast() { doStuffWithSelectedOrAllShapesOnPage(doMaxTextContrast); }
 
-function setAlpha25() {
-  setAlpha(0.25);
+function doStuffWithSelectedOrAllShapesOnPage(doStuff) {
+  doStuffWithSelectedOrAllShapesOnPage(doStuff, {});
 }
-
-function setAlpha33() {
-  setAlpha(0.33);
-}
-
-function setAlpha50() {
-  setAlpha(0.5);
-}
-
-function setAlpha66() {
-  setAlpha(0.66);
-}
-
-function setAlpha75() {
-  setAlpha(0.75);
-}
-
-function setAlpha90() {
-  setAlpha(0.9);
-}
-
-function setAlpha100() {
-  setAlpha(1);
-}
-
-function setAlpha(amount) {
-  // TODO: this doesn't make sense; this function doesn't need a reference element
-  if (isPageSelected())
-    return; // no selection array to get, so won't be able to get a reference element
-  
-  var elementArray = getElementArray();  
-  var n = elementArray.length;
-  
-  for (var i = 0; i < n; i++) {
-    switch (elementArray[i].getPageElementType()) {
-      
-      // No idea how to set the transparency of anything other than SHAPE. TABLE would require
-      //   iterating through every cell, which doesn't sound efficient and IMAGE exposes no method
-      //   to adjust transparency. I welcome suggestions here. Also, another cool thing to explore
-      //   is whether it's possible to get rid of the custom color swatch that gets added on every
-      //   invokation of this command.
-      case(SlidesApp.PageElementType.SHAPE):
-        var shape = elementArray[i].asShape();
-        var fill = shape.getFill();
-        
-        if (fill.getType() == SlidesApp.FillType.SOLID)
-          fill.setSolidFill(fill.getSolidFill().getColor(), amount);
-      break;
-    }
-  }
-}
-
-function setColorSwap() {
+function doStuffWithSelectedOrAllShapesOnPage(doStuff, attributes) {
   var elementArray = getElementArray();  
   var n = elementArray.length;
 
@@ -428,51 +382,56 @@ function setColorSwap() {
       //   will only consider the color of the first text element and will will NOT consider background
       //   text color.
       case(SlidesApp.PageElementType.SHAPE):
-        var shape = elementArray[i].asShape();
-        var fill = shape.getFill();
-
-        // Using getLength() > 1 because isEmpty() is broken; it's probably counting the new line character
-        //   that documentation (https://developers.google.com/apps-script/reference/slides/shape#gettext) 
-        //   says always exists, which is a non-sensical behavior. I can see this breaking some day.
-        if (fill.getType() == SlidesApp.FillType.SOLID && shape.getText().getLength() > 1) { // must have SOLID fill and some text
-          var textStyle = shape.getText().getRuns()[0].getTextStyle();
-          var textColor = textStyle.getForegroundColor();
-          
-          textStyle.setForegroundColor(fill.getSolidFill().getColor());
-          fill.setSolidFill(textColor);
-        }
+        doStuff(elementArray[i].asShape(), attributes);
       break;
     }
   }
 }
 
-function setColorInvert() {
-  var elementArray = getElementArray();  
-  var n = elementArray.length;
+var doSetAlpha = function(shape, attributes) {
+  var fill = shape.getFill();
+  
+  if (fill.getType() == SlidesApp.FillType.SOLID)
+    fill.setSolidFill(fill.getSolidFill().getColor(), attributes.amount);
+}
 
-  for (var i = 0; i < n; i++) {
-    switch (elementArray[i].getPageElementType()) {
-      
-      // Like on other functions, this only applies to SHAPE. Also, this function will ignore transparency,
-      //   will only consider the color of the first text element and will will NOT consider background
-      //   text color.
-      case(SlidesApp.PageElementType.SHAPE):
-        var shape = elementArray[i].asShape();
-        var fill = shape.getFill();
-
-        // Using getLength() > 1 because isEmpty() is broken; it's probably counting the new line character
-        //   that documentation (https://developers.google.com/apps-script/reference/slides/shape#gettext) 
-        //   says always exists, which is a non-sensical behavior. I can see this breaking some day.
-        if (fill.getType() == SlidesApp.FillType.SOLID) { // must have SOLID fill and some text
-          var rgbColor = fill.getSolidFill().getColor().asRgbColor();
-          fill.setSolidFill(
-            255 - rgbColor.getRed(),
-            255 - rgbColor.getGreen(),
-            255 - rgbColor.getBlue());
-        }
-      break;
-    }
+var doColorSwap = function(shape, attributes) {
+  if (doesShapeHaveSolidFill(shape) && doesShapeHaveText(shape)) { // must have SOLID fill and some text
+    var textStyle = shape.getText().getRuns()[0].getTextStyle();
+    var textColor = textStyle.getForegroundColor();
+    
+    textStyle.setForegroundColor(shape.getFill().getSolidFill().getColor());
+    shape.getFill().setSolidFill(textColor);
   }
+}
+
+var doColorInversion = function(shape, attributes) { 
+  if (doesShapeHaveSolidFill(shape)) { // must have SOLID fill
+    var rgbColor = shape.getFill().getSolidFill().getColor().asRgbColor();
+    shape.getFill().setSolidFill(
+      255 - rgbColor.getRed(),
+      255 - rgbColor.getGreen(),
+      255 - rgbColor.getBlue());
+  }
+}
+
+var doMaxTextContrast = function(shape, attributes) { 
+  if (doesShapeHaveSolidFill(shape) && doesShapeHaveText(shape)) { // must have SOLID fill and some text
+    if (calculateLuminosity(shape.getFill().getSolidFill().getColor()) >= 0.5)
+      shape.getText().getTextStyle().setForegroundColor(0, 0, 0);
+    else
+      shape.getText().getTextStyle().setForegroundColor(255, 255, 255);
+  }
+}
+
+function doesShapeHaveSolidFill(shape) {
+  return shape.getFill().getType() == SlidesApp.FillType.SOLID;
+}
+function doesShapeHaveText(shape) {
+  // Using getLength() > 1 because isEmpty() is broken; it's probably counting the new line character
+  //   that documentation (https://developers.google.com/apps-script/reference/slides/shape#gettext) 
+  //   says always exists, which is a non-sensical behavior. I can see this breaking some day.
+  return shape.getText().getLength() > 1;
 }
 
 function calculateLuminosity(color) {
@@ -482,32 +441,4 @@ function calculateLuminosity(color) {
   
   var max = Math.max(r, g, b), min = Math.min(r, g, b);
   return (max + min) / 2;
-}
-
-function setColorMaxTextContrast() {
-  var elementArray = getElementArray();  
-  var n = elementArray.length;
-
-  for (var i = 0; i < n; i++) {
-    switch (elementArray[i].getPageElementType()) {
-      
-      // Like on other functions, this only applies to SHAPE. Also, this function will ignore transparency,
-      //   will only consider the color of the first text element and will will NOT consider background
-      //   text color.
-      case(SlidesApp.PageElementType.SHAPE):
-        var shape = elementArray[i].asShape();
-        var fill = shape.getFill();
-
-        // Using getLength() > 1 because isEmpty() is broken; it's probably counting the new line character
-        //   that documentation (https://developers.google.com/apps-script/reference/slides/shape#gettext) 
-        //   says always exists, which is a non-sensical behavior. I can see this breaking some day.
-        if (fill.getType() == SlidesApp.FillType.SOLID && shape.getText().getLength() > 1) { // must have SOLID fill and some text
-          if (calculateLuminosity(fill.getSolidFill().getColor()) >= 0.5)
-            shape.getText().getTextStyle().setForegroundColor(0, 0, 0);
-          else
-            shape.getText().getTextStyle().setForegroundColor(255, 255, 255);
-        }
-      break;
-    }
-  }
 }
