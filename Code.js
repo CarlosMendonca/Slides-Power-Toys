@@ -340,10 +340,11 @@ function getElementArray() {
 }
 
 function fakePageAsReferenceElement() {
-  return { getLeft: function() { return 0; },
-          getTop: function() { return 0; },
-          getWidth: function() { return SlidesApp.getActivePresentation().getPageWidth(); },
-          getHeight: function() { return SlidesApp.getActivePresentation().getPageHeight(); }};
+  return {
+    getLeft:   function() { return 0; },
+    getTop:    function() { return 0; },
+    getWidth:  function() { return SlidesApp.getActivePresentation().getPageWidth(); },
+    getHeight: function() { return SlidesApp.getActivePresentation().getPageHeight(); }};
 }
 
 // === UTILITY FUNCTIONS ===
