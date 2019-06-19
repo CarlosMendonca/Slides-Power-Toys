@@ -16,6 +16,8 @@ var PositionY = {
 }
 
 // === INIT ===
+function onInstall(e) { onOpen(e); }
+
 function onOpen(event) {
   SlidesApp.getUi().createAddonMenu()
     .addSubMenu(SlidesApp.getUi().createMenu('Precision snap')
