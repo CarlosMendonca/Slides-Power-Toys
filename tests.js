@@ -29,6 +29,87 @@ function gastTestRunner() {
         t.equal(roundTo(1.23, 3), 1.23);
     });
 
+    test('[1] Adjoin Elements', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var refShape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+        var targetShape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U2, U2); // create test shape
+
+        var resetPositions = function() { refShape.setLeft(0); refShape.setTop(0); targetShape.setLeft(U2); targetShape.setTop(U2); };
+
+        adjoinTwoElements(refShape, targetShape, true, refShape, U1);
+
+        t.equal(refShape.getLeft(), 0, '[1] Element should NOT move');
+        t.equal(refShape.getTop(),  0, '[2] Element should NOT move');
+        t.equal(targetShape.getLeft(),  U1*2, '[3] Element should be at X=U1 + U1 (for padding)');
+        t.equal(targetShape.getTop(),  -U1/2, '[4] Element should be centered with reference');
+
+        resetPositions();
+
+        adjoinTwoElements(refShape, targetShape, false, refShape, U1);
+
+        t.equal(refShape.getLeft(), 0,     '[5] Element should NOT move');
+        t.equal(refShape.getTop(),  0,     '[6] Element should NOT move');
+        t.equal(targetShape.getLeft(), -U1/2, '[7] Element should be at X=U1 + U1 (for padding)');
+        t.equal(targetShape.getTop(),   U1*2, '[8] Element should be centered with reference');
+
+        resetPositions();
+
+        adjoinTwoElements(refShape, targetShape, true, null, 0);
+
+        t.equal(targetShape.getLeft(), U1, '[9] Element should be at X=U1 + 0 (for padding)');
+        t.equal(targetShape.getTop(),  U2, '[10] Element should NOT move');
+
+        testSlide.remove();
+    });
+
+    test('[INTEGRATION] Flip Elements', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+        var testShape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U1, U1); // create test shape
+
+        var resetPositions = function() { testShape1.setLeft(0); testShape1.setTop(0); testShape2.setLeft(U2); testShape2.setTop(U2); };
+
+        // First, test that elements don't move
+        flipTwoElements(testShape1, testShape2, false, false);
+
+        t.equal(testShape1.getLeft(), 0,  'Element should NOT move');
+        t.equal(testShape1.getTop(), 0,   'Element should NOT move'); 
+        t.equal(testShape2.getLeft(), U2, 'Element should NOT move');
+        t.equal(testShape2.getTop(), U2,  'Element should NOT move'); 
+
+        resetPositions();
+
+        // Then test that elements only move horizontally
+        flipTwoElements(testShape1, testShape2, true, false);
+
+        t.equal(testShape1.getLeft(), U2, 'Element should move');
+        t.equal(testShape1.getTop(), 0,   'Element should NOT move'); 
+        t.equal(testShape2.getLeft(), 0,  'Element should move');
+        t.equal(testShape2.getTop(), U2,  'Element should NOT move');        
+        
+        resetPositions();
+
+        // Then test that elements only move vertically
+        flipTwoElements(testShape1, testShape2, false, true);
+
+        t.equal(testShape1.getLeft(), 0,  'Element should NOT move');
+        t.equal(testShape1.getTop(), U2,  'Element should move'); 
+        t.equal(testShape2.getLeft(), U2, 'Element should NOT move');
+        t.equal(testShape2.getTop(), 0,   'Element should move'); 
+        
+        resetPositions();
+
+        // Then test that elements only move on both directions
+        flipTwoElements(testShape1, testShape2, true, true);
+
+        t.equal(testShape1.getLeft(), U2, 'Element should move');
+        t.equal(testShape1.getTop(), U2,  'Element should move'); 
+        t.equal(testShape2.getLeft(), 0,  'Element should move');
+        t.equal(testShape2.getTop(), 0,   'Element should move'); 
+        
+        testSlide.remove();
+    });
+
     test('[INTEGRATION] Align to Inner Borders', function(t) {
         // === SETUP ===
         var testSlide = slidesDocument.appendSlide();

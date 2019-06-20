@@ -74,18 +74,18 @@ function onOpen(event) {
 }
 
 // === MENU CALLS ===
-function menuSnapPosition()  { getElementArray().forEach(function(e) { snapElement(e, true, false, false); }); }
-function menuSnapDimension() { getElementArray().forEach(function(e) { snapElement(e, false, true, false); }); }
-function menuSnapRotation()  { getElementArray().forEach(function(e) { snapElement(e, false, false, true); }); }
-function menuZeroRotation()  { getElementArray().forEach(function(e) { e.setRotation(0); }); }
+function menuSnapPosition()  { getSelectedElementsOnPageOrFallback().forEach(function(e) { snapElement(e, true, false, false); }); }
+function menuSnapDimension() { getSelectedElementsOnPageOrFallback().forEach(function(e) { snapElement(e, false, true, false); }); }
+function menuSnapRotation()  { getSelectedElementsOnPageOrFallback().forEach(function(e) { snapElement(e, false, false, true); }); }
+function menuZeroRotation()  { getSelectedElementsOnPageOrFallback().forEach(function(e) { e.setRotation(0); }); }
 
 function menuCopyWidth() { copySelectedElementDimensions(true, false, false); }
 function menuCopyHeight() { copySelectedElementDimensions(false, true, false); }
 function menuCopyWidthAndHeight() { copySelectedElementDimensions(true, true, false); } 
 function menuCopyRotation() { copySelectedElementDimensions(false, false, true); } 
 
-function menuAdjoinH() { adjoinSelectedElements(0*PPI, true, true); }
-function menuAdjoinV() { adjoinSelectedElements(0*PPI, false, true); }
+//function menuAdjoinH() { adjoinSelectedElements(0*PPI, true, true); }
+//function menuAdjoinV() { adjoinSelectedElements(0*PPI, false, true); }
 
 function menuAlignToInnerLeft()        { align(PositionX.LEFT, PositionY.NOT_SET, false); }
 function menuAlignToInnerRight()       { align(PositionX.RIGHT, PositionY.NOT_SET, false); }
@@ -98,9 +98,9 @@ function menuAlignToOuterBottom()      { align(PositionX.NOT_SET, PositionY.BOTT
 function menuAlignToVerticalCenter()   { align(PositionX.NOT_SET, PositionY.CENTER, false); }
 function menuAlignToHorizontalCenter() { align(PositionX.CENTER, PositionY.NOT_SET, false); }
 
-function menuFlipH() { flipSelectedElements(true, false); }
-function menuFlipV() { flipSelectedElements(false, true); }
-function menuFlipHV() { flipSelectedElements(true, true); }
+//function menuFlipH() { flipSelectedElements(true, false); }
+//function menuFlipV() { flipSelectedElements(false, true); }
+//function menuFlipHV() { flipSelectedElements(true, true); }
 
 function menuSetTransparency0()   { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0 }); }
 function menuSetTransparency10()  { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.1 }); }
@@ -123,8 +123,9 @@ function menuShowAboutSidebar() {
   SlidesApp.getUi().showSidebar(ui);
 }
 
+// must have elements selected; do something to all in ref to last
 function menuCenterOnPage() {
-  var elementArray = getElementArray();
+  var elementArray = getSelectedElementsOnPageOrFallback();
   
   // In this case, reference is always the page
   elementArray.push(fakePageAsReferenceElement());
@@ -150,56 +151,14 @@ function snapElement(element, shouldApplyToPosition, shouldApplyToDimension, sho
   
   if (shouldApplyToRotation)
     element.setRotation(roundTo(element.getRotation(), 0));
-}
-  
-function flipSelectedElements(shouldFlipH, shouldFlipV) {
-  var elementArray = getElementArray();
-  
-  if (elementArray.length < 2)
-    return; // Nothing to do here
-  
-  var n = elementArray.length - 1;
-  
-  // Only applies to N-1th and Nth elements. Perhaps reconsider this later
-  if (shouldFlipH) {
-    var left = elementArray[n].getLeft();
-    elementArray[n].setLeft(elementArray[n-1].getLeft());
-    elementArray[n-1].setLeft(left);
-  }
-  
-  if (shouldFlipV) {
-    var top = elementArray[n].getTop();
-    elementArray[n].setTop(elementArray[n-1].getTop());
-    elementArray[n-1].setTop(top);
-  }
-}   
-
-function adjoinSelectedElements(paddingPoints, shouldAdjoinH, shouldCenterOnFirst) {
-  var elementArray = getElementArray();
-  
-  // Can only adjoin multiple elements. Also, skip if no elements were selected, but maybe revist this later...
-  if (isPageSelected() || elementArray.length == 1)
-    return;
-  
-  if (shouldAdjoinH) elementArray.sort(function(a,b) { return a.getLeft() - b.getLeft(); });
-  else elementArray.sort(function(a,b) { return a.getTop() - b.getTop(); });
-  
-  for (var i = 1; i < elementArray.length; i++) {
-    if (shouldAdjoinH) {
-      elementArray[i].setLeft(elementArray[i-1].getLeft() + elementArray[i-1].getWidth() + paddingPoints);
-      if (shouldCenterOnFirst) elementArray[i].setTop(elementArray[0].getTop() + elementArray[0].getHeight()/2 - elementArray[i].getHeight()/2);
-    }
-    else {
-      elementArray[i].setTop(elementArray[i-1].getTop() + elementArray[i-1].getHeight() + paddingPoints);
-      if (shouldCenterOnFirst) elementArray[i].setLeft(elementArray[0].getLeft() + elementArray[0].getWidth()/2 - elementArray[i].getWidth()/2);
-    }
-  }
-}
+}  
 
 // This behavior is fundamentally different from the native alignment tools,
 //   because here order matters (instead of position of elements on page)
+
+// must have elements selected; do something to all in ref to last or to page
 function align(positionX, positionY, isOuterEdge) {
-  var elementArray = getElementArray();
+  var elementArray = getSelectedElementsOnPageOrFallback();
 
   // If no elements were selected or only 1 element was selected, reference element becomes the page itself. Wish G Apps Script would support lambdas for a cleaner syntax...
   if (isPageSelected() || elementArray.length == 1)
@@ -233,11 +192,12 @@ function alignShape(referenceShape, targetShape, positionX, positionY, isOuterEd
     targetShape.setTop(referenceShape.getTop() + referenceShape.getHeight()/2 - targetShape.getHeight()/2);
 }
 
+// must have elements selected; do something to all in ref to last
 function copySelectedElementDimensions(copyWidth, copyHeight, copyRotation) {
   if (isPageSelected())
     return; // no selection array to get, so won't be able to get a reference element
 
-  var elementArray = getElementArray();
+  var elementArray = getSelectedElementsOnPageOrFallback();
   var n = elementArray.length-1;
   
   if (n == 0)
@@ -250,9 +210,10 @@ function copySelectedElementDimensions(copyWidth, copyHeight, copyRotation) {
   }
 }
 
+// must have elements selected; do something to all in ref to last
 function doStuffWithSelectedOrAllShapesOnPage(doStuff) { doStuffWithSelectedOrAllShapesOnPage(doStuff, {}); }
 function doStuffWithSelectedOrAllShapesOnPage(doStuff, attributes) {
-  var elementArray = getElementArray();  
+  var elementArray = getSelectedElementsOnPageOrFallback();  
   var n = elementArray.length;
 
   for (var i = 0; i < n; i++) {
@@ -315,26 +276,19 @@ function doesShapeHaveSolidFill(shape) { return shape.getFill().getType() == Sli
 //   says always exists, which is a non-sensical behavior. I can see this breaking some day.
 function doesShapeHaveText(shape) { return shape.getText().getLength() > 1; }
 
-function getElementArray() {
-  var selection = SlidesApp.getActivePresentation().getSelection();
-  var elementArray = [];
-  
-  switch (selection.getSelectionType()) {
-    case (SlidesApp.SelectionType.CURRENT_PAGE):
-      // Page is selected, so fallback to all elements in page
-      elementArray = selection.getCurrentPage().getPageElements();
-      break;
-    case (SlidesApp.SelectionType.TEXT):
-      // Text is selected, so fallback to parent container
-      elementArray = selection.getPageElementRange().getPageElements();
-      break;
-    case (SlidesApp.SelectionType.PAGE_ELEMENT || SlidesApp.SelectionType.TEXT):
-      // Elements are selected, so apply only to them
-      elementArray = selection.getPageElementRange().getPageElements();
-      break;
-    }
+function getSelectedElementsOnPageOrFallback() { return getSelectedElementsOnPage(true); }
 
-    return elementArray;
+// Get all selected elements on page as an array. If no elements are selected, get all elements on page.
+//   If text is selected, get the parent element.
+function getSelectedElementsOnPage(shouldFallbackToGetAllElementsOnPage) {
+  var selection = SlidesApp.getActivePresentation().getSelection();
+
+  if (selection.getSelectionType() == SlidesApp.SelectionType.CURRENT_PAGE)
+    return shouldFallbackToGetAllElementsOnPage
+      ? selection.getCurrentPage().getPageElements()
+      : [];
+  
+  return selection.getPageElementRange().getPageElements();
 }
 
 function fakePageAsReferenceElement() {
@@ -358,4 +312,70 @@ function calculateLuminosity(color) {
 function roundTo(number, digits) {
   var power = Math.pow(10, digits);
   return Math.round(number * power) / power;
+}
+
+// === NEW ADJOIN CODE ===
+function menuAdjoinH() { adjoinSelectedElements(true,  true, 0*PPI); }
+function menuAdjoinV() { adjoinSelectedElements(false, true, 0*PPI); }
+
+function adjoinSelectedElements(shouldAdjoinInHorizontalDirection, shouldCenterOnFirst, paddingPoints) {
+  var elementArray = getSelectedElementsOnPage(false); // will not fallback to all elements on page, but maybe revist this later...
+
+  if (elementArray.lenght < 2) // will only adjoin multiple elements
+    return;
+  
+  if (shouldAdjoinInHorizontalDirection)
+    elementArray.sort(function(a,b) { return a.getLeft() - b.getLeft(); }); // sort array by leftmost element
+  else
+    elementArray.sort(function(a,b) { return a.getTop() - b.getTop(); }); // sort array by topmost element
+  
+  for (var i = 1; i < elementArray.length; i++) {
+    adjoinTwoElements(
+      elementArray[i],
+      elementArray[i-1],
+      shouldAdjoinInHorizontalDirection,
+      shouldCenterOnFirst ? elementArray[0] : null,
+      paddingPoints);
+  }
+}
+
+function adjoinTwoElements(elementA, elementB, shouldAdjoinInHorizontalDirection, elementToCenterOn, paddingPoints) {
+  if (shouldAdjoinInHorizontalDirection) {
+    elementB.setLeft(elementA.getLeft() + elementA.getWidth() + paddingPoints);
+    if (elementToCenterOn)
+      elementB.setTop(elementToCenterOn.getTop() + elementToCenterOn.getHeight()/2 - elementB.getHeight()/2);
+  }
+  else {
+    elementB.setTop(elementA.getTop() + elementA.getHeight() + paddingPoints);
+    if (elementToCenterOn)
+      elementB.setLeft(elementToCenterOn.getLeft() + elementToCenterOn.getWidth()/2 - elementB.getWidth()/2);
+  }
+}
+
+// === FLIP CODE ===
+function menuFlipH()  { flipLastTwoSelectedElements(true, false); }
+function menuFlipV()  { flipLastTwoSelectedElements(false, true); }
+function menuFlipHV() { flipLastTwoSelectedElements(true, true); }
+
+function flipLastTwoSelectedElements(shouldFlipH, shouldFlipV) {
+  var selectedElements = getSelectedElementsOnPage(false);
+
+  if (selectedElements.length < 2) // need two or more elements to flip
+    return;
+  
+  flipTwoElements(selectedElements.pop(), selectedElements.pop(), shouldFlipH, shouldFlipV); // order of elements does not matter
+}
+
+function flipTwoElements(elementA, elementB, shouldFlipH, shouldFlipV) {
+  if (shouldFlipH) {
+    var x = elementB.getLeft();
+    elementB.setLeft(elementA.getLeft());
+    elementA.setLeft(x);
+  }
+
+  if (shouldFlipV) {
+    var y = elementB.getTop();
+    elementB.setTop(elementA.getTop());
+    elementA.setTop(y);
+  }
 }
