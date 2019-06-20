@@ -219,7 +219,7 @@ function alignShape(referenceShape, targetShape, positionX, positionY, isOuterEd
   
   if (positionX == PositionX.RIGHT)
     targetShape.setLeft(referenceShape.getLeft() + referenceShape.getWidth() - targetShape.getWidth()*(!isOuterEdge));
-  
+
   if (positionX == PositionX.CENTER)
     targetShape.setLeft(referenceShape.getLeft() + referenceShape.getWidth()/2 - targetShape.getWidth()/2);
   
@@ -315,7 +315,6 @@ function doesShapeHaveSolidFill(shape) { return shape.getFill().getType() == Sli
 //   says always exists, which is a non-sensical behavior. I can see this breaking some day.
 function doesShapeHaveText(shape) { return shape.getText().getLength() > 1; }
 
-
 function getElementArray() {
   var selection = SlidesApp.getActivePresentation().getSelection();
   var elementArray = [];
@@ -324,7 +323,6 @@ function getElementArray() {
     case (SlidesApp.SelectionType.CURRENT_PAGE):
       // Page is selected, so fallback to all elements in page
       elementArray = selection.getCurrentPage().getPageElements();
-      //Logger.log("Applying to all elements on page.");
       break;
     case (SlidesApp.SelectionType.TEXT):
       // Text is selected, so fallback to parent container
