@@ -1,14 +1,14 @@
 // === DEFINITIONS ===
 var PPI = 72;
 
-var PositionX = {
+var POSITION_X = {
   NOT_SET: 0,
   LEFT: 1,
   RIGHT: 2,
   CENTER: 3
 }
 
-var PositionY = {
+var POSITION_Y = {
   NOT_SET: 0,
   TOP: 1,
   BOTTOM: 2,
@@ -87,34 +87,34 @@ function menuCopyRotation() { copySelectedElementDimensions(false, false, true);
 //function menuAdjoinH() { adjoinSelectedElements(0*PPI, true, true); }
 //function menuAdjoinV() { adjoinSelectedElements(0*PPI, false, true); }
 
-function menuAlignToInnerLeft()        { align(PositionX.LEFT, PositionY.NOT_SET, false); }
-function menuAlignToInnerRight()       { align(PositionX.RIGHT, PositionY.NOT_SET, false); }
-function menuAlignToInnerTop()         { align(PositionX.NOT_SET, PositionY.TOP, false); }
-function menuAlignToInnerBottom()      { align(PositionX.NOT_SET, PositionY.BOTTOM, false); }
-function menuAlignToOuterLeft()        { align(PositionX.LEFT, PositionY.NOT_SET, true); }
-function menuAlignToOuterRight()       { align(PositionX.RIGHT, PositionY.NOT_SET, true); }
-function menuAlignToOuterTop()         { align(PositionX.NOT_SET, PositionY.TOP, true); }
-function menuAlignToOuterBottom()      { align(PositionX.NOT_SET, PositionY.BOTTOM, true); }
-function menuAlignToVerticalCenter()   { align(PositionX.NOT_SET, PositionY.CENTER, false); }
-function menuAlignToHorizontalCenter() { align(PositionX.CENTER, PositionY.NOT_SET, false); }
+function menuAlignToInnerLeft()        { align(POSITION_X.LEFT, POSITION_Y.NOT_SET, false); }
+function menuAlignToInnerRight()       { align(POSITION_X.RIGHT, POSITION_Y.NOT_SET, false); }
+function menuAlignToInnerTop()         { align(POSITION_X.NOT_SET, POSITION_Y.TOP, false); }
+function menuAlignToInnerBottom()      { align(POSITION_X.NOT_SET, POSITION_Y.BOTTOM, false); }
+function menuAlignToOuterLeft()        { align(POSITION_X.LEFT, POSITION_Y.NOT_SET, true); }
+function menuAlignToOuterRight()       { align(POSITION_X.RIGHT, POSITION_Y.NOT_SET, true); }
+function menuAlignToOuterTop()         { align(POSITION_X.NOT_SET, POSITION_Y.TOP, true); }
+function menuAlignToOuterBottom()      { align(POSITION_X.NOT_SET, POSITION_Y.BOTTOM, true); }
+function menuAlignToVerticalCenter()   { align(POSITION_X.NOT_SET, POSITION_Y.CENTER, false); }
+function menuAlignToHorizontalCenter() { align(POSITION_X.CENTER, POSITION_Y.NOT_SET, false); }
 
 //function menuFlipH() { flipSelectedElements(true, false); }
 //function menuFlipV() { flipSelectedElements(false, true); }
 //function menuFlipHV() { flipSelectedElements(true, true); }
 
-function menuSetTransparency0()   { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0 }); }
-function menuSetTransparency10()  { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.1 }); }
-function menuSetTransparency25()  { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.25 }); }
-function menuSetTransparency33()  { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.33 }); }
-function menuSetTransparency50()  { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.5 }); }
-function menuSetTransparency66()  { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.67 }); }
-function menuSetTransparency75()  { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.75 }); }
-function menuSetTransparency90()  { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.9 }); }
-function menuSetTransparency100() { doStuffWithSelectedOrAllShapesOnPage(doSetAlpha, { amount: 1 }); }
+function menuSetTransparency0()   { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0 }); }
+function menuSetTransparency10()  { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.1 }); }
+function menuSetTransparency25()  { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.25 }); }
+function menuSetTransparency33()  { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.33 }); }
+function menuSetTransparency50()  { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.5 }); }
+function menuSetTransparency66()  { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.67 }); }
+function menuSetTransparency75()  { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.75 }); }
+function menuSetTransparency90()  { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 0.9 }); }
+function menuSetTransparency100() { withSelectedOrAllShapesOnPage(doSetAlpha, { amount: 1 }); }
 
-function menuSetColorSwap() { doStuffWithSelectedOrAllShapesOnPage(doColorSwap); }
-function menuSetColorInverse() { doStuffWithSelectedOrAllShapesOnPage(doColorInversion); }
-function menuSetColorMaxContrast() { doStuffWithSelectedOrAllShapesOnPage(doMaxTextContrast); }
+function menuSetColorSwap() { withSelectedOrAllShapesOnPage(doColorSwap); }
+function menuSetColorInverse() { withSelectedOrAllShapesOnPage(doColorInversion); }
+function menuSetColorMaxContrast() { withSelectedOrAllShapesOnPage(doMaxTextContrast); }
 
 function menuShowAboutSidebar() {
   var ui = HtmlService
@@ -133,7 +133,7 @@ function menuCenterOnPage() {
   var n = elementArray.length-1;
   
   for (var i = 0; i < n; i++) {
-    alignShape(elementArray[n], elementArray[i], PositionX.CENTER, PositionY.CENTER, false);
+    alignShape(elementArray[n], elementArray[i], POSITION_X.CENTER, POSITION_Y.CENTER, false);
   }
 }
 
@@ -173,22 +173,22 @@ function align(positionX, positionY, isOuterEdge) {
 }
 
 function alignShape(referenceShape, targetShape, positionX, positionY, isOuterEdge) {  
-  if (positionX == PositionX.LEFT)
+  if (positionX == POSITION_X.LEFT)
     targetShape.setLeft(referenceShape.getLeft() - targetShape.getWidth()*isOuterEdge);
   
-  if (positionX == PositionX.RIGHT)
+  if (positionX == POSITION_X.RIGHT)
     targetShape.setLeft(referenceShape.getLeft() + referenceShape.getWidth() - targetShape.getWidth()*(!isOuterEdge));
 
-  if (positionX == PositionX.CENTER)
+  if (positionX == POSITION_X.CENTER)
     targetShape.setLeft(referenceShape.getLeft() + referenceShape.getWidth()/2 - targetShape.getWidth()/2);
   
-  if (positionY == PositionY.TOP)
+  if (positionY == POSITION_Y.TOP)
     targetShape.setTop(referenceShape.getTop() - targetShape.getHeight()*isOuterEdge);
   
-  if (positionY == PositionY.BOTTOM)
+  if (positionY == POSITION_Y.BOTTOM)
     targetShape.setTop(referenceShape.getTop() + referenceShape.getHeight() - targetShape.getHeight()*(!isOuterEdge));
   
-  if (positionY == PositionY.CENTER)
+  if (positionY == POSITION_Y.CENTER)
     targetShape.setTop(referenceShape.getTop() + referenceShape.getHeight()/2 - targetShape.getHeight()/2);
 }
 
@@ -211,32 +211,24 @@ function copySelectedElementDimensions(copyWidth, copyHeight, copyRotation) {
 }
 
 // must have elements selected; do something to all in ref to last
-function doStuffWithSelectedOrAllShapesOnPage(doStuff) { doStuffWithSelectedOrAllShapesOnPage(doStuff, {}); }
-function doStuffWithSelectedOrAllShapesOnPage(doStuff, attributes) {
-  var elementArray = getSelectedElementsOnPageOrFallback();  
-  var n = elementArray.length;
-
-  for (var i = 0; i < n; i++) {
-    switch (elementArray[i].getPageElementType()) {
-      
-      // Like on other functions, this only applies to SHAPE. Also, this function will ignore transparency,
-      //   will only consider the color of the first text element and will will NOT consider background
-      //   text color.
-      case(SlidesApp.PageElementType.SHAPE):
-        doStuff(elementArray[i].asShape(), attributes);
-      break;
-    }
-  }
+function withSelectedOrAllShapesOnPage(doStuff) { withSelectedOrAllShapesOnPage(doStuff, {}); }
+function withSelectedOrAllShapesOnPage(doStuff, attributes) {
+  // Like on other functions, this only applies to SHAPE. Also, this function will ignore transparency,
+  //   will only consider the color of the first text element and will will NOT consider background
+  //   text color.
+  getSelectedElementsOnPage(true)
+    .filter (function(e) { return e.getPageElementType() == SlidesApp.PageElementType.SHAPE; })
+    .forEach(function(e) { doStuff(e.asShape(), attributes)});
 }
 
-var doSetAlpha = function(shape, attributes) {
+function doSetAlpha(shape, attributes) {
   var fill = shape.getFill();
   
   if (fill.getType() == SlidesApp.FillType.SOLID)
     fill.setSolidFill(fill.getSolidFill().getColor(), attributes.amount);
 }
 
-var doColorSwap = function(shape, attributes) {
+function doColorSwap(shape, attributes) {
   if (doesShapeHaveSolidFill(shape) && doesShapeHaveText(shape)) { // must have SOLID fill and some text
     var textStyle = shape.getText().getRuns()[0].getTextStyle();
     var textColor = textStyle.getForegroundColor();
@@ -246,7 +238,7 @@ var doColorSwap = function(shape, attributes) {
   }
 }
 
-var doColorInversion = function(shape, attributes) { 
+function doColorInversion(shape, attributes) { 
   if (doesShapeHaveSolidFill(shape)) { // must have SOLID fill
     var rgbColor = shape.getFill().getSolidFill().getColor().asRgbColor();
     shape.getFill().setSolidFill(
@@ -353,9 +345,9 @@ function adjoinTwoElements(elementA, elementB, shouldAdjoinInHorizontalDirection
 }
 
 // === FLIP CODE ===
-function menuFlipH()  { flipLastTwoSelectedElements(true, false); }
-function menuFlipV()  { flipLastTwoSelectedElements(false, true); }
-function menuFlipHV() { flipLastTwoSelectedElements(true, true); }
+function menuFlipH()  { flipLastTwoSelectedElements(true,  false); }
+function menuFlipV()  { flipLastTwoSelectedElements(false, true);  }
+function menuFlipHV() { flipLastTwoSelectedElements(true,  true);  }
 
 function flipLastTwoSelectedElements(shouldFlipH, shouldFlipV) {
   var selectedElements = getSelectedElementsOnPage(false);

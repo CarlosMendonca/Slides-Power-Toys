@@ -18,18 +18,18 @@ var test = new GasTap();
 function gastTestRunner() {
     var slidesDocument = SlidesApp.openByUrl(URL_TO_SLIDES_DOCUMENT);
 
-    test('Test Slides document opens successfully', function(t) {    
+    test('TEST RUNNER FINDS TARGET DOCUMENT', function(t) {    
         t.ok(slidesDocument);
     });
 
-    test('[UNIT] function roundTo', function(t) {
+    test('FUNCTION ROUNDTO', function(t) {
         t.equal(roundTo(1.23, 1), 1.2);
         t.equal(roundTo(1.23, 0), 1.0);
         t.equal(roundTo(1.2 , 1), 1.2);
         t.equal(roundTo(1.23, 3), 1.23);
     });
 
-    test('[1] Adjoin Elements', function(t) {
+    test('ADJOIN ELEMENTS', function(t) {
         var testSlide = slidesDocument.appendSlide();
         var refShape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
         var targetShape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U2, U2); // create test shape
@@ -62,7 +62,7 @@ function gastTestRunner() {
         testSlide.remove();
     });
 
-    test('[INTEGRATION] Flip Elements', function(t) {
+    test('FLIP ELEMENTS', function(t) {
         var testSlide = slidesDocument.appendSlide();
         var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
         var testShape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U1, U1); // create test shape
@@ -110,7 +110,7 @@ function gastTestRunner() {
         testSlide.remove();
     });
 
-    test('[INTEGRATION] Align to Inner Borders', function(t) {
+    test('ALIGN TO INNER BORDERS', function(t) {
         // === SETUP ===
         var testSlide = slidesDocument.appendSlide();
         var anchorShape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create the anchor shape
