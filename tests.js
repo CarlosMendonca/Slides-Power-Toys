@@ -1,3 +1,5 @@
+// TESTS (shouldn't be accessible from production)
+
 var URL_TO_GASTAP_LIB = 'https://raw.githubusercontent.com/zixia/gast/master/src/gas-tap-lib.js';
 var URL_TO_SLIDES_DOCUMENT = 'https://docs.google.com/presentation/d/1hXuhjKz03K7Tqgr4R1J0ihASCu4Ggi_qtG28IN-DXGg/edit';
 
