@@ -3,7 +3,7 @@
 // TO-DO: should refactor this to make it more consistent and repeatable; will probably
 //   want to test from the menu functions to maximize coverage
 var URL_TO_GASTAP_LIB = 'https://raw.githubusercontent.com/zixia/gast/master/src/gas-tap-lib.js';
-var URL_TO_SLIDES_DOCUMENT = 'https://docs.google.com/presentation/d/1hXuhjKz03K7Tqgr4R1J0ihASCu4Ggi_qtG28IN-DXGg/edit';
+var URL_TO_SLIDES_DOCUMENT = 'https://docs.google.com/presentation/d/1m9CJapm9ZJnbqyt4bTuQtL_FxE5O7nnMSKO3e-MsSwU/edit';
 
 var U1 = 72;  // all unit dimensions are stored in INCHES, but commands use PIXELS as unit, so there's a loss of precision when dividing by 72
 var U2 = 144;
