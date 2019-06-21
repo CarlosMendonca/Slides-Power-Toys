@@ -183,5 +183,27 @@ function gastTestRunner() {
         testSlide.remove(); // this is a lousy tear down because it's not guaranteed to execute, but I'm too lazy and too bad at JS to improve this now
     });
 
+    test('CENTER ON PAGE', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+        var testShape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U2, U2); // create test shape
+
+        var center_x = slidesDocument.getPageWidth()  / 2;
+        var center_y = slidesDocument.getPageHeight() / 2;
+
+        testShape1.select();
+        testShape2.select(false);
+
+        menuCenterOnPage();
+
+        t.equal(testShape1.getLeft() + U1/2, center_x, '[1] Shape is at horizontal center');
+        t.equal(testShape1.getTop()  + U1/2, center_y, '[2] Shape is at vertical center');
+
+        t.equal(testShape2.getLeft() + U2/2, center_x, '[3] Shape is at horizontal center');
+        t.equal(testShape2.getTop()  + U2/2, center_y, '[4] Shape is at vertical center');
+
+        testSlide.remove();
+    });
+
     test.finish();
 }
