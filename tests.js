@@ -22,11 +22,39 @@ function gastTestRunner() {
         t.ok(slidesDocument);
     });
 
-    test('FUNCTION ROUNDTO', function(t) {
+    test('FUNCTION roundTo', function(t) {
         t.equal(roundTo(1.23, 1), 1.2);
         t.equal(roundTo(1.23, 0), 1.0);
         t.equal(roundTo(1.2 , 1), 1.2);
         t.equal(roundTo(1.23, 3), 1.23);
+    });
+
+    test('FUNCTION getSelectedElementsOnPage', function(t) {
+        var testSlide1 = slidesDocument.appendSlide();
+
+        var testShape1 = testSlide1.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+        var testShape2 = testSlide1.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+
+        testShape1.select();
+        testShape2.select(false);
+
+        t.equal(getSelectedElementsOnPage(false).length, 2, '[1] Two shapes selected');
+
+        testSlide1.selectAsCurrentPage();
+        t.equal(getSelectedElementsOnPage(true).length,  2, '[2] Fallback to unselected shapes on slide');
+        t.equal(getSelectedElementsOnPage(false).length, 0, '[3] NO fallback to unselected shapes on slide');
+
+        // It doesn't seem to be possible to programatically select multiple slides, so will test this manually
+        /*
+        var testSlide2 = slidesDocument.appendSlide();
+        testSlide1.select();
+        testSlide2.select(false);
+        t.equal(getSelectedElementsOnPage(true).lenght,  0, '[4] DO NOT try to handle multiple selected slides');
+        t.equal(getSelectedElementsOnPage(false).lenght, 0, '[5] DO NOT try to handle multiple selected slides');
+        testSlide2.remove();
+        */
+
+        testSlide1.remove();
     });
 
     test('ADJOIN ELEMENTS', function(t) {
@@ -36,6 +64,7 @@ function gastTestRunner() {
 
         var resetPositions = function() { refShape.setLeft(0); refShape.setTop(0); targetShape.setLeft(U2); targetShape.setTop(U2); };
 
+        // First, test that elements adjoin horizontally, with centering and with padding
         adjoinTwoElements(refShape, targetShape, true, refShape, U1);
 
         t.equal(refShape.getLeft(), 0, '[1] Element should NOT move');
@@ -45,6 +74,7 @@ function gastTestRunner() {
 
         resetPositions();
 
+        // Then, test that elements adjoin vertically, with centering and with padding
         adjoinTwoElements(refShape, targetShape, false, refShape, U1);
 
         t.equal(refShape.getLeft(), 0,     '[5] Element should NOT move');
@@ -54,6 +84,7 @@ function gastTestRunner() {
 
         resetPositions();
 
+        // Then, test that elements adjoin horizontally correctly, without centering and without padding
         adjoinTwoElements(refShape, targetShape, true, null, 0);
 
         t.equal(targetShape.getLeft(), U1, '[9] Element should be at X=U1 + 0 (for padding)');
@@ -149,7 +180,7 @@ function gastTestRunner() {
         t.equal(testShape2.getLeft(), U1, 'Test shape 2 got horizontally aligned to anchor shape');
 
         // === TEAR DOWN ===
-        testSlide.remove();
+        testSlide.remove(); // this is a lousy tear down because it's not guaranteed to execute, but I'm too lazy and too bad at JS to improve this now
     });
 
     test.finish();

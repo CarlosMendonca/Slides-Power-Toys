@@ -275,12 +275,19 @@ function getSelectedElementsOnPageOrFallback() { return getSelectedElementsOnPag
 function getSelectedElementsOnPage(shouldFallbackToGetAllElementsOnPage) {
   var selection = SlidesApp.getActivePresentation().getSelection();
 
-  if (selection.getSelectionType() == SlidesApp.SelectionType.CURRENT_PAGE)
-    return shouldFallbackToGetAllElementsOnPage
-      ? selection.getCurrentPage().getPageElements()
-      : [];
-  
-  return selection.getPageElementRange().getPageElements();
+  switch (selection.getSelectionType()) {
+    case SlidesApp.SelectionType.PAGE_ELEMENT:
+    case SlidesApp.SelectionType.TEXT:
+      return selection.getPageElementRange().getPageElements();
+
+    case SlidesApp.SelectionType.CURRENT_PAGE:
+      return shouldFallbackToGetAllElementsOnPage
+        ? selection.getCurrentPage().getPageElements()
+        : [];
+
+    default: // deal with the corner cases on enum SlidesApp.SelectionType
+      return [];
+  }
 }
 
 function fakePageAsReferenceElement() {
