@@ -21,9 +21,9 @@ function onInstall(event) { onOpen(event); }
 function onOpen(event) {
   SlidesApp.getUi().createAddonMenu()
     .addSubMenu(SlidesApp.getUi().createMenu('Precision snap')
-      .addItem('To dimension', 'menuSnapDimension')
-      .addItem('To position', 'menuSnapPosition')
-      .addItem('To rotation', 'menuSnapRotation')
+      .addItem('Dimension', 'menuSnapDimension')
+      .addItem('Position', 'menuSnapPosition')
+      .addItem('Rotation', 'menuSnapRotation')
       .addItem('Straighten elements', 'menuZeroRotation'))
     .addSubMenu(SlidesApp.getUi().createMenu('Copy attributes')
       .addItem('Width', 'menuCopyWidth')
@@ -176,14 +176,14 @@ function alignSelectOrAllElements(positionX, positionY, isOuterEdge) {
   var referenceElement;
 
   switch (elementArray.length) {
-    case 0:
+    case 0: // no elements are selected, so fallback to getting all elements and position reference will be the page
         elementArray = getSelectedElementsOnPage(true);
         referenceElement = fakePageAsReferenceElement();
       break;
-    case 1:
+    case 1: // only 1 element was selected, so position reference is the page
         referenceElement = fakePageAsReferenceElement();
       break;
-    default:
+    default: // multiple elements were selected, so position reference is the last one
         referenceElement = elementArray.pop();
       break;
   }
