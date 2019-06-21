@@ -1,12 +1,10 @@
 <img width="220" src="./.assets/banner_220.png" alt="Slides Power Toys logo" />
 <hr />
-[![Issues](https://img.shields.io/github/issues/Microsoft/vscode/bug.svg)](https://github.com/CarlosMendonca/Slides-Power-Toys/issues)
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](./LICENSE)
 
 Slides Power Toys is a simple free and open source extension that adds some handy functions to Google Slides and make it behave like Microsoft PowerPoint.
 
 <p align="center">
-    <img src="./.assets/screenshot2_v6.png" alt="Screenshot of Slides Power Toys in action showing the About sidebar open and the menu expanded" />
+    <img src="./.assets/screenshot2_v6.png" style="border:1px solid #e1e4e8" alt="Screenshot of Slides Power Toys in action showing the About sidebar open and the menu expanded" />
 </p>
 
 THESE CAPABILITIES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google. Refer to the GNU GPL v2.0 license for the full terms and conditions.
@@ -40,7 +38,7 @@ Invert fill color of all shapes (text boxes) selected or on the slide.
 Change foreground color of text on all shapes (text boxes) selected or on the slide to either black or white, depending on which renders highest contrast with each shape's fill color.
 
 ## Tests
-There is limited test coverage on the [tests.js](./tests.js) file that uses [GasT](https://github.com/huan/gast). To run the tests, open the file on the Script Editor and run the gastTestRunner function and check the log.
+There is limited test coverage on the [tests.js](./tests.js) file that uses [GasT](https://github.com/huan/gast). To run the tests, open the file on the Script Editor, run the gastTestRunner function and check the log.
 
 ## License
 Licensed under the [GNU GPL v2.0 license](./LICENSE).
