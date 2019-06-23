@@ -10,6 +10,7 @@ if [ "$1" == "clean" ];
 then
     rm .clasp.json
     rm appsscript.json
+    rm tests.js
     exit
 fi
 
@@ -23,6 +24,7 @@ if [ "$1" == "test" ];
 then
     cp .clasp.json.test .clasp.json
     cp appsscript.json.test appsscript.json
+    cp tests.js.DO_NOT_DEPLOY cp tests.js
 fi
 
 echo "Publishing to Google..."
