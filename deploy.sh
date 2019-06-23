@@ -24,7 +24,7 @@ if [ "$1" == "test" ];
 then
     cp .clasp.json.test .clasp.json
     cp appsscript.json.test appsscript.json
-    cp tests.js.DO_NOT_DEPLOY cp tests.js
+    cp tests.js.DO_NOT_DEPLOY tests.js
 fi
 
 echo "Publishing to Google..."
