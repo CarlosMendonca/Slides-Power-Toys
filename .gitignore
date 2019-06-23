@@ -1,3 +1,7 @@
+# App specific
+.clasp.json
+appsscript.json
+
 # General
 .DS_Store
 .AppleDouble
