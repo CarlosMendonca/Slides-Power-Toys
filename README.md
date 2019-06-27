@@ -38,7 +38,7 @@ Invert fill color of all shapes (text boxes) selected or on the slide.
 Change foreground color of text on all shapes (text boxes) selected or on the slide to either black or white, depending on which renders highest contrast with each shape's fill color.
 
 ## Tests
-There is limited test coverage on the [tests.js](./tests.js) file that uses [GasT](https://github.com/huan/gast). To run the tests, open the file on the Script Editor, run the gastTestRunner function and check the log.
+There is limited test coverage on the [tests.js](./tests/tests.js) file that uses [GasT](https://github.com/huan/gast). To run the tests, open the file on the Script Editor, run the gastTestRunner function and check the log.
 
 ## License
 Licensed under the [GNU GPL v2.0 license](./LICENSE).
