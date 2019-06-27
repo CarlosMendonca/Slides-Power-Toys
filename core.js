@@ -56,7 +56,20 @@ function snapElement(element, shouldApplyToPosition, shouldApplyToDimension, sho
   
   function invertColorsOnShape(shape) { 
     if (doesShapeHaveSolidFill(shape)) { // must have SOLID fill
-      var rgbColor = shape.getFill().getSolidFill().getColor().asRgbColor();
+      var color = shape.getFill().getSolidFill().getColor();
+      var rgbColor;
+
+      switch(color.getColorType()) {
+        case(SlidesApp.ColorType.RGB):
+          rgbColor = color.asRgbColor();
+          break;
+        case(SlidesApp.ColorType.THEME):
+          rgbColor = shape.getParentPage().asSlide().getColorScheme().getConcreteColor(color.asThemeColor().getThemeColorType()).asRgbColor();
+          break;
+        default:
+          return;
+      }
+
       shape.getFill().setSolidFill(
         255 - rgbColor.getRed(),
         255 - rgbColor.getGreen(),

@@ -3,7 +3,7 @@
 // TO-DO: should refactor this to make it more consistent and repeatable; will probably
 //   want to test from the menu functions to maximize coverage
 var URL_TO_GASTAP_LIB = 'https://raw.githubusercontent.com/zixia/gast/master/src/gas-tap-lib.js';
-var URL_TO_SLIDES_DOCUMENT = 'https://docs.google.com/presentation/d/1m9CJapm9ZJnbqyt4bTuQtL_FxE5O7nnMSKO3e-MsSwU/edit';
+var URL_TO_SLIDES_DOCUMENT = 'https://docs.google.com/presentation/d/1yOnf-ng1xTD7ohRv7cBcI7GTuTnwokr-Lde5GtOvDYU/edit';
 
 var U1 = 72;  // all unit dimensions are stored in INCHES, but commands use PIXELS as unit, so there's a loss of precision when dividing by 72
 var U2 = 144;
@@ -205,6 +205,33 @@ function gastTestRunner() {
 
         t.equal(testShape2.getLeft() + U2/2, center_x, '[3] Shape is at horizontal center');
         t.equal(testShape2.getTop()  + U2/2, center_y, '[4] Shape is at vertical center');
+
+        testSlide.remove();
+    });
+
+    test('from ISSUE #5: invert colors of a shape', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+        var testShape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U1, U1); // create test shape
+
+        testShape1.getFill().setSolidFill(SlidesApp.ThemeColorType.ACCENT1); // set background to ACCENT1
+        testShape2.getFill().setSolidFill(255, 255, 255); // set background to WHITE
+
+        testShape1.select();
+        testShape2.select(false);
+
+        menuSetColorInverse();
+
+        // This is a fragile test, because it will fail if the default theme of the new slide changes. Keep that in mind.
+        var invertedColorOnShape1 = testShape1.getFill().getSolidFill().getColor().asRgbColor();
+        t.equal(invertedColorOnShape1.getRed(),   255 - 255);
+        t.equal(invertedColorOnShape1.getGreen(), 255 - 171);
+        t.equal(invertedColorOnShape1.getBlue(),  255 - 64);
+
+        var invertedColorOnShape2 = testShape2.getFill().getSolidFill().getColor().asRgbColor();
+        t.equal(invertedColorOnShape2.getRed(),   0);
+        t.equal(invertedColorOnShape2.getGreen(), 0);
+        t.equal(invertedColorOnShape2.getBlue(),  0);
 
         testSlide.remove();
     });
