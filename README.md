@@ -1,10 +1,10 @@
-<img width="220" src="./.assets/banner_220.png" alt="Slides Power Toys logo" />
+<img width="220" src="./assets/banner_220.png" alt="Slides Power Toys logo" />
 <hr />
 
 Slides Power Toys is a simple free and open source extension that adds some handy functions to Google Slides and make it behave like Microsoft PowerPoint.
 
 <p align="center">
-    <img src="./.assets/screenshot2_v6.png" alt="Screenshot of Slides Power Toys in action showing the About sidebar open and the menu expanded" />
+    <img src="./assets/screenshot2_v6.png" alt="Screenshot of Slides Power Toys in action showing the About sidebar open and the menu expanded" />
 </p>
 
 THESE CAPABILITIES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google. Refer to the GNU GPL v2.0 license for the full terms and conditions.
