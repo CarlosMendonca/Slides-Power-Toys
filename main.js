@@ -69,6 +69,10 @@ function onOpen(event) {
       .addItem('Invert background colors', 'menuSetColorInverse')
       .addItem('Max text contrast', 'menuSetColorMaxContrast'))
     .addSeparator()
+    .addSubMenu(SlidesApp.getUi().createMenu('Text')
+      .addItem('Merge text boxes', 'menuMergeShapeText')
+      .addItem('Split text boxes', 'menuSplitShapeText'))
+    .addSeparator()
     .addItem('About', 'menuShowAboutPrompt')
     .addToUi();
 }
@@ -117,6 +121,82 @@ function menuCenterOnPage() { withSelectedOrAllElements(function(e) { alignShape
 function menuFlipH()  { flipLastTwoSelectedElements(true,  false); }
 function menuFlipV()  { flipLastTwoSelectedElements(false, true);  }
 function menuFlipHV() { flipLastTwoSelectedElements(true,  true);  }
+
+// It's worth noting that Google Slides' biggest issues is that it does not guaraantee the order
+//   of selected elements in the array, except for the last element. With that, while this function
+//   will merge if more than 2 text boxes are selected. the order of the 2nd to the n-th will not
+//   be deterministic to the user. Consider only merging when exactly 2 elements are selected if this
+//   starats becoming a problem for users.
+function menuMergeShapeText() {
+  var selectedShapes = getSelectedShapesOnPage(false);
+
+  if (selectedShapes.length < 2) // need two or more elements to flip
+    return;
+
+  var referenceShape = selectedShapes.pop();
+  selectedShapes.forEach(function(s) { mergeTextAndDeleteShape(referenceShape, s); });
+}
+
+function menuSplitShapeText() {
+  // Step 1: text must be selected (or cursor positioned somewhere)
+  if (SlidesApp.getActivePresentation().getSelection().getSelectionType() != SlidesApp.SelectionType.TEXT)
+    return;
+
+  // Step 2: parent element must be a SHAPE; don't know how to deal with other elements and will maybe add TABLE handling functionality later
+  var parentElement = SlidesApp.getActivePresentation().getSelection().getPageElementRange().getPageElements()[0]; // there should only be one in this case, because text was selected
+  if (parentElement.getPageElementType() != SlidesApp.PageElementType.SHAPE)
+    return;
+
+  var selectedTextRange = SlidesApp.getActivePresentation().getSelection().getTextRange();
+  splitShapeText(
+    parentElement.asShape(),
+    selectedTextRange.getStartIndex(),
+    selectedTextRange.getEndIndex());
+}
+
+// Cases:
+//   A.  |aaabbbccc\n   => [][][aaabbbccc]\n
+//   B.  aaabbbccc|\n   => [aaabbbccc][][]\n
+//   C.  [aaabbbccc]\n  => [][aaabbbccc][]\n
+//   C2. [aaabbbccc\n]  => [][aaabbbccc][]\n
+//   E.  aaa|bbbccc\n   => [aaa][][bbbccc]\n
+//   F.  [aaa]bbbccc\n  => [][aaa][bbbccc]\n
+//   G.  aaabbb[ccc]\n  => [aaabbbb][ccc][]\n
+//   G2. aaaabbb[ccc\n] => [aaabbb][ccc][]\n
+//   H.  aaa[bbb]ccc\n  => [aaa][bbb][ccc]\n
+//   I.  aaabbbccc[\n]  => [aaabbbccc][][]\n
+function splitShapeText(originalShape, selectionStartIndex, selectionEndIndex) {
+  var ABS_START_INDEX = 0;
+  var   ABS_END_INDEX = originalShape.getText().getEndIndex() - 1; // because there's always a new line char at the end of every shape
+
+  selectionEndIndex = Math.min(ABS_END_INDEX, selectionEndIndex); // makes sure to always disconsider selection of new line char on cases C2 and G2
+
+  var marker0 = [ABS_START_INDEX, selectionStartIndex];
+  var marker1 = [selectionStartIndex, selectionEndIndex];
+  var marker2 = [selectionEndIndex, ABS_END_INDEX];
+
+  var i = 1;
+
+  // It would be elegant to transform the following code into a loop, but the way selection works
+  //   guarantees it will always be two iterations, so might as well just break it down for clarity
+  //   sake.
+  if (marker1[0] != marker1[1]) {
+    var newShape1 = originalShape.duplicate().asShape();
+    newShape1.setLeft(newShape1.getLeft() + i*(originalShape.getLeft() + originalShape.getWidth()));
+    newShape1.getText().clear();
+    newShape1.getText().insertRange(0, originalShape.getText().getRange(marker1[0], marker1[1]));
+    i++;
+  }
+
+  if (marker2[0] != marker2[1]) {
+    var newShape2 = originalShape.duplicate().asShape();
+    newShape2.setLeft(newShape2.getLeft() + i*(originalShape.getLeft() + originalShape.getWidth()));
+    newShape2.getText().clear();
+    newShape2.getText().insertRange(0, originalShape.getText().getRange(marker2[0], marker2[1]));
+  }
+
+  originalShape.getText().clear(marker0[1], ABS_END_INDEX); // checking whether indexes are different is not necessary since clear on the same position produced no effect :)
+}
 
 function menuShowAboutPrompt() {
   var message = "Slides Power Toys is a simple, free and open source extension that adds some handy functions to Google Slides and make it behave like Microsoft PowerPoint.\n\nTHESE CAPABILITIES ARE PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google.\n\nFor user's guide, license and to report an issue, refer to the website at http://carlosmendonca.github.io/Slides-Power-Toys.";

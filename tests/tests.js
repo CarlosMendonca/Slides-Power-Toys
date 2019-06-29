@@ -236,5 +236,61 @@ function gastTestRunner() {
         testSlide.remove();
     });
 
+    test("There's always a newline char at the end of every shape", function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+
+        t.equal(testShape1.getText().getLength(), 1, "Yup, new line char was there");
+        
+        testShape1.getText().clear();
+        t.equal(testShape1.getText().getLength(), 1, "Yup, new line char was still there after clearing text");
+
+        testSlide.remove();
+    });
+
+    test("Split text", function (t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+
+        testShape1.getText().appendText("abcdefghi");
+
+        testShape1.getText().getRange(3, 6).select();
+
+        menuSplitShapeText();
+
+        t.equal(testSlide.getShapes()[0].getText().asString(), "abc\n", 'First string is abc');
+        t.equal(testSlide.getShapes()[1].getText().asString(), "def\n", 'Second string is def');
+        t.equal(testSlide.getShapes()[2].getText().asString(), "ghi\n", 'Third string is ghi');
+    });
+
+    test('Merge text', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1); // create test shape
+        var testShape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1, U1, U1, U1); // create test shape
+        var testShape3 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U1, U1); // create test shape
+
+        var testShapeId2 = testShape2.getObjectId();
+        var testShapeId3 = testShape3.getObjectId();
+        
+        testShape1.getText().appendText("abc");
+        testShape2.getText().appendText("def");
+        testShape3.getText().appendText("ghi");
+
+        testShape2.select();
+        testShape3.select(false);
+        testShape1.select(false);
+
+        t.notThrow(menuMergeShapeText, 'menuMergeShapeText finished successfully');
+
+        t.equal(testSlide.getPageElementById(testShapeId2), null, 'Text box 2 was successfully deleted');
+        t.equal(testSlide.getPageElementById(testShapeId3), null, 'Text box 3 was successfully deleted');
+
+        t.equal(testShape1.getText().getParagraphs()[0].getRange().asString(), "abc\n", 'First string is abc');
+        t.equal(testShape1.getText().getParagraphs()[1].getRange().asString(), "def\n", 'Second string is def');
+        t.equal(testShape1.getText().getParagraphs()[2].getRange().asString(), "ghi\n", 'Third string is ghi');
+        
+        testSlide.remove();
+    });
+
     test.finish();
 }
