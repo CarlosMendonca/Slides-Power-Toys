@@ -27,7 +27,7 @@ function onOpen(event) {
       .addItem('Straighten elements', 'menuZeroRotation'))
     .addSubMenu(SlidesApp.getUi().createMenu('Copy attributes')
       .addItem('Width', 'menuCopyWidth')
-      .addItem('Height', 'menyCopyHeight')
+      .addItem('Height', 'menuCopyHeight')
       .addItem('Width and height', 'menuCopyWidthAndHeight')
       .addItem('Rotation', 'menuCopyRotation'))
     .addSeparator()
