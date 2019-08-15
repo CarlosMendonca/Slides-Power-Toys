@@ -7,7 +7,9 @@ Slides Power Toys is a simple free and open source extension that adds some hand
     <img src="./assets/screenshot2_v6.png" alt="Screenshot of Slides Power Toys in action showing the About sidebar open and the menu expanded" />
 </p>
 
-THESE CAPABILITIES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google. Refer to the GNU GPL v2.0 license for the full terms and conditions.
+**THESE CAPABILITIES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google. Refer to the GNU GPL v2.0 license for the full terms and conditions.**
+
+**This is not an oficially supported Google product.**
 
 ### Copy Attributes
 Copy attributes from the last selected shape to the others. This mimics Microsoft PowerPoint's behavior to apply the same attribute, like size, to multiple shapes.
