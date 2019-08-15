@@ -131,8 +131,13 @@ function menuShowAboutPrompt() {
 function flipLastTwoSelectedElements(shouldFlipH, shouldFlipV) {
   var selectedElements = getSelectedElementsOnPage(false);
 
-  if (selectedElements.length < 2) // need two or more elements to flip
+  if (selectedElements.length < 2) { // need two or more elements to flip
+    SlidesApp.getUi().alert(
+      "Slides Power Toys",
+      "Select two elements to flip their position.",
+      SlidesApp.getUi().ButtonSet.OK);
     return;
+  }
   
   flipTwoElements(selectedElements.pop(), selectedElements.pop(), shouldFlipH, shouldFlipV); // order of elements does not matter
 }
@@ -140,8 +145,13 @@ function flipLastTwoSelectedElements(shouldFlipH, shouldFlipV) {
 function adjoinSelectedElements(shouldAdjoinInHorizontalDirection, shouldCenterOnFirst, paddingPoints) {
   var elementArray = getSelectedElementsOnPage(false); // will not fallback to all elements on page, but maybe revist this later...
 
-  if (elementArray.length < 2) // will only adjoin multiple elements
+  if (elementArray.length < 2) { // will only adjoin multiple elements
+    SlidesApp.getUi().alert(
+      "Slides Power Toys",
+      "Select two or more elements to adjoin (combine by bringing together).",
+      SlidesApp.getUi().ButtonSet.OK);
     return;
+  }
   
   if (shouldAdjoinInHorizontalDirection)
     elementArray.sort(function(a,b) { return a.getLeft() - b.getLeft(); }); // sort array by leftmost element
@@ -161,8 +171,13 @@ function adjoinSelectedElements(shouldAdjoinInHorizontalDirection, shouldCenterO
 function resizeElementsToLastSelected(copyWidth, copyHeight, copyRotation) {
   var elementArray = getSelectedElementsOnPage(false);
 
-  if (elementArray.length < 2)
+  if (elementArray.length < 2) {
+    SlidesApp.getUi().alert(
+      "Slides Power Toys",
+      "Select two or more elements to resize or rotate based on attributes of the last selected element.",
+      SlidesApp.getUi().ButtonSet.OK);
     return; // no selection array or just one element in selection, so no point in continuing
+  }
 
   var referenceElement = elementArray.pop();
   

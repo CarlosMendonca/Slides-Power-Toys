@@ -67,6 +67,7 @@ function snapElement(element, shouldApplyToPosition, shouldApplyToDimension, sho
           rgbColor = shape.getParentPage().asSlide().getColorScheme().getConcreteColor(color.asThemeColor().getThemeColorType()).asRgbColor();
           break;
         default:
+          
           return;
       }
 
