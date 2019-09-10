@@ -167,15 +167,21 @@ function adjoinSelectedElements(shouldAdjoinInHorizontalDirection, shouldCenterO
     return;
   }
   
+  var referenceElement = elementArray.pop(); // taking the reference element out since we'll sort the selection array
+  
+  // Sorting by leftmost or topmost is an atempt to avoid a random order of adjoined elements since Google Slides
+  //  does not guarantee the order on the selection array. This way, the order on screen is preserved.
   if (shouldAdjoinInHorizontalDirection)
     elementArray.sort(function(a,b) { return a.getLeft() - b.getLeft(); }); // sort array by leftmost element
   else
     elementArray.sort(function(a,b) { return a.getTop() - b.getTop(); }); // sort array by topmost element
   
+  elementArray.unshift(referenceElement); // putting the reference element back in, but at the beginning of the array since the adjoin loop below uses element 0 as anchor
+  
   for (var i = 1; i < elementArray.length; i++) {
     adjoinTwoElements(
-      elementArray[i],
       elementArray[i-1],
+      elementArray[i],
       shouldAdjoinInHorizontalDirection,
       shouldCenterOnFirst ? elementArray[0] : null,
       paddingPoints);

@@ -250,5 +250,29 @@ function gastTestRunner() {
         testSlide.remove();
     });
 
+    test('from ISSUE #11: adjoin elements', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var referenceShape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE,  0,  0, U1, U1); // create test shape
+        var testShape1     = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE,  0, U2, U2, U2); // create test shape
+        var testShape2     = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U1, U1); // create test shape
+
+        testShape1.select();
+        testShape2.select(false);
+        referenceShape.select(false);
+
+        menuAdjoinH();
+
+        t.equal(referenceShape.getLeft(), 0, '[1] Reference shape didn\'t move');
+        t.equal(referenceShape.getTop(),  0, '[2] Reference shape didn\'t move');
+
+        t.equal(testShape1.getLeft(),    U1, '[1] First shape from left-to-right is now next to ref shape');
+        t.equal(testShape1.getTop(),  -U1/2, '[1] First shape from left-to-right is horizontally centered relative ref shape');
+
+        t.equal(testShape2.getLeft(), U1+U2, '[1] Second shape from left-to-right is now next to first shape');
+        t.equal(testShape2.getTop(),      0, '[1] Second shape from left-to-right is horizontally centered relative ref shape');
+
+        testSlide.remove();
+    });
+
     test.finish();
 }
