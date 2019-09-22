@@ -244,7 +244,7 @@ function menuShowAboutPrompt() {
   var message = "Slides Power Toys is a simple, free and open source extension that adds some handy functions to Google Slides and make it behave like Microsoft PowerPoint.\n\nTHESE CAPABILITIES ARE PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google.\n\nFor user's guide, license and to report an issue, refer to the website at http://carlosmendonca.github.io/Slides-Power-Toys.";
   var ui = SlidesApp.getUi();
   ui.alert(
-    "Slides Power Toys",
+    "Slides Power Toys v" + VERSION,
     message,
     ui.ButtonSet.OK);
 }
