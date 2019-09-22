@@ -68,6 +68,64 @@ function onOpen(event) {
       .addItem('Vertically', 'menuFlipV')
       .addItem('Both', 'menuFlipHV'))
     .addSeparator()
+    .addSubMenu(SlidesApp.getUi().createMenu('Modify shape color')
+      .addItem('Swap text and background colors', 'menuSetColorSwap')
+      .addItem('Invert background color', 'menuSetColorInverse')
+      .addItem('Set text color to max contrast', 'menuSetColorMaxContrast'))
+    .addSubMenu(SlidesApp.getUi().createMenu('Set color hue')
+      .addSubMenu(SlidesApp.getUi().createMenu('Decrease (towards orange)')
+        .addItem('-30°', 'menuSetColorHueMinus30')
+        .addItem('-15°', 'menuSetColorHueMinus15'))
+      .addSubMenu(SlidesApp.getUi().createMenu('Increase (towards pink)')
+        .addItem('+15°', 'menuSetColorHuePlus15')
+        .addItem('+30°', 'menuSetColorHuePlus30'))
+      .addSeparator()
+      .addItem('0° (Red)',                 'menuSetColorHue0')
+      .addItem('30° (like Dark Orange)',   'menuSetColorHue30')
+      .addItem('60° (Yellow)',             'menuSetColorHue60')
+      .addItem('90° (like Chartreuse)',    'menuSetColorHue90')
+      .addItem('120° (Lime)',              'menuSetColorHue120')
+      .addItem('150° (like Spring Green)', 'menuSetColorHue150')
+      .addItem('180° (Acqua)',             'menuSetColorHue180')
+      .addItem('210° (blue-ish)',          'menuSetColorHue210')
+      .addItem('240° (Blue)',              'menuSetColorHue240')
+      .addItem('270° (purple-ish)',        'menuSetColorHue270')
+      .addItem('300° (Fuchsia/Magenta)',   'menuSetColorHue300')
+      .addItem('330° (like Deep Pink)',    'menuSetColorHue330'))
+    .addSubMenu(SlidesApp.getUi().createMenu('Set color saturation')
+      .addSubMenu(SlidesApp.getUi().createMenu('Decrease')
+        .addItem('-33%', 'menuSetColorSaturationMinus33')
+        .addItem('-10%', 'menuSetColorSaturationMinus10')
+        .addItem('-5%',  'menuSetColorSaturationMinus5'))
+      .addSubMenu(SlidesApp.getUi().createMenu('Increase')
+        .addItem('+5%',  'menuSetColorSaturationPlus5')
+        .addItem('+10%', 'menuSetColorSaturationPlus10')
+        .addItem('+33%', 'menuSetColorSaturationPlus33'))
+      .addSeparator()
+      .addItem('10% (towards grey)', 'menuSetColorSaturationAbs10')
+      .addItem('25%', 'menuSetColorSaturationAbs25')
+      .addItem('33%', 'menuSetColorSaturationAbs33')
+      .addItem('50%', 'menuSetColorSaturationAbs50')
+      .addItem('66%', 'menuSetColorSaturationAbs66')
+      .addItem('75%', 'menuSetColorSaturationAbs75')
+      .addItem('90% (towards color)', 'menuSetColorSaturationAbs90'))
+    .addSubMenu(SlidesApp.getUi().createMenu('Set color luminosity')
+      .addSubMenu(SlidesApp.getUi().createMenu('Decrease')
+        .addItem('-33%', 'menuSetColorLuminosityMinus33')
+        .addItem('-10%', 'menuSetColorLuminosityMinus10')
+        .addItem('-5%',  'menuSetColorLuminosityMinus5'))
+      .addSubMenu(SlidesApp.getUi().createMenu('Increase')
+        .addItem('+5%',  'menuSetColorLuminosityPlus5')
+        .addItem('+10%', 'menuSetColorLuminosityPlus10')
+        .addItem('+33%', 'menuSetColorLuminosityPlus33'))
+      .addSeparator()
+      .addItem('10% (towards black)', 'menuSetColorLuminosityAbs10')
+      .addItem('25%', 'menuSetColorLuminosityAbs25')
+      .addItem('33%', 'menuSetColorLuminosityAbs33')
+      .addItem('50%', 'menuSetColorLuminosityAbs50')
+      .addItem('66%', 'menuSetColorLuminosityAbs66')
+      .addItem('75%', 'menuSetColorLuminosityAbs75')
+      .addItem('90% (towards white)', 'menuSetColorLuminosityAbs90'))
     .addSubMenu(SlidesApp.getUi().createMenu('Set transparency')
       .addItem('100% (transparent)', 'menuSetTransparency0')
       .addItem('90%', 'menuSetTransparency10')
@@ -78,10 +136,6 @@ function onOpen(event) {
       .addItem('25%', 'menuSetTransparency75')              
       .addItem('10%', 'menuSetTransparency90')              
       .addItem('0% (opaque)', 'menuSetTransparency100'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Set color')
-      .addItem('Swap text with background', 'menuSetColorSwap')
-      .addItem('Invert background colors', 'menuSetColorInverse')
-      .addItem('Max text contrast', 'menuSetColorMaxContrast'))
     .addSeparator()
     .addItem('About', 'menuShowAboutPrompt')
     .addToUi();
@@ -125,6 +179,54 @@ function menuSetTransparency100() { withSelectedOrAllShapes(function(s) { setAlp
 function menuSetColorSwap()        { withSelectedOrAllShapes(function(s) {           swapColorsOnShape(s); }); }
 function menuSetColorInverse()     { withSelectedOrAllShapes(function(s) {         invertColorsOnShape(s); }); }
 function menuSetColorMaxContrast() { withSelectedOrAllShapes(function(s) { setMaxContrastToTextOnShape(s); }); }
+
+function menuSetColorSaturationMinus33() { withSelectedOrAllShapes(function(s) { changeSaturation(s, -0.33, false); }); }
+function menuSetColorSaturationMinus10() { withSelectedOrAllShapes(function(s) { changeSaturation(s, -0.1,  false); }); }
+function menuSetColorSaturationMinus5()  { withSelectedOrAllShapes(function(s) { changeSaturation(s, -0.05, false); }); }
+function menuSetColorSaturationPlus5()   { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.05, false); }); }
+function menuSetColorSaturationPlus10()  { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.1,  false); }); }
+function menuSetColorSaturationPlus33()  { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.33, false); }); }
+
+function menuSetColorSaturationAbs10()   { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.10,  true); }); }
+function menuSetColorSaturationAbs25()   { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.25,  true); }); }
+function menuSetColorSaturationAbs33()   { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.33,  true); }); }
+function menuSetColorSaturationAbs50()   { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.5,   true); }); }
+function menuSetColorSaturationAbs66()   { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.66,  true); }); }
+function menuSetColorSaturationAbs75()   { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.75,  true); }); }
+function menuSetColorSaturationAbs90()   { withSelectedOrAllShapes(function(s) { changeSaturation(s,  0.9,   true); }); }
+
+function menuSetColorLuminosityMinus33() { withSelectedOrAllShapes(function(s) { changeLuminosity(s, -0.33, false); }); }
+function menuSetColorLuminosityMinus10() { withSelectedOrAllShapes(function(s) { changeLuminosity(s, -0.1,  false); }); }
+function menuSetColorLuminosityMinus5()  { withSelectedOrAllShapes(function(s) { changeLuminosity(s, -0.05, false); }); }
+function menuSetColorLuminosityPlus5()   { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.05, false); }); }
+function menuSetColorLuminosityPlus10()  { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.1,  false); }); }
+function menuSetColorLuminosityPlus33()  { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.33, false); }); }
+
+function menuSetColorLuminosityAbs10()   { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.10,  true); }); }
+function menuSetColorLuminosityAbs25()   { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.25,  true); }); }
+function menuSetColorLuminosityAbs33()   { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.33,  true); }); }
+function menuSetColorLuminosityAbs50()   { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.5,   true); }); }
+function menuSetColorLuminosityAbs66()   { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.66,  true); }); }
+function menuSetColorLuminosityAbs75()   { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.75,  true); }); }
+function menuSetColorLuminosityAbs90()   { withSelectedOrAllShapes(function(s) { changeLuminosity(s,  0.9,   true); }); }
+
+function menuSetColorHueMinus30() { withSelectedOrAllShapes(function(s) { changeHue(s,  -30, false); }); }
+function menuSetColorHueMinus15() { withSelectedOrAllShapes(function(s) { changeHue(s,  -15, false); }); }
+function menuSetColorHuePlus15()  { withSelectedOrAllShapes(function(s) { changeHue(s,   15, false); }); }
+function menuSetColorHuePlus30()  { withSelectedOrAllShapes(function(s) { changeHue(s,   30, false); }); }
+
+function menuSetColorHue0()   { withSelectedOrAllShapes(function(s) { changeHue(s,   0, true); }); }
+function menuSetColorHue30()  { withSelectedOrAllShapes(function(s) { changeHue(s,  30, true); }); }
+function menuSetColorHue60()  { withSelectedOrAllShapes(function(s) { changeHue(s,  60, true); }); }
+function menuSetColorHue90()  { withSelectedOrAllShapes(function(s) { changeHue(s,  90, true); }); }
+function menuSetColorHue120() { withSelectedOrAllShapes(function(s) { changeHue(s, 120, true); }); }
+function menuSetColorHue150() { withSelectedOrAllShapes(function(s) { changeHue(s, 150, true); }); }
+function menuSetColorHue180() { withSelectedOrAllShapes(function(s) { changeHue(s, 180, true); }); }
+function menuSetColorHue210() { withSelectedOrAllShapes(function(s) { changeHue(s, 210, true); }); }
+function menuSetColorHue240() { withSelectedOrAllShapes(function(s) { changeHue(s, 240, true); }); }
+function menuSetColorHue270() { withSelectedOrAllShapes(function(s) { changeHue(s, 270, true); }); }
+function menuSetColorHue300() { withSelectedOrAllShapes(function(s) { changeHue(s, 300, true); }); }
+function menuSetColorHue330() { withSelectedOrAllShapes(function(s) { changeHue(s, 330, true); }); }
 
 function menuCenterOnPage() { withSelectedOrAllElements(function(e) { alignShape(fakePageAsReferenceElement(), e, POSITION_X.CENTER, POSITION_Y.CENTER, false); }); }
 
