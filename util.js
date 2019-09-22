@@ -99,3 +99,14 @@ function doesShapeHaveText(shape) { return shape.getText().getLength() > 1; }
 function clamp(val, min, max) {
   return val > max ? max : val < min ? min : val;
 }
+
+function getRgbColorFromShapeColor(shape) {
+  var shapeColor = shape.getFill().getSolidFill().getColor();
+  
+  switch(shapeColor.getColorType()) {
+    case(SlidesApp.ColorType.RGB):
+      return rgbColor = shapeColor.asRgbColor();
+    case(SlidesApp.ColorType.THEME):
+      return rgbColor = shape.getParentPage().asSlide().getColorScheme().getConcreteColor(shapeColor.asThemeColor().getThemeColorType()).asRgbColor();
+  }
+}
