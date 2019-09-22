@@ -35,6 +35,8 @@ var HSL_COMPONENT = {
   LUMINOSITY: 2
 }
 
+var SLIDES_POWER_TOYS = "Slides Power Toys";
+
 // === INIT ===
 function onInstall(event) { onOpen(event); }
 
@@ -74,6 +76,7 @@ function onOpen(event) {
       .addItem('Vertically', 'menuFlipV')
       .addItem('Both', 'menuFlipHV'))
     .addSeparator()
+    .addItem('Inspect shape color', 'menuInspectShapeColor')
     .addSubMenu(SlidesApp.getUi().createMenu('Modify shape color')
       .addItem('Swap text and background colors', 'menuSetColorSwap')
       .addItem('Invert background color', 'menuSetColorInverse')
@@ -172,6 +175,8 @@ function menuAlignToOuterBottom()      { alignSelectOrAllElements(POSITION_X.NOT
 function menuAlignToVerticalCenter()   { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.CENTER, false); }
 function menuAlignToHorizontalCenter() { alignSelectOrAllElements(POSITION_X.CENTER, POSITION_Y.NOT_SET, false); }
 
+function menuInspectShapeColor() { inspectShapeColor(); }
+
 function menuSetTransparency0()   { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0   ); }); }
 function menuSetTransparency10()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.1 ); }); }
 function menuSetTransparency25()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.25); }); }
@@ -241,10 +246,10 @@ function menuFlipV()  { flipLastTwoSelectedElements(false, true);  }
 function menuFlipHV() { flipLastTwoSelectedElements(true,  true);  }
 
 function menuShowAboutPrompt() {
-  var message = "Slides Power Toys is a simple, free and open source extension that adds some handy functions to Google Slides and make it behave like Microsoft PowerPoint.\n\nTHESE CAPABILITIES ARE PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google.\n\nFor user's guide, license and to report an issue, refer to the website at http://carlosmendonca.github.io/Slides-Power-Toys.";
+  var message = SLIDES_POWER_TOYS + " is a simple, free and open source extension that adds some handy functions to Google Slides and make it behave like Microsoft PowerPoint.\n\nTHESE CAPABILITIES ARE PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google.\n\nFor user's guide, license and to report an issue, refer to the website at http://carlosmendonca.github.io/Slides-Power-Toys.";
   var ui = SlidesApp.getUi();
   ui.alert(
-    "Slides Power Toys v" + VERSION,
+    SLIDES_POWER_TOYS + " v" + VERSION,
     message,
     ui.ButtonSet.OK);
 }
@@ -255,7 +260,7 @@ function flipLastTwoSelectedElements(shouldFlipH, shouldFlipV) {
 
   if (selectedElements.length < 2) { // need two or more elements to flip
     SlidesApp.getUi().alert(
-      "Slides Power Toys",
+      SLIDES_POWER_TOYS,
       "Select two elements to flip their position.",
       SlidesApp.getUi().ButtonSet.OK);
     return;
@@ -269,7 +274,7 @@ function adjoinSelectedElements(shouldAdjoinInHorizontalDirection, shouldCenterO
 
   if (elementArray.length < 2) { // will only adjoin multiple elements
     SlidesApp.getUi().alert(
-      "Slides Power Toys",
+      SLIDES_POWER_TOYS,
       "Select two or more elements to adjoin (combine by bringing together).",
       SlidesApp.getUi().ButtonSet.OK);
     return;
@@ -301,7 +306,7 @@ function resizeElementsToLastSelected(copyWidth, copyHeight, copyRotation) {
 
   if (elementArray.length < 2) {
     SlidesApp.getUi().alert(
-      "Slides Power Toys",
+      SLIDES_POWER_TOYS,
       "Select two or more elements to resize or rotate based on attributes of the last selected element.",
       SlidesApp.getUi().ButtonSet.OK);
     return; // no selection array or just one element in selection, so no point in continuing
@@ -334,4 +339,45 @@ function alignSelectOrAllElements(positionX, positionY, isOuterEdge) {
   }
 
   elementArray.forEach(function(e) { alignShape(referenceElement, e, positionX, positionY, isOuterEdge); });
+}
+
+function inspectShapeColor() {
+  var selectedShapes = getSelectedElementsOnPage(false)
+    .filter(function(e) { return e.getPageElementType() == SlidesApp.PageElementType.SHAPE; })
+    .map   (function(e) { return e.asShape(); });
+
+  if (selectedShapes.length == 0) { // need one shape in the selection array to inspect the color of that which was selected last
+    SlidesApp.getUi().alert(
+      SLIDES_POWER_TOYS,
+      "No shapes selected.",
+      SlidesApp.getUi().ButtonSet.OK);
+    return;
+  }
+
+  var shape = selectedShapes[selectedShapes.length-1]; // get shape which was selected last
+  if (!doesShapeHaveSolidFill(shape)) { // must have a solid fill
+    SlidesApp.getUi().alert(
+      SLIDES_POWER_TOYS,
+      "Shape does not have a solid fill.",
+      SlidesApp.getUi().ButtonSet.OK);
+    return;
+  }
+
+  var colorType = shape.getFill().getSolidFill().getColor().getColorType();
+  var rgbColor = getRgbColorFromShapeColor(shape);
+  var hslColorVector = convertRgbColorToHslColorVector(rgbColor);
+
+  var message = "RGB: " + rgbColor.getRed() + ", " + rgbColor.getGreen() + ", " + rgbColor.getBlue() + " (" + rgbColor.asHexString() + ")";
+  message += "\nHSL: " + (hslColorVector[0]*360).toFixed(1) + "°, " + (hslColorVector[1]*100).toFixed(1) + "%, " + (hslColorVector[2]*100).toFixed(1) + "%";
+  message += "\nTransparency: " + ((1-shape.getFill().getSolidFill().getAlpha())*100).toFixed(1) + "%";
+
+  if (colorType == SlidesApp.ColorType.THEME)
+    message += "\n\nThis is one of the deck's theme colors."
+
+  SlidesApp.getUi().alert(
+    SLIDES_POWER_TOYS,
+    message,
+    SlidesApp.getUi().ButtonSet.OK);
+
+  return;
 }
