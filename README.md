@@ -39,8 +39,29 @@ Invert fill color of all shapes (text boxes) selected or on the slide.
 ### Max text contrast
 Change foreground color of text on all shapes (text boxes) selected or on the slide to either black or white, depending on which renders highest contrast with each shape's fill color.
 
+## Contributing
+Read the [instructions](./CONTRIBUTING.md) to get started.
+
+You must install and authorize [clasp](https://developers.google.com/apps-script/guides/clasp).
+
+To authorize, do:
+
+```bash
+clasp login
+```
+
+This will create a new `.clasprc.json` file on your home dir. You must also edit the `src/.clasp.json.release` and `src/.clasp.json.test` to make sure they point to Google Slides files you own on your Google Drive. They can be blank files.
+
+Finally, run the `src/deploy.sh` script to get the code deployed to Google Drive:
+
+```bash
+./deploy.sh test
+./deploy.sh release
+./deploy.sh clean
+```
+
 ## Tests
-There is limited test coverage on the [tests.js](./tests/tests.js) file that uses [GasT](https://github.com/huan/gast). To run the tests, open the file on the Script Editor, run the gastTestRunner function and check the log.
+There is limited test coverage on the [src/tests.js](./src/tests/tests.js) file that uses [GasT](https://github.com/huan/gast). To run the tests, open the file on the Script Editor, run the gastTestRunner function and check the log.
 
 ## License
 Licensed under the [Apache 2.0 license](./LICENSE).
