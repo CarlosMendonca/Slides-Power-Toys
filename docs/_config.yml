@@ -1,7 +1,7 @@
 title: Slides Power Toys
 description: Google Slides extension with useful features that complement native commands
-baseurl: ""
-url: "https://carlosmendonca.github.io/slides-power-toys/docs"
+baseurl: "slides-power-toys"
+url: "https://carlosmendonca.github.io"
 twitter_username: chemendonca
 github_username:  CarlosMendonca
 
@@ -33,6 +33,7 @@ compress_html:
   blanklines: false
   profile: false
 
+remote_theme: pmarsceill/just-the-docs
 theme: "just-the-docs"
 
 # Google Analytics Tracking (optional)
