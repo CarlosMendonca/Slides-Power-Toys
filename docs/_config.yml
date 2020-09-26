@@ -1,7 +1,7 @@
 title: Slides Power Toys
 description: Google Slides extension with useful features that complement native commands
-baseurl: ""
-url: "https://carlosmendonca.github.io/Slides-Power-Toys"
+baseurl: "/Slides-Power-Toys"
+url: "https://carlosmendonca.github.io"
 twitter_username: chemendonca
 github_username:  CarlosMendonca
 
@@ -23,6 +23,10 @@ aux_links:
 footer_content: "Copyright &copy; 2020 Carlos Mendonça. Distributed by an <a href=\"https://github.com/carlosmendonca/slides-power-toys/tree/master/LICENSE\">Apache 2.0 license.</a>"
 
 color_scheme: spt
+
+# Google Analytics Tracking (optional)
+ga_tracking: UA-140252537-3
+ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true/nil by default)
 
 # Build settings
 markdown: kramdown
