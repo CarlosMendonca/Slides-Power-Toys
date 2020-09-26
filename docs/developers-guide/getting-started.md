@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Getting Started
-parent: Developers's Guide
+parent: Developer's Guide
 nav_order: 1
 ---
 

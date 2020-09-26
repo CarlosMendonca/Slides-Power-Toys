@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Future Work
-parent: Developers's Guide
+parent: Developer's Guide
 nav_order: 3
 ---
 
