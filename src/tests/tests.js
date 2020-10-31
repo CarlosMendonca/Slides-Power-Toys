@@ -274,5 +274,43 @@ function gastTestRunner() {
         testSlide.remove();
     });
 
+    test('from ISSUE #13: set text color to max contrast', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1*0, U1*0, U1, U1); // create test shape
+        var testShape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1*1, U1*1, U1, U1); // create test shape
+        var testShape3 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1*2, U1*2, U1, U1); // create test shape
+        var testShape4 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1*3, U1*3, U1, U1); // create test shape
+    
+        testShape1.getFill().setSolidFill(SlidesApp.ThemeColorType.ACCENT1); // set background to ACCENT1
+        testShape2.getFill().setSolidFill(255, 255, 255); // set background to WHITE
+        testShape3.getFill().setSolidFill(0, 0, 0); // set background to BLACK
+        testShape4.getFill().setTransparent(); // set background to TRANSPARENT 
+    
+        testShape1.getText().setText('abc');
+        testShape2.getText().setText('abc');
+        testShape3.getText().setText('abc');
+        testShape4.getText().setText('abc');
+        testShape4.getText().getTextStyle().setForegroundColor(255, 0, 0); // set text foreground to RED and see that it stays unchanged
+    
+        testShape1.select();
+        testShape2.select(false);
+        testShape3.select(false);
+        testShape4.select(false);
+    
+        // This is a fragile test, because it will fail if the default theme of the new slide changes. Keep that in mind.
+        menuSetColorMaxContrast();
+    
+        var isBlack = function(rgbColor) { return rgbColor.getRed() == 0   & rgbColor.getGreen() == 0   &  rgbColor.getBlue() == 0;   }
+        var isWhite = function(rgbColor) { return rgbColor.getRed() == 255 & rgbColor.getGreen() == 255 &  rgbColor.getBlue() == 255; }
+        var isRed   = function(rgbColor) { return rgbColor.getRed() == 255 & rgbColor.getGreen() == 0   &  rgbColor.getBlue() == 0;   }
+    
+        t.ok(isBlack(testShape1.getText().getTextStyle().getForegroundColor().asRgbColor()));
+        t.ok(isBlack(testShape2.getText().getTextStyle().getForegroundColor().asRgbColor()));
+        t.ok(isWhite(testShape3.getText().getTextStyle().getForegroundColor().asRgbColor()));
+        t.ok(isRed  (testShape4.getText().getTextStyle().getForegroundColor().asRgbColor()));
+        
+        testSlide.remove();
+    });
+
     test.finish();
 }

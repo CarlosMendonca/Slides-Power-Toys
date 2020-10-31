@@ -23,9 +23,9 @@ function fakePageAsReferenceElement() {
 }
 
 function calculateLuminosity(color) {
-  var r = color.asRgbColor().getRed()   / 255;
-  var g = color.asRgbColor().getGreen() / 255;
-  var b = color.asRgbColor().getBlue()  / 255;
+  var r = color.getRed()   / 255;
+  var g = color.getGreen() / 255;
+  var b = color.getBlue()  / 255;
   
   var max = Math.max(r, g, b), min = Math.min(r, g, b);
   return (max + min) / 2;
