@@ -349,7 +349,7 @@ function inspectShapeColor() {
   if (selectedShapes.length == 0) { // need one shape in the selection array to inspect the color of that which was selected last
     SlidesApp.getUi().alert(
       SLIDES_POWER_TOYS,
-      "No shapes selected.",
+      "No individual shapes selected.",
       SlidesApp.getUi().ButtonSet.OK);
     return;
   }
