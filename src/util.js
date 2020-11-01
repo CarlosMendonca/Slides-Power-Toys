@@ -31,6 +31,20 @@ function calculateLuminosity(color) {
   return (max + min) / 2;
 }
 
+// According to WCAG 2.0 (https://www.w3.org/TR/WCAG20-TECHS/G17.html)
+function calculateRelativeLuminosity(rgbColorVector1, rgbColorVector2) {
+  var sRgbColorVector1 = rgbColorVector1.map(function(e) { return e / 255; });
+  var sRgbColorVector2 = rgbColorVector2.map(function(e) { return e / 255; });
+  
+  sRgbColorVector1.forEach(function(e, index, array) { (e < 0.03928) ? array[index] = e/12.92 : array[index] = Math.pow(((e+0.055)/1.055),2.4); });
+  sRgbColorVector2.forEach(function(e, index, array) { (e < 0.03928) ? array[index] = e/12.92 : array[index] = Math.pow(((e+0.055)/1.055),2.4); });
+
+  var L1 = 0.2126 * sRgbColorVector1[0] + 0.7152 * sRgbColorVector1[1] + 0.0722 * sRgbColorVector1[2];
+  var L2 = 0.2126 * sRgbColorVector2[0] + 0.7152 * sRgbColorVector2[1] + 0.0722 * sRgbColorVector2[2];
+  
+  return L1 > L2 ? (L1+0.05)/(L2+0.05) : (L2+0.05)/(L1+0.05);
+}
+
 function convertHslColorVectorToRgbColorVector(hslColorVector) {
   var r, g, b;
   var h = hslColorVector[0];
@@ -82,6 +96,10 @@ function convertRgbColorToHslColorVector(rgbColor) {
   }
 
   return [h, s, l];
+}
+
+function convertRgbColorToRgbColorVector(rgbColor) {
+  return [rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue()];
 }
 
 function roundTo(number, digits) {

@@ -46,10 +46,17 @@ function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
   
 var setMaxContrastToTextOnShape = function(shape) { 
     if (doesShapeHaveSolidFill(shape) && doesShapeHaveText(shape)) { // must have SOLID fill and some text
-      if (calculateLuminosity(getRgbColorFromShapeColor(shape)) >= 0.5)
-        shape.getText().getTextStyle().setForegroundColor(0, 0, 0);
-      else
-        shape.getText().getTextStyle().setForegroundColor(255, 255, 255);
+        var blackVsFillRelativeLuminosty = calculateRelativeLuminosity(
+            convertRgbColorToRgbColorVector(getRgbColorFromShapeColor(shape)),
+            [0,0,0]);
+        var whiteVsFillRelativeLuminosty = calculateRelativeLuminosity(
+            convertRgbColorToRgbColorVector(getRgbColorFromShapeColor(shape)),
+            [255,255,255]);
+        
+        if (blackVsFillRelativeLuminosty > whiteVsFillRelativeLuminosty)
+            shape.getText().getTextStyle().setForegroundColor(0, 0, 0);
+        else
+            shape.getText().getTextStyle().setForegroundColor(255, 255, 255);
     }
 }
 

@@ -312,6 +312,49 @@ function gastTestRunner() {
         testSlide.remove();
     });
 
+    test('from ISSUE #17: set text color to max contrast should implement WCAG 2.0 rules', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1*0, U1*0, U1, U1); // create test shape
+        var testShape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1*1, U1*1, U1, U1); // create test shape
+        var testShape3 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1*2, U1*2, U1, U1); // create test shape
+        var testShape4 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1*3, U1*3, U1, U1); // create test shape
+    
+        testShape1.getFill().setSolidFill(0, 0, 0); // set background to BLACK
+        testShape2.getFill().setSolidFill(255, 255, 255); // set background to WHITE
+        testShape3.getFill().setSolidFill(0, 0, 255); // set background to BLUE
+        testShape4.getFill().setSolidFill(127, 127, 127); // set background to GRAY
+        
+        var shapeArray = [testShape1, testShape2, testShape3, testShape4];
+      
+        shapeArray.forEach(function(e) { e.getText().setText('abc'); });        
+        shapeArray.forEach(function(e) { e.getText().getTextStyle().setForegroundColor(255, 0, 0); }); // set text to red
+        shapeArray.forEach(function(e) { setMaxContrastToTextOnShape(e); });
+
+        var isBlack = function(rgbColor) { return rgbColor.getRed() == 0   & rgbColor.getGreen() == 0   &  rgbColor.getBlue() == 0;   }
+        var isWhite = function(rgbColor) { return rgbColor.getRed() == 255 & rgbColor.getGreen() == 255 &  rgbColor.getBlue() == 255; }
+
+        t.ok(isWhite(testShape1.getText().getTextStyle().getForegroundColor().asRgbColor()));
+        t.ok(isBlack(testShape2.getText().getTextStyle().getForegroundColor().asRgbColor()));
+        t.ok(isWhite(testShape3.getText().getTextStyle().getForegroundColor().asRgbColor()));
+        t.ok(isBlack(testShape4.getText().getTextStyle().getForegroundColor().asRgbColor()));
+
+        testSlide.remove();
+    });
+
+    test('from ISSUE #17: calculate relative luminosity', function(t) {
+        t.equal(calculateRelativeLuminosity([255,255,255], [255,  0,  0]), 3.9984767707539985);
+        t.equal(calculateRelativeLuminosity([  0,  0,  0], [255,  0,  0]), 5.252);
+
+        t.equal(calculateRelativeLuminosity([255,255,255], [  0,255,  0]), 1.3721902770517513);
+        t.equal(calculateRelativeLuminosity([  0,  0,  0], [  0,255,  0]), 15.303999999999998);
+
+        t.equal(calculateRelativeLuminosity([255,255,255], [  0,  0,255]), 8.592471358428805);
+        t.equal(calculateRelativeLuminosity([  0,  0,  0], [  0,  0,255]), 2.444);
+
+        t.equal(calculateRelativeLuminosity([255,255,255], [127,127,127]), 4.0041069566148515);
+        t.equal(calculateRelativeLuminosity([  0,  0,  0], [127,127,127]), 5.244615148281104);
+    });
+
     test('from ISSUE #10: color commands not working on element groups', function(t) {
         var testSlide = slidesDocument.appendSlide();
         var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1 * 0, U1 * 0, U1, U1); // create test shape
