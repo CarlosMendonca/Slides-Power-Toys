@@ -177,67 +177,67 @@ function menuAlignToHorizontalCenter() { alignSelectOrAllElements(POSITION_X.CEN
 
 function menuInspectShapeColor() { inspectShapeColor(); }
 
-function menuSetTransparency0()   { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0   ); }); }
-function menuSetTransparency10()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.1 ); }); }
-function menuSetTransparency25()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.25); }); }
-function menuSetTransparency33()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.33); }); }
-function menuSetTransparency50()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.5 ); }); }
-function menuSetTransparency66()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.66); }); }
-function menuSetTransparency75()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.75); }); }
-function menuSetTransparency90()  { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 0.9 ); }); }
-function menuSetTransparency100() { withSelectedOrAllShapes(function(s) { setAlphaToShape(s, 1   ); }); }
+function menuSetTransparency0()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0   ); }); }
+function menuSetTransparency10()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.1 ); }); }
+function menuSetTransparency25()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.25); }); }
+function menuSetTransparency33()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.33); }); }
+function menuSetTransparency50()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.5 ); }); }
+function menuSetTransparency66()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.66); }); }
+function menuSetTransparency75()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.75); }); }
+function menuSetTransparency90()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.9 ); }); }
+function menuSetTransparency100() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 1   ); }); }
 
-function menuSetColorSwap()        { withSelectedOrAllShapes(function(s) {           swapColorsOnShape(s); }); }
-function menuSetColorInverse()     { withSelectedOrAllShapes(function(s) {         invertColorsOnShape(s); }); }
-function menuSetColorMaxContrast() { withSelectedOrAllShapes(function(s) { setMaxContrastToTextOnShape(s); }); }
+function menuSetColorSwap()        { withSelectedOrAllShapesOrGroupsRecursively(function(s) {           swapColorsOnShape(s); }); }
+function menuSetColorInverse()     { withSelectedOrAllShapesOrGroupsRecursively(function(s) {         invertColorsOnShape(s); }); }
+function menuSetColorMaxContrast() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setMaxContrastToTextOnShape(s); }); }
 
-function menuSetColorSaturationMinus33() { withSelectedOrAllShapes(function(s) { changeHSL(s, -0.33, false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationMinus10() { withSelectedOrAllShapes(function(s) { changeHSL(s, -0.1,  false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationMinus5()  { withSelectedOrAllShapes(function(s) { changeHSL(s, -0.05, false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationPlus5()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.05, false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationPlus10()  { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.1,  false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationPlus33()  { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.33, false, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationMinus33() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.33, false, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationMinus10() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.1,  false, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationMinus5()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.05, false, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationPlus5()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.05, false, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationPlus10()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.1,  false, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationPlus33()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33, false, HSL_COMPONENT.SATURATION); }); }
 
-function menuSetColorSaturationAbs10()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.10,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs25()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.25,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs33()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.33,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs50()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.5,   true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs66()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.66,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs75()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.75,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs90()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.9,   true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs10()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.10,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs25()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.25,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs33()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs50()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.5,   true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs66()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.66,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs75()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.75,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs90()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.9,   true, HSL_COMPONENT.SATURATION); }); }
 
-function menuSetColorLuminosityMinus33() { withSelectedOrAllShapes(function(s) { changeHSL(s, -0.33, false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityMinus10() { withSelectedOrAllShapes(function(s) { changeHSL(s, -0.1,  false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityMinus5()  { withSelectedOrAllShapes(function(s) { changeHSL(s, -0.05, false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityPlus5()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.05, false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityPlus10()  { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.1,  false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityPlus33()  { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.33, false, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityMinus33() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.33, false, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityMinus10() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.1,  false, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityMinus5()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.05, false, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityPlus5()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.05, false, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityPlus10()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.1,  false, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityPlus33()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33, false, HSL_COMPONENT.LUMINOSITY); }); }
 
-function menuSetColorLuminosityAbs10()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.10,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs25()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.25,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs33()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.33,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs50()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.5,   true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs66()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.66,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs75()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.75,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs90()   { withSelectedOrAllShapes(function(s) { changeHSL(s,  0.9,   true, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityAbs10()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.10,  true, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityAbs25()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.25,  true, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityAbs33()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33,  true, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityAbs50()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.5,   true, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityAbs66()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.66,  true, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityAbs75()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.75,  true, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityAbs90()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.9,   true, HSL_COMPONENT.LUMINOSITY); }); }
 
-function menuSetColorHueMinus30() { withSelectedOrAllShapes(function(s) { changeHSL(s,  -30/360, false, HSL_COMPONENT.HUE); }); }
-function menuSetColorHueMinus15() { withSelectedOrAllShapes(function(s) { changeHSL(s,  -15/360, false, HSL_COMPONENT.HUE); }); }
-function menuSetColorHuePlus15()  { withSelectedOrAllShapes(function(s) { changeHSL(s,   15/360, false, HSL_COMPONENT.HUE); }); }
-function menuSetColorHuePlus30()  { withSelectedOrAllShapes(function(s) { changeHSL(s,   30/360, false, HSL_COMPONENT.HUE); }); }
+function menuSetColorHueMinus30() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  -30/360, false, HSL_COMPONENT.HUE); }); }
+function menuSetColorHueMinus15() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  -15/360, false, HSL_COMPONENT.HUE); }); }
+function menuSetColorHuePlus15()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,   15/360, false, HSL_COMPONENT.HUE); }); }
+function menuSetColorHuePlus30()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,   30/360, false, HSL_COMPONENT.HUE); }); }
 
-function menuSetColorHue0()   { withSelectedOrAllShapes(function(s) { changeHSL(s,   0/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue30()  { withSelectedOrAllShapes(function(s) { changeHSL(s,  30/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue60()  { withSelectedOrAllShapes(function(s) { changeHSL(s,  60/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue90()  { withSelectedOrAllShapes(function(s) { changeHSL(s,  90/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue120() { withSelectedOrAllShapes(function(s) { changeHSL(s, 120/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue150() { withSelectedOrAllShapes(function(s) { changeHSL(s, 150/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue180() { withSelectedOrAllShapes(function(s) { changeHSL(s, 180/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue210() { withSelectedOrAllShapes(function(s) { changeHSL(s, 210/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue240() { withSelectedOrAllShapes(function(s) { changeHSL(s, 240/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue270() { withSelectedOrAllShapes(function(s) { changeHSL(s, 270/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue300() { withSelectedOrAllShapes(function(s) { changeHSL(s, 300/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue330() { withSelectedOrAllShapes(function(s) { changeHSL(s, 330/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue0()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,   0/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue30()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  30/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue60()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  60/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue90()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  90/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue120() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 120/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue150() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 150/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue180() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 180/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue210() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 210/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue240() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 240/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue270() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 270/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue300() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 300/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue330() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 330/360, true, HSL_COMPONENT.HUE); }); }
 
 function menuCenterOnPage() { withSelectedOrAllElements(function(e) { alignShape(fakePageAsReferenceElement(), e, POSITION_X.CENTER, POSITION_Y.CENTER, false); }); }
 

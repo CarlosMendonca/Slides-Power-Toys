@@ -312,5 +312,61 @@ function gastTestRunner() {
         testSlide.remove();
     });
 
+    test('from ISSUE #10: color commands not working on element groups', function(t) {
+        var testSlide = slidesDocument.appendSlide();
+        var testShape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1 * 0, U1 * 0, U1, U1); // create test shape
+        var testShape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1 * 1, U1 * 1, U1, U1); // create test shape
+        var testShape3 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1 * 2, U1 * 2, U1, U1); // create test shape
+        var testShape4 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1 * 3, U1 * 3, U1, U1); // create test shape
+        var testShape5 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1 * 4, U1 * 4, U1, U1); // create test shape
+        var testShape6 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U1 * 5, U1 * 5, U1, U1); // create test shape
+
+        testShape1.getFill().setSolidFill(0, 255, 0); // green
+        testShape2.getFill().setSolidFill(0, 255, 0); // green
+        testShape3.getFill().setSolidFill(0, 255, 0); // green
+        testShape4.getFill().setSolidFill(0, 255, 0); // green
+        testShape5.getFill().setSolidFill(0, 255, 0); // green
+        testShape6.getFill().setSolidFill(0, 255, 0); // green
+
+        var shapeArray1 = [testShape1, testShape2];
+        var shapeArray2 = [testShape3, testShape4];
+
+        var group1 = testSlide.group(shapeArray1);
+        var group2 = testSlide.group(shapeArray2);
+
+        group1.select();
+
+        // It's currently not possible to programatically select an individual shape inside of a group
+        /*
+        group2.select(false);
+        testShape3.select(false);
+        */
+
+        testShape5.select(false);
+
+        menuSetColorHue0(); // red (255, 0, 0)
+
+        var isRed = function (rgbColor) { return rgbColor.getRed() == 255 & rgbColor.getGreen() == 0 & rgbColor.getBlue() == 0; }
+        var isGreen = function (rgbColor) { return rgbColor.getRed() == 0 & rgbColor.getGreen() == 255 & rgbColor.getBlue() == 0; }
+
+        // Test that both shapes on group changed their background color to red (hue = 0)
+        t.ok(isRed(testShape1.getFill().getSolidFill().getColor().asRgbColor())); // it's okay to assume the color is a RgbColor here, because that's what we used on the test setup (instead of ThemeColor)
+        t.ok(isRed(testShape2.getFill().getSolidFill().getColor().asRgbColor()));
+
+        /*
+        t.ok(isRed(testShape3.getFill().getSolidFill().getColor().asRgbColor())); // not tested because of the problem above
+        */
+        t.ok(isGreen(testShape4.getFill().getSolidFill().getColor().asRgbColor())); // not selected, so it shouldn't change color
+
+        t.ok(isRed(testShape5.getFill().getSolidFill().getColor().asRgbColor()));
+        t.ok(isGreen(testShape6.getFill().getSolidFill().getColor().asRgbColor())); // not selected, so it shouldn't change color
+
+        testSlide.remove();
+    });
+
     test.finish();
 }
+
+function debugPrompt(message) {
+    SlidesApp.getUi().alert("Test Debug", message, SlidesApp.getUi().ButtonSet.OK);
+  }
