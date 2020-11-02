@@ -111,13 +111,15 @@ function onOpen(event) {
         .addItem('+10%', 'menuSetColorSaturationPlus10')
         .addItem('+33%', 'menuSetColorSaturationPlus33'))
       .addSeparator()
-      .addItem('10% (towards grey)', 'menuSetColorSaturationAbs10')
+      .addItem('Desaturate (greyscale)', 'menuSetColorSaturationAbs0')
+      .addItem('10%', 'menuSetColorSaturationAbs10')
       .addItem('25%', 'menuSetColorSaturationAbs25')
       .addItem('33%', 'menuSetColorSaturationAbs33')
       .addItem('50%', 'menuSetColorSaturationAbs50')
       .addItem('66%', 'menuSetColorSaturationAbs66')
       .addItem('75%', 'menuSetColorSaturationAbs75')
-      .addItem('90% (towards color)', 'menuSetColorSaturationAbs90'))
+      .addItem('90%', 'menuSetColorSaturationAbs90')
+      .addItem('100% (towards color)', 'menuSetColorSaturationAbs100'))
     .addSubMenu(SlidesApp.getUi().createMenu('Set color luminosity')
       .addSubMenu(SlidesApp.getUi().createMenu('Decrease')
         .addItem('-33%', 'menuSetColorLuminosityMinus33')
@@ -136,15 +138,15 @@ function onOpen(event) {
       .addItem('75%', 'menuSetColorLuminosityAbs75')
       .addItem('90% (towards white)', 'menuSetColorLuminosityAbs90'))
     .addSubMenu(SlidesApp.getUi().createMenu('Set transparency')
-      .addItem('100% (transparent)', 'menuSetTransparency0')
-      .addItem('90%', 'menuSetTransparency10')
-      .addItem('75%', 'menuSetTransparency25')
-      .addItem('66%', 'menuSetTransparency33')
-      .addItem('50%', 'menuSetTransparency50')
-      .addItem('33%', 'menuSetTransparency66')
-      .addItem('25%', 'menuSetTransparency75')              
+      .addItem('0% (opaque)', 'menuSetTransparency100')
       .addItem('10%', 'menuSetTransparency90')              
-      .addItem('0% (opaque)', 'menuSetTransparency100'))
+      .addItem('25%', 'menuSetTransparency75')              
+      .addItem('33%', 'menuSetTransparency66')
+      .addItem('50%', 'menuSetTransparency50')
+      .addItem('66%', 'menuSetTransparency33')
+      .addItem('75%', 'menuSetTransparency25')
+      .addItem('90%', 'menuSetTransparency10')
+      .addItem('100% (transparent)', 'menuSetTransparency0'))
     .addSeparator()
     .addItem('About', 'menuShowAboutPrompt')
     .addToUi();
@@ -198,13 +200,15 @@ function menuSetColorSaturationPlus5()   { withSelectedOrAllShapesOrGroupsRecurs
 function menuSetColorSaturationPlus10()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.1,  false, HSL_COMPONENT.SATURATION); }); }
 function menuSetColorSaturationPlus33()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33, false, HSL_COMPONENT.SATURATION); }); }
 
-function menuSetColorSaturationAbs10()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.10,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs25()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.25,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs33()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs50()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.5,   true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs66()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.66,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs75()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.75,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs90()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.9,   true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs0()     { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0,     true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs10()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.10,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs25()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.25,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs33()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs50()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.5,   true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs66()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.66,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs75()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.75,  true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs90()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.9,   true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs100()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  1.0,   true, HSL_COMPONENT.SATURATION); }); }
 
 function menuSetColorLuminosityMinus33() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.33, false, HSL_COMPONENT.LUMINOSITY); }); }
 function menuSetColorLuminosityMinus10() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.1,  false, HSL_COMPONENT.LUMINOSITY); }); }
