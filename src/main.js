@@ -376,7 +376,10 @@ function inspectShapeColor() {
   message += "\nTransparency: " + ((1-shape.getFill().getSolidFill().getAlpha())*100).toFixed(1) + "%";
 
   if (colorType == SlidesApp.ColorType.THEME)
-    message += "\n\nThis is one of the deck's theme colors."
+    message += "\n\nThis is one of the deck's theme colors: '" + shape.getFill().getSolidFill().getColor().asThemeColor().getThemeColorType() + "'.";
+
+  if (selectedShapes.length > 1)
+    message += "\n\nMore than one shape was selected. Showing the color information of the last one.";
 
   SlidesApp.getUi().alert(
     SLIDES_POWER_TOYS,
