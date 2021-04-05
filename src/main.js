@@ -370,9 +370,11 @@ function inspectShapeColor() {
   var colorType = shape.getFill().getSolidFill().getColor().getColorType();
   var rgbColor = getRgbColorFromShapeColor(shape);
   var hslColorVector = convertRgbColorToHslColorVector(rgbColor);
+  var lchColorVector = convertRgbColorVectorToLchColorVector(convertRgbColorToRgbColorVector(rgbColor));
 
   var message = "RGB: " + rgbColor.getRed() + ", " + rgbColor.getGreen() + ", " + rgbColor.getBlue() + " (" + rgbColor.asHexString() + ")";
   message += "\nHSL: " + (hslColorVector[0]*360).toFixed(1) + "°, " + (hslColorVector[1]*100).toFixed(1) + "%, " + (hslColorVector[2]*100).toFixed(1) + "%";
+  message += "\nHCL: " + (lchColorVector[0]).toFixed(1) + "%, " + lchColorVector[1].toFixed(1) + ", " + lchColorVector[2].toFixed(1) + "°";
   message += "\nTransparency: " + ((1-shape.getFill().getSolidFill().getAlpha())*100).toFixed(1) + "%";
 
   if (colorType == SlidesApp.ColorType.THEME)
