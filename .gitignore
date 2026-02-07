@@ -29,3 +29,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Devenv
+/src/.devenv                                                                                                     
+/src/.devenv.flake.nix
