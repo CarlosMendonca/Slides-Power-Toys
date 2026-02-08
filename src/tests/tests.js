@@ -22,6 +22,11 @@ var URL_TO_SLIDES_DOCUMENT = 'https://docs.google.com/presentation/d/1yOnf-ng1xT
 var U1 = 72;  // all unit dimensions are stored in INCHES, but commands use PIXELS as unit, so there's a loss of precision when dividing by 72
 var U2 = 144;
 
+function isBlack(rgbColor) { return rgbColor.getRed() == 0   && rgbColor.getGreen() == 0   && rgbColor.getBlue() == 0;   }
+function isWhite(rgbColor) { return rgbColor.getRed() == 255 && rgbColor.getGreen() == 255 && rgbColor.getBlue() == 255; }
+function isRed(rgbColor)   { return rgbColor.getRed() == 255 && rgbColor.getGreen() == 0   && rgbColor.getBlue() == 0;   }
+function isGreen(rgbColor) { return rgbColor.getRed() == 0   && rgbColor.getGreen() == 255 && rgbColor.getBlue() == 0;   }
+
 if ((typeof GasTap)==='undefined') { // GasT initialization; using Google's best practice of caching libraries
     var cs = CacheService.getScriptCache().get('gast');
     if(!cs) {
@@ -299,11 +304,7 @@ function gastTestRunner() {
     
         // This is a fragile test, because it will fail if the default theme of the new slide changes. Keep that in mind.
         menuSetColorMaxContrast();
-    
-        var isBlack = function(rgbColor) { return rgbColor.getRed() == 0   && rgbColor.getGreen() == 0   &&  rgbColor.getBlue() == 0;   }
-        var isWhite = function(rgbColor) { return rgbColor.getRed() == 255 && rgbColor.getGreen() == 255 &&  rgbColor.getBlue() == 255; }
-        var isRed   = function(rgbColor) { return rgbColor.getRed() == 255 && rgbColor.getGreen() == 0   &&  rgbColor.getBlue() == 0;   }
-    
+
         t.ok(isBlack(testShape1.getText().getTextStyle().getForegroundColor().asRgbColor()));
         t.ok(isBlack(testShape2.getText().getTextStyle().getForegroundColor().asRgbColor()));
         t.ok(isWhite(testShape3.getText().getTextStyle().getForegroundColor().asRgbColor()));
@@ -329,9 +330,6 @@ function gastTestRunner() {
         shapeArray.forEach(function(e) { e.getText().setText('abc'); });        
         shapeArray.forEach(function(e) { e.getText().getTextStyle().setForegroundColor(255, 0, 0); }); // set text to red
         shapeArray.forEach(function(e) { setMaxContrastToTextOnShape(e); });
-
-        var isBlack = function(rgbColor) { return rgbColor.getRed() == 0   && rgbColor.getGreen() == 0   &&  rgbColor.getBlue() == 0;   }
-        var isWhite = function(rgbColor) { return rgbColor.getRed() == 255 && rgbColor.getGreen() == 255 &&  rgbColor.getBlue() == 255; }
 
         t.ok(isWhite(testShape1.getText().getTextStyle().getForegroundColor().asRgbColor()));
         t.ok(isBlack(testShape2.getText().getTextStyle().getForegroundColor().asRgbColor()));
@@ -388,9 +386,6 @@ function gastTestRunner() {
         testShape5.select(false);
 
         menuSetColorHue0(); // red (255, 0, 0)
-
-        var isRed = function (rgbColor) { return rgbColor.getRed() == 255 && rgbColor.getGreen() == 0 && rgbColor.getBlue() == 0; }
-        var isGreen = function (rgbColor) { return rgbColor.getRed() == 0 && rgbColor.getGreen() == 255 && rgbColor.getBlue() == 0; }
 
         // Test that both shapes on group changed their background color to red (hue = 0)
         t.ok(isRed(testShape1.getFill().getSolidFill().getColor().asRgbColor())); // it's okay to assume the color is a RgbColor here, because that's what we used on the test setup (instead of ThemeColor)
