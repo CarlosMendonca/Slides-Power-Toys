@@ -1,1 +1,1 @@
-const VERSION = 6;
+const VERSION = 7;
