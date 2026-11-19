@@ -14,7 +14,7 @@ const SOURCE_FILES = [
   'core.js',
   'core.colors.js',
   'main.js',
-  'sidebar.js',
+  'sidebar.bridge.js',
 ];
 
 const ENUMS = {

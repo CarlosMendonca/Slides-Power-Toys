@@ -7,7 +7,27 @@ const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const { createGasEnv, ENUMS } = require('./helpers/gas-env');
 
-describe('sidebar.js and sidebar.html', () => {
+describe('sidebar.bridge.js and sidebar.html', () => {
+  describe('Apps Script project hygiene', () => {
+    it('ensures no two .js/.html files in src/ share the same extensionless Apps Script name', () => {
+      const srcDir = path.resolve(__dirname, '../../src');
+      const entries = fs
+        .readdirSync(srcDir)
+        .filter((f) => f.endsWith('.js') || f.endsWith('.html'))
+        .filter((f) => f !== 'tests.js');
+      const seen = new Map();
+      for (const file of entries) {
+        const base = file.replace(/\.(js|html)$/, '');
+        assert.equal(
+          seen.has(base),
+          false,
+          `Apps Script filename collision: "${file}" collides with "${seen.get(base)}" (both map to "${base}")`
+        );
+        seen.set(base, file);
+      }
+    });
+  });
+
   describe('menuShowSidebar & sidebar.html validity', () => {
     it('opens the sidebar HTML with the add-on title while keeping all existing menu items', () => {
       const env = createGasEnv();

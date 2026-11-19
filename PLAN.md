@@ -158,7 +158,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 - [x] **Keep all existing Menu items** in `onOpen` (`src/main.js`), and add an `"Open sidebar"` item at the top of the `Slides Power Toys` menu (plus a separator).
 - [x] **Manifest scope update**
   - Add `"https://www.googleapis.com/auth/script.container.ui"` to `oauthScopes` in `src/appsscript.json.release` (required by `SlidesApp.getUi().showSidebar()`).
-- [x] **Server bridge (`src/sidebar.js`)**
+- [x] **Server bridge (`src/sidebar.bridge.js`)**
   - `menuShowSidebar()` opening `HtmlService.createHtmlOutputFromFile('sidebar').setTitle('Slides Power Toys')`.
   - Clean server-side callable functions returning structured JSON (status, error messages, inspected color data) for `google.script.run`.
 - [x] **Sidebar frontend (`src/sidebar.html`)**
