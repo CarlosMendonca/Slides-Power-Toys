@@ -554,6 +554,29 @@ function gastTestRunner() {
     });
   });
 
+  test('SIDEBAR BRIDGE FUNCTIONS', function(t) {
+    withTestSlide(slidesDocument, function(testSlide) {
+      var shape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1);
+      var shape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U1, U1);
+      shape1.getFill().setSolidFill(255, 0, 0);
+
+      shape1.select();
+      var inspectRes = sidebarInspectColor();
+      t.ok(inspectRes.ok, 'sidebarInspectColor succeeds on solid shape');
+      t.equal(inspectRes.data.hex.toLowerCase(), '#ff0000', 'Inspected hex matches #ff0000');
+
+      var transRes = sidebarSetTransparency(40);
+      t.ok(transRes.ok, 'sidebarSetTransparency succeeds');
+      t.approxEqual(transRes.inspected.transparencyPct, 40, 0.5, 'Inspector reflects 40% transparency');
+
+      shape2.select();
+      shape1.select(false);
+      var adjoinRes = sidebarAdjoin(true, 10, 'pt', false);
+      t.ok(adjoinRes.ok, 'sidebarAdjoin with custom pt padding succeeds');
+      t.approxEqual(shape2.getLeft(), U1 + 10, 0.1, 'Adjoined shape offset by 10pt gap');
+    });
+  });
+
   return test.finish();
 }
 

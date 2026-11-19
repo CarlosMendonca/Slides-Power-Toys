@@ -14,6 +14,7 @@ const SOURCE_FILES = [
   'core.js',
   'core.colors.js',
   'main.js',
+  'sidebar.js',
 ];
 
 const ENUMS = {
@@ -482,9 +483,13 @@ function createGasEnv(options = {}) {
     }),
     alerts: [],
     addonMenus: [],
+    sidebars: [],
     alert: (title, prompt, buttons) => {
       ui.alerts.push({ title, prompt, buttons });
       return 'OK';
+    },
+    showSidebar: (htmlOutput) => {
+      ui.sidebars.push(htmlOutput);
     },
     _makeMenu: (caption) => {
       const menu = {
@@ -548,9 +553,28 @@ function createGasEnv(options = {}) {
     },
   };
 
+  const HtmlService = {
+    createHtmlOutputFromFile: (filename) => {
+      const htmlPath = path.join(SRC_DIR, `${filename}.html`);
+      const content = fs.readFileSync(htmlPath, 'utf8');
+      let title = '';
+      const output = {
+        filename,
+        content,
+        getTitle: () => title,
+        setTitle: (t) => {
+          title = t;
+          return output;
+        },
+      };
+      return output;
+    },
+  };
+
   const logs = [];
   const context = vm.createContext({
     SlidesApp,
+    HtmlService,
     Logger: { log: (msg) => logs.push(String(msg)) },
     console,
     Math,

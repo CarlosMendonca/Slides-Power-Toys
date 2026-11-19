@@ -15,7 +15,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 | 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [x] Complete |
 | 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [x] Complete |
 | 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [x] Complete |
-| 6 | `staging-sidebar` | Interactive Sidebar UI (keeping all existing Menu items) | [ ] Not started |
+| 6 | `staging-sidebar` | Interactive Sidebar UI (keeping all existing Menu items) | [~] Ready for manual `clasp push` verification |
 
 ---
 
@@ -155,20 +155,20 @@ This plan breaks down all planned improvements into sequential, self-contained p
 **Why last:** Builds on the tested, optimized core logic to add a rich interactive UI while preserving 100% of the existing top-level add-on menus.
 
 ### Tasks
-- [ ] **Keep all existing Menu items** in `onOpen` (`src/main.js`), and add an `"Open sidebar"` item at the top of the `Slides Power Toys` menu (plus a separator).
-- [ ] **Manifest scope update**
+- [x] **Keep all existing Menu items** in `onOpen` (`src/main.js`), and add an `"Open sidebar"` item at the top of the `Slides Power Toys` menu (plus a separator).
+- [x] **Manifest scope update**
   - Add `"https://www.googleapis.com/auth/script.container.ui"` to `oauthScopes` in `src/appsscript.json.release` (required by `SlidesApp.getUi().showSidebar()`).
-- [ ] **Server bridge (`src/sidebar.js`)**
+- [x] **Server bridge (`src/sidebar.js`)**
   - `menuShowSidebar()` opening `HtmlService.createHtmlOutputFromFile('sidebar').setTitle('Slides Power Toys')`.
   - Clean server-side callable functions returning structured JSON (status, error messages, inspected color data) for `google.script.run`.
-- [ ] **Sidebar frontend (`src/sidebar.html`)**
-  - Clean, lightweight Google Slides-styled panel (no external CDN dependencies) with collapsible sections:
+- [x] **Sidebar frontend (`src/sidebar.html`)**
+  - Clean, lightweight Google Slides-styled panel (no external CDN dependencies) with Layout & Color tabs:
     - **Precision Snap**: Dimension / Position / Rotation / Straighten + unit selector (`in`, `cm`, `pt`) and decimal precision.
     - **Arrange & Size**: Copy Width / Height / Both / Rotation, Adjoin H/V with custom padding input, Align Inner/Outer grid, Center on Page, Flip H/V/Both.
     - **Color Studio**: Live Color Inspector (swatch + RGB/Hex/HSL/LCH/Alpha/Theme), Swap / Invert / Max Contrast buttons, and Hue / Saturation / Luminosity / Transparency sliders & step buttons.
   - Inline status/toast feedback inside the sidebar (avoiding modal `ui.alert` interruptions when triggered from the sidebar).
-- [ ] **Docs & version**
-  - Document the Sidebar in `README.md` and `docs/users-guide/`.
+- [x] **Docs & tests**
+  - Document the Sidebar in `README.md` and `docs/users-guide/sidebar.md`, and add unit + integration tests.
 
 ### Verification
 - Unit test server bridge functions (`src/sidebar.js`) locally via `npm test`.
