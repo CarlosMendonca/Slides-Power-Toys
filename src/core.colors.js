@@ -15,16 +15,18 @@
 // CORE LOGIC FOR COLOR OPERATIONS
 
 function invertColorsOnShape(shape) {
-    if (!doesShapeHaveSolidFill(shape)) // must have SOLID fill
+    var fill = shape.getFill();
+    if (fill.getType() !== SlidesApp.FillType.SOLID) // must have SOLID fill
         return;
 
-    var rgbColor = getRgbColorFromShapeColor(shape);
+    var solidFill = fill.getSolidFill();
+    var rgbColor = resolveRgbColor(shape, solidFill.getColor());
     if (!rgbColor)
         return;
 
-    var alpha = shape.getFill().getSolidFill().getAlpha();
+    var alpha = solidFill.getAlpha();
 
-    shape.getFill().setSolidFill(
+    fill.setSolidFill(
         255 - rgbColor.getRed(),
         255 - rgbColor.getGreen(),
         255 - rgbColor.getBlue(),
@@ -32,14 +34,16 @@ function invertColorsOnShape(shape) {
 }
 
 function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
-    if (!doesShapeHaveSolidFill(shape)) // must have SOLID fill
+    var fill = shape.getFill();
+    if (fill.getType() !== SlidesApp.FillType.SOLID) // must have SOLID fill
         return;
 
-    var rgbColor = getRgbColorFromShapeColor(shape);
+    var solidFill = fill.getSolidFill();
+    var rgbColor = resolveRgbColor(shape, solidFill.getColor());
     if (!rgbColor)
         return;
 
-    var alpha = shape.getFill().getSolidFill().getAlpha();
+    var alpha = solidFill.getAlpha();
     var hslColorVector = convertRgbColorToHslColorVector(rgbColor);
 
     var baseValue = isAbsoluteChange ? 0 : hslColorVector[hslComponent];
@@ -51,7 +55,7 @@ function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
 
     var rgbColorVector = convertHslColorVectorToRgbColorVector(hslColorVector);
 
-    shape.getFill().setSolidFill(
+    fill.setSolidFill(
         rgbColorVector[0],
         rgbColorVector[1],
         rgbColorVector[2],
@@ -60,8 +64,9 @@ function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
 }
   
 var setMaxContrastToTextOnShape = function(shape) { 
-    if (doesShapeHaveSolidFill(shape) && doesShapeHaveText(shape)) { // must have SOLID fill and some text
-        var rgbColor = getRgbColorFromShapeColor(shape);
+    var fill = shape.getFill();
+    if (fill.getType() === SlidesApp.FillType.SOLID && doesShapeHaveText(shape)) { // must have SOLID fill and some text
+        var rgbColor = resolveRgbColor(shape, fill.getSolidFill().getColor());
         if (!rgbColor)
             return;
 
@@ -84,7 +89,8 @@ function setAlphaToShape(shape, amount) {
 }
     
 function swapColorsOnShape(shape) {
-    if (doesShapeHaveSolidFill(shape) && doesShapeHaveText(shape)) { // must have SOLID fill and some text
+    var fill = shape.getFill();
+    if (fill.getType() === SlidesApp.FillType.SOLID && doesShapeHaveText(shape)) { // must have SOLID fill and some text
         var textRange = shape.getText();
         var runs = textRange.getRuns();
         if (!runs || runs.length === 0)
@@ -94,7 +100,7 @@ function swapColorsOnShape(shape) {
         if (!textColor || textColor.getColorType() === SlidesApp.ColorType.UNSUPPORTED)
             return;
 
-        var solidFill = shape.getFill().getSolidFill();
+        var solidFill = fill.getSolidFill();
         var fillColor = solidFill.getColor();
         if (!fillColor || fillColor.getColorType() === SlidesApp.ColorType.UNSUPPORTED)
             return;
@@ -102,6 +108,6 @@ function swapColorsOnShape(shape) {
         var fillAlpha = solidFill.getAlpha();
 
         textRange.getTextStyle().setForegroundColor(fillColor);
-        shape.getFill().setSolidFill(textColor, fillAlpha);
+        fill.setSolidFill(textColor, fillAlpha);
     }
 }

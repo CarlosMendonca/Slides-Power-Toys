@@ -41,22 +41,23 @@ var SLIDES_POWER_TOYS = "Slides Power Toys";
 function onInstall(event) { onOpen(event); }
 
 function onOpen(event) {
-  SlidesApp.getUi().createAddonMenu()
-    .addSubMenu(SlidesApp.getUi().createMenu('Precision snap')
+  var ui = SlidesApp.getUi();
+  ui.createAddonMenu()
+    .addSubMenu(ui.createMenu('Precision snap')
       .addItem('Dimension', 'menuSnapDimension')
       .addItem('Position', 'menuSnapPosition')
       .addItem('Rotation', 'menuSnapRotation')
       .addItem('Straighten elements', 'menuZeroRotation'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Copy attributes')
+    .addSubMenu(ui.createMenu('Copy attributes')
       .addItem('Width', 'menuCopyWidth')
       .addItem('Height', 'menuCopyHeight')
       .addItem('Width and height', 'menuCopyWidthAndHeight')
       .addItem('Rotation', 'menuCopyRotation'))
     .addSeparator()
-    .addSubMenu(SlidesApp.getUi().createMenu('Adjoin')
+    .addSubMenu(ui.createMenu('Adjoin')
       .addItem('Horizontally', 'menuAdjoinH')
       .addItem('Vertically', 'menuAdjoinV'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Align to inner edge')
+    .addSubMenu(ui.createMenu('Align to inner edge')
       .addItem('Left', 'menuAlignToInnerLeft')
       .addItem('Right', 'menuAlignToInnerRight')
       .addItem('Horizontal center', 'menuAlignToHorizontalCenter')
@@ -64,28 +65,28 @@ function onOpen(event) {
       .addItem('Top', 'menuAlignToInnerTop')
       .addItem('Bottom', 'menuAlignToInnerBottom')
       .addItem('Vertical center', 'menuAlignToVerticalCenter'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Align to outer edge')
+    .addSubMenu(ui.createMenu('Align to outer edge')
       .addItem('Left', 'menuAlignToOuterLeft')
       .addItem('Right', 'menuAlignToOuterRight')
       .addSeparator()
       .addItem('Top', 'menuAlignToOuterTop')
       .addItem('Bottom', 'menuAlignToOuterBottom'))
     .addItem('Center on page', 'menuCenterOnPage')
-    .addSubMenu(SlidesApp.getUi().createMenu('Flip')
+    .addSubMenu(ui.createMenu('Flip')
       .addItem('Horizontally', 'menuFlipH')
       .addItem('Vertically', 'menuFlipV')
       .addItem('Both', 'menuFlipHV'))
     .addSeparator()
     .addItem('Inspect shape color', 'menuInspectShapeColor')
-    .addSubMenu(SlidesApp.getUi().createMenu('Modify shape color')
+    .addSubMenu(ui.createMenu('Modify shape color')
       .addItem('Swap text and background colors', 'menuSetColorSwap')
       .addItem('Invert background color', 'menuSetColorInverse')
       .addItem('Set text color to max contrast', 'menuSetColorMaxContrast'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Set color hue')
-      .addSubMenu(SlidesApp.getUi().createMenu('Decrease (towards pink)')
+    .addSubMenu(ui.createMenu('Set color hue')
+      .addSubMenu(ui.createMenu('Decrease (towards pink)')
         .addItem('-30°', 'menuSetColorHueMinus30')
         .addItem('-15°', 'menuSetColorHueMinus15'))
-      .addSubMenu(SlidesApp.getUi().createMenu('Increase (towards orange)')
+      .addSubMenu(ui.createMenu('Increase (towards orange)')
         .addItem('+15°', 'menuSetColorHuePlus15')
         .addItem('+30°', 'menuSetColorHuePlus30'))
       .addSeparator()
@@ -101,12 +102,12 @@ function onOpen(event) {
       .addItem('270° (purple-ish)',        'menuSetColorHue270')
       .addItem('300° (Fuchsia/Magenta)',   'menuSetColorHue300')
       .addItem('330° (like Deep Pink)',    'menuSetColorHue330'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Set color saturation')
-      .addSubMenu(SlidesApp.getUi().createMenu('Decrease')
+    .addSubMenu(ui.createMenu('Set color saturation')
+      .addSubMenu(ui.createMenu('Decrease')
         .addItem('-33%', 'menuSetColorSaturationMinus33')
         .addItem('-10%', 'menuSetColorSaturationMinus10')
         .addItem('-5%',  'menuSetColorSaturationMinus5'))
-      .addSubMenu(SlidesApp.getUi().createMenu('Increase')
+      .addSubMenu(ui.createMenu('Increase')
         .addItem('+5%',  'menuSetColorSaturationPlus5')
         .addItem('+10%', 'menuSetColorSaturationPlus10')
         .addItem('+33%', 'menuSetColorSaturationPlus33'))
@@ -120,12 +121,12 @@ function onOpen(event) {
       .addItem('75%', 'menuSetColorSaturationAbs75')
       .addItem('90%', 'menuSetColorSaturationAbs90')
       .addItem('100% (towards color)', 'menuSetColorSaturationAbs100'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Set color luminosity')
-      .addSubMenu(SlidesApp.getUi().createMenu('Decrease')
+    .addSubMenu(ui.createMenu('Set color luminosity')
+      .addSubMenu(ui.createMenu('Decrease')
         .addItem('-33%', 'menuSetColorLuminosityMinus33')
         .addItem('-10%', 'menuSetColorLuminosityMinus10')
         .addItem('-5%',  'menuSetColorLuminosityMinus5'))
-      .addSubMenu(SlidesApp.getUi().createMenu('Increase')
+      .addSubMenu(ui.createMenu('Increase')
         .addItem('+5%',  'menuSetColorLuminosityPlus5')
         .addItem('+10%', 'menuSetColorLuminosityPlus10')
         .addItem('+33%', 'menuSetColorLuminosityPlus33'))
@@ -137,7 +138,7 @@ function onOpen(event) {
       .addItem('66%', 'menuSetColorLuminosityAbs66')
       .addItem('75%', 'menuSetColorLuminosityAbs75')
       .addItem('90% (towards white)', 'menuSetColorLuminosityAbs90'))
-    .addSubMenu(SlidesApp.getUi().createMenu('Set transparency')
+    .addSubMenu(ui.createMenu('Set transparency')
       .addItem('0% (opaque)', 'menuSetTransparency100')
       .addItem('10%', 'menuSetTransparency90')              
       .addItem('25%', 'menuSetTransparency75')              
@@ -243,7 +244,10 @@ function menuSetColorHue270() { withSelectedOrAllShapesOrGroupsRecursively(funct
 function menuSetColorHue300() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 300/360, true, HSL_COMPONENT.HUE); }); }
 function menuSetColorHue330() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 330/360, true, HSL_COMPONENT.HUE); }); }
 
-function menuCenterOnPage() { withSelectedOrAllElements(function(e) { alignShape(fakePageAsReferenceElement(), e, POSITION_X.CENTER, POSITION_Y.CENTER, false); }); }
+function menuCenterOnPage() {
+  var pageRef = fakePageAsReferenceElement();
+  withSelectedOrAllElements(function(e) { alignShape(pageRef, e, POSITION_X.CENTER, POSITION_Y.CENTER, false); });
+}
 
 function menuFlipH()  { flipLastTwoSelectedElements(true,  false); }
 function menuFlipV()  { flipLastTwoSelectedElements(false, true);  }
@@ -286,21 +290,26 @@ function adjoinSelectedElements(shouldAdjoinInHorizontalDirection, shouldCenterO
   
   var referenceElement = elementArray.pop(); // taking the reference element out since we'll sort the selection array
   
-  // Sorting by leftmost or topmost is an atempt to avoid a random order of adjoined elements since Google Slides
-  //  does not guarantee the order on the selection array. This way, the order on screen is preserved.
-  if (shouldAdjoinInHorizontalDirection)
-    elementArray.sort(function(a,b) { return a.getLeft() - b.getLeft(); }); // sort array by leftmost element
-  else
-    elementArray.sort(function(a,b) { return a.getTop() - b.getTop(); }); // sort array by topmost element
+  // Pre-fetch sort keys (Schwartzian transform) to avoid O(N log N) RPC calls inside .sort().
+  // Sorting by leftmost or topmost preserves on-screen order since Google Slides does not guarantee selection order.
+  var keyed = elementArray.map(function(el) {
+    return {
+      el: el,
+      pos: shouldAdjoinInHorizontalDirection ? el.getLeft() : el.getTop()
+    };
+  });
+  keyed.sort(function(a, b) { return a.pos - b.pos; });
+  elementArray = keyed.map(function(item) { return item.el; });
   
   elementArray.unshift(referenceElement); // putting the reference element back in, but at the beginning of the array since the adjoin loop below uses element 0 as anchor
+  var centerRef = shouldCenterOnFirst ? cacheElementBounds(referenceElement) : null;
   
   for (var i = 1; i < elementArray.length; i++) {
     adjoinTwoElements(
       elementArray[i-1],
       elementArray[i],
       shouldAdjoinInHorizontalDirection,
-      shouldCenterOnFirst ? elementArray[0] : null,
+      centerRef,
       paddingPoints);
   }
 }
@@ -309,19 +318,25 @@ function resizeElementsToLastSelected(copyWidth, copyHeight, copyRotation) {
   var elementArray = getSelectedElementsOnPage(false);
 
   if (elementArray.length < 2) {
-    SlidesApp.getUi().alert(
+    var ui = SlidesApp.getUi();
+    ui.alert(
       SLIDES_POWER_TOYS,
       "Select two or more elements to resize or rotate based on attributes of the last selected element.",
-      SlidesApp.getUi().ButtonSet.OK);
+      ui.ButtonSet.OK);
     return; // no selection array or just one element in selection, so no point in continuing
   }
 
   var referenceElement = elementArray.pop();
+  var refWidth = copyWidth ? referenceElement.getWidth() : 0;
+  var refHeight = copyHeight ? referenceElement.getHeight() : 0;
+  var refRotation = copyRotation ? referenceElement.getRotation() : 0;
   
   elementArray.forEach(function(e) {
-    if (copyWidth && canResizeElement(e))    e.setWidth   (referenceElement.getWidth());
-    if (copyHeight && canResizeElement(e))   e.setHeight  (referenceElement.getHeight());
-    if (copyRotation && canRotateElement(e)) e.setRotation(referenceElement.getRotation());
+    if ((copyWidth || copyHeight) && canResizeElement(e)) {
+      if (copyWidth)  e.setWidth(refWidth);
+      if (copyHeight) e.setHeight(refHeight);
+    }
+    if (copyRotation && canRotateElement(e)) e.setRotation(refRotation);
   });
 }
 
@@ -338,7 +353,7 @@ function alignSelectOrAllElements(positionX, positionY, isOuterEdge) {
         referenceElement = fakePageAsReferenceElement();
       break;
     default: // multiple elements were selected, so position reference is the last one
-        referenceElement = elementArray.pop();
+        referenceElement = cacheElementBounds(elementArray.pop());
       break;
   }
 
@@ -346,34 +361,38 @@ function alignSelectOrAllElements(positionX, positionY, isOuterEdge) {
 }
 
 function inspectShapeColor() {
+  var ui = SlidesApp.getUi();
   var selectedShapes = getSelectedElementsOnPage(false)
-    .filter(function(e) { return e.getPageElementType() == SlidesApp.PageElementType.SHAPE; })
+    .filter(function(e) { return e.getPageElementType() === SlidesApp.PageElementType.SHAPE; })
     .map   (function(e) { return e.asShape(); });
 
-  if (selectedShapes.length == 0) { // need one shape in the selection array to inspect the color of that which was selected last
-    SlidesApp.getUi().alert(
+  if (selectedShapes.length === 0) { // need one shape in the selection array to inspect the color of that which was selected last
+    ui.alert(
       SLIDES_POWER_TOYS,
       "No individual shapes selected.",
-      SlidesApp.getUi().ButtonSet.OK);
+      ui.ButtonSet.OK);
     return;
   }
 
-  var shape = selectedShapes[selectedShapes.length-1]; // get shape which was selected last
-  if (!doesShapeHaveSolidFill(shape)) { // must have a solid fill
-    SlidesApp.getUi().alert(
+  var shape = selectedShapes[selectedShapes.length - 1]; // get shape which was selected last
+  var fill = shape.getFill();
+  if (fill.getType() !== SlidesApp.FillType.SOLID) { // must have a solid fill
+    ui.alert(
       SLIDES_POWER_TOYS,
       "Shape does not have a solid fill.",
-      SlidesApp.getUi().ButtonSet.OK);
+      ui.ButtonSet.OK);
     return;
   }
 
-  var colorType = shape.getFill().getSolidFill().getColor().getColorType();
-  var rgbColor = getRgbColorFromShapeColor(shape);
+  var solidFill = fill.getSolidFill();
+  var shapeColor = solidFill.getColor();
+  var colorType = shapeColor.getColorType();
+  var rgbColor = resolveRgbColor(shape, shapeColor);
   if (!rgbColor) {
-    SlidesApp.getUi().alert(
+    ui.alert(
       SLIDES_POWER_TOYS,
       "Shape fill color type is not supported.",
-      SlidesApp.getUi().ButtonSet.OK);
+      ui.ButtonSet.OK);
     return;
   }
   var hslColorVector = convertRgbColorToHslColorVector(rgbColor);
@@ -382,18 +401,18 @@ function inspectShapeColor() {
   var message = "RGB: " + rgbColor.getRed() + ", " + rgbColor.getGreen() + ", " + rgbColor.getBlue() + " (" + rgbColor.asHexString() + ")";
   message += "\nHSL: " + (hslColorVector[0]*360).toFixed(1) + "°, " + (hslColorVector[1]*100).toFixed(1) + "%, " + (hslColorVector[2]*100).toFixed(1) + "%";
   message += "\nLCH: " + (lchColorVector[0]).toFixed(1) + "%, " + lchColorVector[1].toFixed(1) + ", " + lchColorVector[2].toFixed(1) + "°";
-  message += "\nTransparency: " + ((1-shape.getFill().getSolidFill().getAlpha())*100).toFixed(1) + "%";
+  message += "\nTransparency: " + ((1 - solidFill.getAlpha())*100).toFixed(1) + "%";
 
-  if (colorType == SlidesApp.ColorType.THEME)
-    message += "\n\nThis is one of the deck's theme colors: '" + shape.getFill().getSolidFill().getColor().asThemeColor().getThemeColorType() + "'.";
+  if (colorType === SlidesApp.ColorType.THEME)
+    message += "\n\nThis is one of the deck's theme colors: '" + shapeColor.asThemeColor().getThemeColorType() + "'.";
 
   if (selectedShapes.length > 1)
     message += "\n\nMore than one shape was selected. Showing the color information of the last one.";
 
-  SlidesApp.getUi().alert(
+  ui.alert(
     SLIDES_POWER_TOYS,
     message,
-    SlidesApp.getUi().ButtonSet.OK);
+    ui.ButtonSet.OK);
 
   return;
 }

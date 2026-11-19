@@ -15,11 +15,28 @@
 // UTILITY FUNCTIONS
 
 function fakePageAsReferenceElement() {
+  var presentation = SlidesApp.getActivePresentation();
+  var pageWidth = presentation.getPageWidth();
+  var pageHeight = presentation.getPageHeight();
   return {
     getLeft:   function() { return 0; },
     getTop:    function() { return 0; },
-    getWidth:  function() { return SlidesApp.getActivePresentation().getPageWidth(); },
-    getHeight: function() { return SlidesApp.getActivePresentation().getPageHeight(); }};
+    getWidth:  function() { return pageWidth; },
+    getHeight: function() { return pageHeight; }
+  };
+}
+
+function cacheElementBounds(element) {
+  var left = element.getLeft();
+  var top = element.getTop();
+  var width = element.getWidth();
+  var height = element.getHeight();
+  return {
+    getLeft:   function() { return left; },
+    getTop:    function() { return top; },
+    getWidth:  function() { return width; },
+    getHeight: function() { return height; }
+  };
 }
 
 function calculateLuminosity(color) {
@@ -120,11 +137,7 @@ function clamp(val, min, max) {
   return val > max ? max : val < min ? min : val;
 }
 
-function getRgbColorFromShapeColor(shape) {
-  var solidFill = shape.getFill().getSolidFill();
-  if (!solidFill) return null;
-
-  var shapeColor = solidFill.getColor();
+function resolveRgbColor(shape, shapeColor) {
   if (!shapeColor) return null;
 
   switch (shapeColor.getColorType()) {
@@ -141,4 +154,11 @@ function getRgbColorFromShapeColor(shape) {
     default:
       return null;
   }
+}
+
+function getRgbColorFromShapeColor(shape) {
+  var solidFill = shape.getFill().getSolidFill();
+  if (!solidFill) return null;
+
+  return resolveRgbColor(shape, solidFill.getColor());
 }

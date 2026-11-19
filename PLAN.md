@@ -13,7 +13,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 | 1 | `staging-tests` | Local unit test suite + hardened GasT integration tests | [x] Complete (45 local + 95 Slides pass) |
 | 2 | `staging-devex` | Fix `deploy.sh`, config hygiene, manifest cleanup, JS type checking | [x] Complete |
 | 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [x] Complete |
-| 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [ ] Not started |
+| 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [~] Ready for manual `clasp push` verification |
 | 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [ ] Not started |
 | 6 | `staging-sidebar` | Interactive Sidebar UI (keeping all existing Menu items) | [ ] Not started |
 
@@ -113,13 +113,13 @@ This plan breaks down all planned improvements into sequential, self-contained p
 **Why fourth:** Optimizes execution speed on slides with many elements while protected by the full test suite.
 
 ### Tasks
-- [ ] Cache `const ui = SlidesApp.getUi();` once in `onOpen` (`src/main.js`) instead of calling it 15 times.
-- [ ] Cache `pageWidth` and `pageHeight` inside `fakePageAsReferenceElement()` (`src/util.js`) and hoist it out of the loop in `menuCenterOnPage` (`src/main.js`).
-- [ ] Hoist `referenceElement.getWidth()`, `getHeight()`, and `getRotation()` out of `elementArray.forEach(...)` in `resizeElementsToLastSelected` (`src/main.js`).
-- [ ] Cache reference bounds once before iterating in `alignSelectOrAllElements` / `alignShape` (`src/main.js`, `src/core.js`).
-- [ ] Use a Schwartzian transform (pre-fetch `left`/`top` once per element) in `adjoinSelectedElements` (`src/main.js`) instead of calling RPC getters inside `.sort()`.
-- [ ] Avoid calling `getRgbColorFromShapeColor(shape)` twice in `setMaxContrastToTextOnShape` (`src/core.colors.js`).
-- [ ] Partition shapes and groups in a single pass in `withShapesOrGroupsRecursively` (`src/selection.js`).
+- [x] Cache `SlidesApp.getUi()` once in `onOpen` (`src/main.js`) instead of calling it 15 times.
+- [x] Cache `pageWidth` and `pageHeight` inside `fakePageAsReferenceElement()` (`src/util.js`) and hoist it out of the loop in `menuCenterOnPage` (`src/main.js`).
+- [x] Hoist `referenceElement.getWidth()`, `getHeight()`, and `getRotation()` out of `elementArray.forEach(...)` in `resizeElementsToLastSelected` (`src/main.js`).
+- [x] Cache reference bounds once before iterating in `alignSelectOrAllElements` / `adjoinSelectedElements` (`src/main.js`, `src/util.js`).
+- [x] Use a Schwartzian transform (pre-fetch `left`/`top` once per element) in `adjoinSelectedElements` (`src/main.js`) instead of calling RPC getters inside `.sort()`.
+- [x] Eliminate redundant `getFill()` and `getRgbColorFromShapeColor(shape)` calls in `src/core.colors.js` and `inspectShapeColor` (`src/main.js`).
+- [x] Partition shapes and groups in a single pass in `withShapesOrGroupsRecursively` (`src/selection.js`).
 
 ### Verification
 - Add unit tests that count mock getter invocations to confirm RPC reduction.

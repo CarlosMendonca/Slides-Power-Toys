@@ -27,18 +27,21 @@ function withSelectedOrAllShapesOrGroupsRecursively(doStuff) {
 }
 
 function withShapesOrGroupsRecursively(pageElementArray, doStuff) {
-  var groupsArray = pageElementArray
-    .filter(function(e) { return e.getPageElementType() == SlidesApp.PageElementType.GROUP; });
-
-  var elementsArray = pageElementArray
-    .filter(function(e) { return e.getPageElementType() == SlidesApp.PageElementType.SHAPE; });
-
-  // In the Slides UI, selecting individual elements inside a group returns both
-  // the selected children and their ancestor group(s). Track all ancestor group
-  // IDs so we skip recursing into those container groups while still processing
-  // any other independently selected groups.
+  var groupsArray = [];
+  var elementsArray = [];
   var ancestorGroupIds = new Set();
+
+  // Single pass to partition shapes/groups and collect ancestor group IDs.
+  // In the Slides UI, selecting individual elements inside a group returns both
+  // the selected children and their ancestor group(s).
   pageElementArray.forEach(function(e) {
+    var elementType = e.getPageElementType();
+    if (elementType === SlidesApp.PageElementType.GROUP) {
+      groupsArray.push(e);
+    } else if (elementType === SlidesApp.PageElementType.SHAPE) {
+      elementsArray.push(e);
+    }
+
     var parent = e.getParentGroup();
     while (parent != null) {
       ancestorGroupIds.add(parent.getObjectId());
@@ -47,13 +50,14 @@ function withShapesOrGroupsRecursively(pageElementArray, doStuff) {
   });
 
   // Handle shapes
-  elementsArray
-    .forEach(function(e) { doStuff(e.asShape()); });
+  elementsArray.forEach(function(e) { doStuff(e.asShape()); });
 
   // Handle groups, recursively (skipping ancestor groups of explicitly selected children)
-  groupsArray
-    .filter(function(g) { return !ancestorGroupIds.has(g.getObjectId()); })
-    .forEach(function(g) { withShapesOrGroupsRecursively(g.asGroup().getChildren(), doStuff); });
+  groupsArray.forEach(function(g) {
+    if (!ancestorGroupIds.has(g.getObjectId())) {
+      withShapesOrGroupsRecursively(g.asGroup().getChildren(), doStuff);
+    }
+  });
 }
 
 function withSelectedElements(doStuff) {
