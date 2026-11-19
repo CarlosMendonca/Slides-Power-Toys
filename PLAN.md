@@ -15,7 +15,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 | 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [x] Complete |
 | 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [x] Complete |
 | 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [x] Complete |
-| 6 | `staging-sidebar` | Interactive Sidebar UI (keeping all existing Menu items) | [~] Ready for manual `clasp push` verification |
+| 6 | `staging-sidebar` | Native CardService Sidebar UI (keeping all existing Menu items) | [x] Complete |
 
 ---
 
