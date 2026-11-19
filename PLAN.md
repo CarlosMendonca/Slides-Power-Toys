@@ -13,7 +13,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 | 1 | `staging-tests` | Local unit test suite + hardened GasT integration tests | [x] Complete (45 local + 95 Slides pass) |
 | 2 | `staging-devex` | Fix `deploy.sh`, config hygiene, manifest cleanup, JS type checking | [x] Complete |
 | 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [x] Complete |
-| 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [~] Ready for manual `clasp push` verification |
+| 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [x] Complete |
 | 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [ ] Not started |
 | 6 | `staging-sidebar` | Interactive Sidebar UI (keeping all existing Menu items) | [ ] Not started |
 
