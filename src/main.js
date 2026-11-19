@@ -319,9 +319,9 @@ function resizeElementsToLastSelected(copyWidth, copyHeight, copyRotation) {
   var referenceElement = elementArray.pop();
   
   elementArray.forEach(function(e) {
-    if (copyWidth)    e.setWidth   (referenceElement.getWidth());
-    if (copyHeight)   e.setHeight  (referenceElement.getHeight());
-    if (copyRotation) e.setRotation(referenceElement.getRotation());
+    if (copyWidth && canResizeElement(e))    e.setWidth   (referenceElement.getWidth());
+    if (copyHeight && canResizeElement(e))   e.setHeight  (referenceElement.getHeight());
+    if (copyRotation && canRotateElement(e)) e.setRotation(referenceElement.getRotation());
   });
 }
 

@@ -47,15 +47,20 @@ describe('core.js', () => {
       assert.equal(horizontalLine.getHeight(), 0);
     });
 
-    it('skips rotation on non-rotatable tables in snapElement and menuZeroRotation', () => {
+    it('skips dimension and rotation updates on tables in snapElement, menuZeroRotation, and copy attributes', () => {
       const env = createGasEnv();
-      const table = env.createTable({ rotation: 0 });
-      const shape = env.createShape({ rotation: 15.4 });
+      const table = env.createTable({ width: 100, height: 80, rotation: 0 });
+      const shape = env.createShape({ width: 144, height: 144, rotation: 15.4 });
 
-      assert.doesNotThrow(() => env.ctx.snapElement(table, false, false, true));
+      assert.doesNotThrow(() => env.ctx.snapElement(table, false, true, true));
+      assert.equal(table.getWidth(), 100);
+      assert.equal(table.getHeight(), 80);
 
       env.setSelection({ elements: [table, shape] });
+      assert.doesNotThrow(() => env.ctx.menuSnapDimension());
       assert.doesNotThrow(() => env.ctx.menuZeroRotation());
+      assert.doesNotThrow(() => env.ctx.menuCopyWidthAndHeight());
+      assert.doesNotThrow(() => env.ctx.menuCopyRotation());
       assert.equal(shape.getRotation(), 0);
     });
   });

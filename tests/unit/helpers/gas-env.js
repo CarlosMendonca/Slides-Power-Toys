@@ -328,6 +328,7 @@ function createGasEnv(options = {}) {
     parentGroup = null,
     parentPage = defaultSlide,
     allowRotation = true,
+    allowResize = true,
   } = {}) => {
     let _left = left;
     let _top = top;
@@ -367,6 +368,9 @@ function createGasEnv(options = {}) {
       },
       setWidth: (v) => {
         count('setWidth');
+        if (!allowResize) {
+          throw new Error(`Updating the size of ${type} is not supported`);
+        }
         _width = v;
         return el;
       },
@@ -376,6 +380,9 @@ function createGasEnv(options = {}) {
       },
       setHeight: (v) => {
         count('setHeight');
+        if (!allowResize) {
+          throw new Error(`Updating the size of ${type} is not supported`);
+        }
         _height = v;
         return el;
       },
@@ -447,6 +454,7 @@ function createGasEnv(options = {}) {
       ...opts,
       type: ENUMS.PageElementType.TABLE,
       allowRotation: false,
+      allowResize: false,
     });
     if (opts.addToPage !== false && el.getParentPage()) {
       el.getParentPage()._addElement(el);

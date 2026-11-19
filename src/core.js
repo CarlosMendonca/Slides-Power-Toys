@@ -20,6 +20,10 @@ function canRotateElement(element) {
   return element.getPageElementType() !== SlidesApp.PageElementType.TABLE;
 }
 
+function canResizeElement(element) {
+  return element.getPageElementType() !== SlidesApp.PageElementType.TABLE;
+}
+
 function snapDimensionPoints(points, isLine) {
   if (isLine && points === 0) return 0;
   var snappedInches = roundTo(points / PPI, 1);
@@ -33,7 +37,7 @@ function snapElement(element, shouldApplyToPosition, shouldApplyToDimension, sho
     element.setTop(roundTo(element.getTop()/PPI, 1)*PPI);
   }
   
-  if (shouldApplyToDimension) {
+  if (shouldApplyToDimension && canResizeElement(element)) {
     var isLine = element.getPageElementType() === SlidesApp.PageElementType.LINE;
     var width = element.getWidth();
     var height = element.getHeight();
