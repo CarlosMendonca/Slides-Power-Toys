@@ -50,14 +50,14 @@ To authorize, do:
 clasp login
 ```
 
-This will create a new `.clasprc.json` file on your home dir. You must also edit the `src/.clasp.json.release` and `src/.clasp.json.test` to make sure they point to Google Slides files you own on your Google Drive. They can be blank files.
+This will create a new `.clasprc.json` file on your home dir. Copy `src/.clasp.json.release.example` to `src/.clasp.json.release` and `src/.clasp.json.test.example` to `src/.clasp.json.test`, and set each `scriptId` to Google Slides projects you own on Google Drive. They can be blank files.
 
-Finally, run the `src/deploy.sh` script to get the code deployed to Google Drive:
+Finally, run the `src/deploy.sh` script (from either the repo root or `src/`) to deploy the code to Google Drive:
 
 ```bash
-./deploy.sh test
-./deploy.sh release
-./deploy.sh clean
+./src/deploy.sh test
+./src/deploy.sh release
+./src/deploy.sh clean
 ```
 
 ## Tests

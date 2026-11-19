@@ -4,9 +4,14 @@
   "private": true,
   "description": "Utility add-on for Google Slides",
   "scripts": {
-    "test": "node --test tests/unit/*.test.js"
+    "test": "node --test tests/unit/*.test.js",
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/google-apps-script": "^1.0.99",
+    "typescript": "^5.9.0-dev.20250429"
   }
 }

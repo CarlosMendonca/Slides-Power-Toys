@@ -123,8 +123,8 @@ function getRgbColorFromShapeColor(shape) {
   
   switch(shapeColor.getColorType()) {
     case(SlidesApp.ColorType.RGB):
-      return rgbColor = shapeColor.asRgbColor();
+      return shapeColor.asRgbColor();
     case(SlidesApp.ColorType.THEME):
-      return rgbColor = shape.getParentPage().asSlide().getColorScheme().getConcreteColor(shapeColor.asThemeColor().getThemeColorType()).asRgbColor();
+      return shape.getParentPage().asSlide().getColorScheme().getConcreteColor(shapeColor.asThemeColor().getThemeColorType()).asRgbColor();
   }
 }

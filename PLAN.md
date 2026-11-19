@@ -11,7 +11,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 | Phase | Branch | Goal | Status |
 | :---: | --- | --- | :---: |
 | 1 | `staging-tests` | Local unit test suite + hardened GasT integration tests | [x] Complete (45 local + 95 Slides pass) |
-| 2 | `staging-devex` | Fix `deploy.sh`, config hygiene, manifest cleanup, JS type checking | [ ] Not started |
+| 2 | `staging-devex` | Fix `deploy.sh`, config hygiene, manifest cleanup, JS type checking | [~] Ready for manual `clasp push` verification |
 | 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [ ] Not started |
 | 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [ ] Not started |
 | 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [ ] Not started |
@@ -52,19 +52,19 @@ This plan breaks down all planned improvements into sequential, self-contained p
 **Why second:** Ensures `clasp push` works reliably from any directory before pushing subsequent branches, and adds static type checking (`@types/google-apps-script`) to catch nullability and API misuse early.
 
 ### Tasks
-- [ ] **Fix `src/deploy.sh`**
+- [x] **Fix `src/deploy.sh`**
   - Move `#!/bin/bash` to line 1 (currently on line 15, causing the shebang to be ignored).
   - Add `set -euo pipefail`.
   - Resolve script directory (`cd "$(dirname "$0")"`) so it works whether invoked from repo root or `src/`.
   - Use `rm -f` in `clean` so missing files don't cause errors.
-- [ ] **Config & manifest hygiene**
+- [x] **Config & manifest hygiene**
   - Replace personal script IDs in `src/.clasp.json.release` and `src/.clasp.json.test` with `.example` templates (and gitignore the real files, updating `README.md` / `deploy.sh` error messages accordingly).
   - Remove unused `"webapp"` block from `src/appsscript.json.release` and `src/appsscript.json.test`.
   - Tighten `src/.claspignore` to explicitly exclude `deploy.sh`, `devenv.*`, `*.release`, `*.test`, `*.example`, and `tests/**`.
-- [ ] **Static type checking (no build step)**
+- [x] **Static type checking (no build step)**
   - Add `@types/google-apps-script` and `typescript` as devDependencies in root `package.json`.
   - Add `tsconfig.json` with `checkJs: true`, `noEmit: true`, `allowJs: true` targeting `src/*.js`.
-  - Add `npm run typecheck` (`tsc --noEmit`).
+  - Add `npm run typecheck` (`tsc --noEmit`) and resolve the 5 initial type errors (implicit global `rgbColor`, boolean arithmetic in `core.js` / `core.colors.js`).
 
 ### Verification
 - Run `bash -n src/deploy.sh` and test `./src/deploy.sh clean` from repo root.

@@ -33,7 +33,8 @@ function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
     var rgbColor = getRgbColorFromShapeColor(shape);
     var hslColorVector = convertRgbColorToHslColorVector(rgbColor);
 
-    hslColorVector[hslComponent] = clamp((hslColorVector[hslComponent] * !isAbsoluteChange) + valueChange, 0, 1);
+    var baseValue = isAbsoluteChange ? 0 : hslColorVector[hslComponent];
+    hslColorVector[hslComponent] = clamp(baseValue + valueChange, 0, 1);
 
     var rgbColorVector = convertHslColorVectorToRgbColorVector(hslColorVector);
 

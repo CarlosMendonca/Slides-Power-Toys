@@ -1,1 +1,7 @@
-tests/tests.js
+tests/**
+deploy.sh
+devenv.*
+.devenv/**
+*.release
+*.test
+*.example

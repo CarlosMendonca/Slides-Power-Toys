@@ -33,19 +33,19 @@ function snapElement(element, shouldApplyToPosition, shouldApplyToDimension, sho
 //   because here order matters (instead of position of elements on page)
 function alignShape(referenceShape, targetShape, positionX, positionY, isOuterEdge) {  
   if (positionX == POSITION_X.LEFT)
-    targetShape.setLeft(referenceShape.getLeft() - targetShape.getWidth()*isOuterEdge);
+    targetShape.setLeft(referenceShape.getLeft() - (isOuterEdge ? targetShape.getWidth() : 0));
   
   if (positionX == POSITION_X.RIGHT)
-    targetShape.setLeft(referenceShape.getLeft() + referenceShape.getWidth() - targetShape.getWidth()*(!isOuterEdge));
+    targetShape.setLeft(referenceShape.getLeft() + referenceShape.getWidth() - (isOuterEdge ? 0 : targetShape.getWidth()));
 
   if (positionX == POSITION_X.CENTER)
     targetShape.setLeft(referenceShape.getLeft() + referenceShape.getWidth()/2 - targetShape.getWidth()/2);
   
   if (positionY == POSITION_Y.TOP)
-    targetShape.setTop(referenceShape.getTop() - targetShape.getHeight()*isOuterEdge);
+    targetShape.setTop(referenceShape.getTop() - (isOuterEdge ? targetShape.getHeight() : 0));
   
   if (positionY == POSITION_Y.BOTTOM)
-    targetShape.setTop(referenceShape.getTop() + referenceShape.getHeight() - targetShape.getHeight()*(!isOuterEdge));
+    targetShape.setTop(referenceShape.getTop() + referenceShape.getHeight() - (isOuterEdge ? 0 : targetShape.getHeight()));
   
   if (positionY == POSITION_Y.CENTER)
     targetShape.setTop(referenceShape.getTop() + referenceShape.getHeight()/2 - targetShape.getHeight()/2);

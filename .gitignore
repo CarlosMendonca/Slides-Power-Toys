@@ -1,7 +1,12 @@
 # App specific
 /src/.clasp.json
+/src/.clasp.json.release
+/src/.clasp.json.test
 /src/appsscript.json
 /src/tests.js
+
+# Node
+node_modules/
 
 # General
 .DS_Store
