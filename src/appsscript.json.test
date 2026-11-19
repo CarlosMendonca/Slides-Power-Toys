@@ -3,5 +3,23 @@
   "dependencies": {
   },
   "exceptionLogging": "STACKDRIVER",
+  "addOns": {
+    "common": {
+      "name": "Slides Power Toys (Test)",
+      "logoUrl": "https://carlosmendonca.github.io/Slides-Power-Toys/apple-touch-icon.png",
+      "layoutProperties": {
+        "primaryColor": "#F4B400",
+        "secondaryColor": "#4285F4"
+      },
+      "homepageTrigger": {
+        "runFunction": "onSlidesHomepage"
+      }
+    },
+    "slides": {
+      "homepageTrigger": {
+        "runFunction": "onSlidesHomepage"
+      }
+    }
+  },
   "runtimeVersion": "V8"
 }

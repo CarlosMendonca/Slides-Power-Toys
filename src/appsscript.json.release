@@ -4,8 +4,31 @@
   },
   "exceptionLogging": "STACKDRIVER",
   "oauthScopes": [
-    "https://www.googleapis.com/auth/presentations.currentonly",
-    "https://www.googleapis.com/auth/script.container.ui"
+    "https://www.googleapis.com/auth/presentations.currentonly"
   ],
+  "addOns": {
+    "common": {
+      "name": "Slides Power Toys",
+      "logoUrl": "https://carlosmendonca.github.io/Slides-Power-Toys/apple-touch-icon.png",
+      "layoutProperties": {
+        "primaryColor": "#F4B400",
+        "secondaryColor": "#4285F4"
+      },
+      "homepageTrigger": {
+        "runFunction": "onSlidesHomepage"
+      },
+      "universalActions": [
+        {
+          "label": "User's Guide & Issues",
+          "openLink": "https://carlosmendonca.github.io/Slides-Power-Toys"
+        }
+      ]
+    },
+    "slides": {
+      "homepageTrigger": {
+        "runFunction": "onSlidesHomepage"
+      }
+    }
+  },
   "runtimeVersion": "V8"
 }

@@ -554,7 +554,10 @@ function gastTestRunner() {
     });
   });
 
-  test('SIDEBAR BRIDGE FUNCTIONS', function(t) {
+  test('SIDEBAR CARDSERVICE & HELPERS', function(t) {
+    t.ok(onSlidesHomepage({}), 'onSlidesHomepage builds CardService layout card');
+    t.ok(buildColorCard(null), 'buildColorCard builds CardService color card');
+
     withTestSlide(slidesDocument, function(testSlide) {
       var shape1 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1);
       var shape2 = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, U2, U2, U1, U1);

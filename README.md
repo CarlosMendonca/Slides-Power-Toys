@@ -11,8 +11,8 @@ Slides Power Toys is a simple free and open source extension that adds some hand
 
 **This is not an officially supported Google product.**
 
-### Interactive Sidebar (alongside Menus)
-Open **Extensions > Slides Power Toys > Open sidebar** to keep Layout and Color tools docked beside your slide with live color inspection, continuous HSL & transparency sliders, custom Adjoin padding, and configurable Precision Snap units (`in`, `cm`, `pt`). All traditional add-on menu commands remain available as well.
+### Native CardService Sidebar (alongside Menus)
+Slides Power Toys also provides a server-side Google Workspace Add-on side panel built with `CardService` (no `HtmlService` / `script.container.ui` permission required — keeping the single `presentations.currentonly` scope for enterprise compatibility). Open it from the right-hand Google Slides side panel for quick Layout and Color Studio controls, while keeping all traditional **Extensions > Slides Power Toys** menu items intact.
 
 ### Copy Attributes
 Copy attributes from the last selected shape to the others. This mimics Microsoft PowerPoint's behavior to apply the same attribute, like size, to multiple shapes.

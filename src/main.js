@@ -43,8 +43,6 @@ function onInstall(event) { onOpen(event); }
 function onOpen(event) {
   const ui = SlidesApp.getUi();
   ui.createAddonMenu()
-    .addItem('Open sidebar', 'menuShowSidebar')
-    .addSeparator()
     .addSubMenu(ui.createMenu('Precision snap')
       .addItem('Dimension', 'menuSnapDimension')
       .addItem('Position', 'menuSnapPosition')

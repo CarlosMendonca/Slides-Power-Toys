@@ -14,7 +14,7 @@ const SOURCE_FILES = [
   'core.js',
   'core.colors.js',
   'main.js',
-  'sidebar.bridge.js',
+  'sidebar.card.js',
 ];
 
 const ENUMS = {
@@ -483,13 +483,9 @@ function createGasEnv(options = {}) {
     }),
     alerts: [],
     addonMenus: [],
-    sidebars: [],
     alert: (title, prompt, buttons) => {
       ui.alerts.push({ title, prompt, buttons });
       return 'OK';
-    },
-    showSidebar: (htmlOutput) => {
-      ui.sidebars.push(htmlOutput);
     },
     _makeMenu: (caption) => {
       const menu = {
@@ -553,28 +549,124 @@ function createGasEnv(options = {}) {
     },
   };
 
-  const HtmlService = {
-    createHtmlOutputFromFile: (filename) => {
-      const htmlPath = path.join(SRC_DIR, `${filename}.html`);
-      const content = fs.readFileSync(htmlPath, 'utf8');
-      let title = '';
-      const output = {
-        filename,
-        content,
-        getTitle: () => title,
-        setTitle: (t) => {
-          title = t;
-          return output;
-        },
+  const createChainableBuilder = (type, initial = {}) => {
+    const data = { _type: type, ...initial };
+    const builder = {
+      _data: data,
+      build: () => data,
+    };
+    return { data, builder };
+  };
+
+  const CardService = {
+    TextButtonStyle: Object.freeze({ TEXT: 'TEXT', FILLED: 'FILLED' }),
+    SelectionInputType: Object.freeze({
+      CHECK_BOX: 'CHECK_BOX',
+      RADIO_BUTTON: 'RADIO_BUTTON',
+      DROPDOWN: 'DROPDOWN',
+    }),
+    newAction: () => {
+      const { data, builder } = createChainableBuilder('Action', { fnName: null, parameters: {} });
+      builder.setFunctionName = (name) => { data.fnName = name; return builder; };
+      builder.setParameters = (params) => { data.parameters = { ...params }; return builder; };
+      return builder;
+    },
+    newTextButton: () => {
+      const { data, builder } = createChainableBuilder('TextButton', { text: '', action: null, style: 'TEXT' });
+      builder.setText = (t) => { data.text = t; return builder; };
+      builder.setOnClickAction = (a) => { data.action = a._data || a; return builder; };
+      builder.setTextButtonStyle = (s) => { data.style = s; return builder; };
+      return builder;
+    },
+    newButtonSet: () => {
+      const { data, builder } = createChainableBuilder('ButtonSet', { buttons: [] });
+      builder.addButton = (b) => { data.buttons.push(b._data || b); return builder; };
+      return builder;
+    },
+    newTextInput: () => {
+      const { data, builder } = createChainableBuilder('TextInput', { fieldName: '', title: '', value: '' });
+      builder.setFieldName = (n) => { data.fieldName = n; return builder; };
+      builder.setTitle = (t) => { data.title = t; return builder; };
+      builder.setValue = (v) => { data.value = v; return builder; };
+      return builder;
+    },
+    newSelectionInput: () => {
+      const { data, builder } = createChainableBuilder('SelectionInput', {
+        inputType: '',
+        fieldName: '',
+        title: '',
+        items: [],
+      });
+      builder.setType = (t) => { data.inputType = t; return builder; };
+      builder.setFieldName = (n) => { data.fieldName = n; return builder; };
+      builder.setTitle = (t) => { data.title = t; return builder; };
+      builder.addItem = (text, value, selected) => {
+        data.items.push({ text, value, selected: Boolean(selected) });
+        return builder;
       };
-      return output;
+      return builder;
+    },
+    newTextParagraph: () => {
+      const { data, builder } = createChainableBuilder('TextParagraph', { text: '' });
+      builder.setText = (t) => { data.text = t; return builder; };
+      return builder;
+    },
+    newDecoratedText: () => {
+      const { data, builder } = createChainableBuilder('DecoratedText', {
+        topLabel: '',
+        text: '',
+        bottomLabel: '',
+        wrapText: false,
+      });
+      builder.setTopLabel = (t) => { data.topLabel = t; return builder; };
+      builder.setText = (t) => { data.text = t; return builder; };
+      builder.setBottomLabel = (t) => { data.bottomLabel = t; return builder; };
+      builder.setWrapText = (w) => { data.wrapText = Boolean(w); return builder; };
+      return builder;
+    },
+    newCardHeader: () => {
+      const { data, builder } = createChainableBuilder('CardHeader', { title: '', subtitle: '' });
+      builder.setTitle = (t) => { data.title = t; return builder; };
+      builder.setSubtitle = (s) => { data.subtitle = s; return builder; };
+      return builder;
+    },
+    newCardSection: () => {
+      const { data, builder } = createChainableBuilder('CardSection', { header: '', widgets: [] });
+      builder.setHeader = (h) => { data.header = h; return builder; };
+      builder.addWidget = (w) => { data.widgets.push(w._data || w); return builder; };
+      return builder;
+    },
+    newCardBuilder: () => {
+      const { data, builder } = createChainableBuilder('Card', { header: null, sections: [] });
+      builder.setHeader = (h) => { data.header = h._data || h; return builder; };
+      builder.addSection = (s) => { data.sections.push(s._data || s); return builder; };
+      return builder;
+    },
+    newNotification: () => {
+      const { data, builder } = createChainableBuilder('Notification', { text: '' });
+      builder.setText = (t) => { data.text = t; return builder; };
+      return builder;
+    },
+    newNavigation: () => {
+      const { data, builder } = createChainableBuilder('Navigation', { updatedCard: null });
+      builder.updateCard = (c) => { data.updatedCard = c; return builder; };
+      return builder;
+    },
+    newActionResponseBuilder: () => {
+      const { data, builder } = createChainableBuilder('ActionResponse', {
+        notification: null,
+        navigation: null,
+      });
+      builder.setNotification = (n) => { data.notification = n._data || n; return builder; };
+      builder.setNavigation = (nav) => { data.navigation = nav._data || nav; return builder; };
+      return builder;
     },
   };
 
   const logs = [];
   const context = vm.createContext({
     SlidesApp,
-    HtmlService,
+    CardService,
     Logger: { log: (msg) => logs.push(String(msg)) },
     console,
     Math,

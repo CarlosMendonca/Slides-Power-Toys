@@ -150,26 +150,24 @@ This plan breaks down all planned improvements into sequential, self-contained p
 
 ---
 
-## Phase 6 — `staging-sidebar`: Sidebar UI (Alongside Existing Menus)
+## Phase 6 — `staging-sidebar`: Native CardService Sidebar UI (Alongside Existing Menus)
 
-**Why last:** Builds on the tested, optimized core logic to add a rich interactive UI while preserving 100% of the existing top-level add-on menus.
+**Why last:** Builds on the tested, optimized core logic to add a server-side Google Workspace Add-on side panel using `CardService`—avoiding `HtmlService` / `script.container.ui` so enterprise users need **zero net-new OAuth scopes**—while preserving 100% of the existing top-level add-on menus.
 
 ### Tasks
-- [x] **Keep all existing Menu items** in `onOpen` (`src/main.js`), and add an `"Open sidebar"` item at the top of the `Slides Power Toys` menu (plus a separator).
-- [x] **Manifest scope update**
-  - Add `"https://www.googleapis.com/auth/script.container.ui"` to `oauthScopes` in `src/appsscript.json.release` (required by `SlidesApp.getUi().showSidebar()`).
-- [x] **Server bridge (`src/sidebar.bridge.js`)**
-  - `menuShowSidebar()` opening `HtmlService.createHtmlOutputFromFile('sidebar').setTitle('Slides Power Toys')`.
-  - Clean server-side callable functions returning structured JSON (status, error messages, inspected color data) for `google.script.run`.
-- [x] **Sidebar frontend (`src/sidebar.html`)**
-  - Clean, lightweight Google Slides-styled panel (no external CDN dependencies) with Layout & Color tabs:
-    - **Precision Snap**: Dimension / Position / Rotation / Straighten + unit selector (`in`, `cm`, `pt`) and decimal precision.
-    - **Arrange & Size**: Copy Width / Height / Both / Rotation, Adjoin H/V with custom padding input, Align Inner/Outer grid, Center on Page, Flip H/V/Both.
-    - **Color Studio**: Live Color Inspector (swatch + RGB/Hex/HSL/LCH/Alpha/Theme), Swap / Invert / Max Contrast buttons, and Hue / Saturation / Luminosity / Transparency sliders & step buttons.
-  - Inline status/toast feedback inside the sidebar (avoiding modal `ui.alert` interruptions when triggered from the sidebar).
+- [x] **Keep all existing Menu items** untouched in `onOpen` (`src/main.js`).
+- [x] **Preserve single enterprise-safe OAuth scope**
+  - Keep `oauthScopes` in `src/appsscript.json.release` strictly at `["https://www.googleapis.com/auth/presentations.currentonly"]` (add a unit test guard preventing scope creep).
+  - Add `addOns.common` and `addOns.slides.homepageTrigger` (`onSlidesHomepage`) to `src/appsscript.json.release` and `src/appsscript.json.test`.
+- [x] **CardService Sidebar (`src/sidebar.card.js`)**
+  - Native server-side `CardService` cards with **Layout & Arrange** and **Color Studio** views:
+    - **Precision Snap**: Position / Dimension / Rotation / Straighten + unit dropdown (`in`, `cm`, `pt`) and decimals (`0`–`2`).
+    - **Arrange & Size**: Copy Width / Height / Both / Rotation, Adjoin H/V with custom gap input & anchor-center checkbox, Align Inner/Outer edge selector + Center on Page, Flip H/V/Both.
+    - **Color Studio**: Color Inspector (`DecoratedText` with Hex, transparency, RGB/HSL/LCH, Theme badge), Swap / Invert / Max Contrast, Hue step buttons & presets dropdown, Saturation / Luminosity / Transparency step buttons & exact inputs.
+  - Non-blocking toast notifications (`CardService.newNotification()`) and automatic Color card refresh after color edits.
 - [x] **Docs & tests**
-  - Document the Sidebar in `README.md` and `docs/users-guide/sidebar.md`, and add unit + integration tests.
+  - Document the CardService Sidebar in `README.md` and `docs/users-guide/sidebar.md`, and add unit + Slides integration tests.
 
 ### Verification
-- Unit test server bridge functions (`src/sidebar.js`) locally via `npm test`.
-- Push with `./deploy.sh test` and manually verify both the Sidebar and all legacy Menu items in Google Slides.
+- Unit test `CardService` builders, handlers, and OAuth scope guard locally via `npm test` and `npm run typecheck`.
+- Push with `./src/deploy.sh test`, run `gastTestRunner()`, and test the side panel via **Deploy → Test deployments → Install** in the Apps Script Editor alongside the **Extensions → Slides Power Toys** menu.
