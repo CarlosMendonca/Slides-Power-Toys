@@ -9,7 +9,7 @@ Slides Power Toys is a simple free and open source extension that adds some hand
 
 **THESE CAPABILITIES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google. Refer to the Apache 2.0 license for the full terms and conditions.**
 
-**This is not an oficially supported Google product.**
+**This is not an officially supported Google product.**
 
 ### Copy Attributes
 Copy attributes from the last selected shape to the others. This mimics Microsoft PowerPoint's behavior to apply the same attribute, like size, to multiple shapes.
@@ -18,10 +18,10 @@ Copy attributes from the last selected shape to the others. This mimics Microsof
 Simply flip the position of two shapes.
 
 ### Adjoin
-Position shapes side by side or align them to the center of the leftmost or topmost element. Adds more flexibility to the native alignment commands.
+Position shapes side by side or align them to the center of the anchor element. Adds more flexibility to the native alignment commands.
 
 ### Align to Inner/Outer Edges
-Alignment commands to arrange shapes relative to the last selected element. Also adds more flexibility to the native alignment commands.</p>
+Alignment commands to arrange shapes relative to the last selected element. Also adds more flexibility to the native alignment commands.
 
 ### Precision Snap
 Commands to round various shape attributes to the closest decimal. A width of 1.23 inches becomes 1.2 inches. Select the elements to apply transformation to or select the slide to apply transformation to all elements.

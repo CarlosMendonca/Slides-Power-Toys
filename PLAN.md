@@ -14,7 +14,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 | 2 | `staging-devex` | Fix `deploy.sh`, config hygiene, manifest cleanup, JS type checking | [x] Complete |
 | 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [x] Complete |
 | 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [x] Complete |
-| 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [ ] Not started |
+| 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [~] Ready for manual `clasp push` verification |
 | 6 | `staging-sidebar` | Interactive Sidebar UI (keeping all existing Menu items) | [ ] Not started |
 
 ---
@@ -132,16 +132,16 @@ This plan breaks down all planned improvements into sequential, self-contained p
 **Why fifth:** Cleans up legacy ES5 patterns, dead code, and docs so the codebase is clean before introducing the Sidebar UI.
 
 ### Tasks
-- [ ] **V8 modernization**
+- [x] **V8 modernization**
   - Consistently use `const`/`let`, `===`/`!==`, `Object.freeze()` for enums (`POSITION_X`, `POSITION_Y`, `HSL_COMPONENT`), and consistent function declarations across `src/*.js`.
   - Replace implicit boolean-to-number arithmetic (`*isOuterEdge`, `*!isAbsoluteChange`) with explicit conditionals.
   - Remove outdated ES5 comment in `src/util.js` and Unicode variable names (`ε`, `κ`) in `src/util.lch.js`.
   - Refactor repetitive menu handlers in `src/main.js` to call concise internal helpers (keeping every top-level `menu*` entrypoint intact for Apps Script).
-- [ ] **Dead code & hygiene**
+- [x] **Dead code & hygiene**
   - Remove unused functions: `withSelectedOrAllShapes`, `withSelectedElements` (`src/selection.js`), and `calculateLuminosity` (`src/util.js`).
   - Remove duplicate `LICENSE.txt` (keep `LICENSE`).
   - Fix typos (`Acqua` → `Aqua`, `Luminosty` → `Luminosity`, `oficially` → `officially`, `http://` → `https://` in About prompt).
-- [ ] **Documentation**
+- [x] **Documentation**
   - Update `docs/users-guide/command-adjoin.md` to match actual spatial sorting behavior.
   - Complete `docs/developers-guide/getting-started.md`, `tests.md`, and `future-work.md` (currently `WIP`).
 

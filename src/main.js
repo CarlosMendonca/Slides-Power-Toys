@@ -1,11 +1,11 @@
 // Copyright 2019 Google LLC
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     https://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,35 +13,35 @@
 // limitations under the License.
 
 // === DEFINITIONS ===
-var PPI = 72;
+const PPI = 72;
 
-var POSITION_X = {
+const POSITION_X = Object.freeze({
   NOT_SET: 0,
   LEFT: 1,
   RIGHT: 2,
-  CENTER: 3
-}
+  CENTER: 3,
+});
 
-var POSITION_Y = {
+const POSITION_Y = Object.freeze({
   NOT_SET: 0,
   TOP: 1,
   BOTTOM: 2,
-  CENTER: 3
-}
+  CENTER: 3,
+});
 
-var HSL_COMPONENT = {
+const HSL_COMPONENT = Object.freeze({
   HUE: 0,
   SATURATION: 1,
-  LUMINOSITY: 2
-}
+  LUMINOSITY: 2,
+});
 
-var SLIDES_POWER_TOYS = "Slides Power Toys";
+const SLIDES_POWER_TOYS = 'Slides Power Toys';
 
 // === INIT ===
 function onInstall(event) { onOpen(event); }
 
 function onOpen(event) {
-  var ui = SlidesApp.getUi();
+  const ui = SlidesApp.getUi();
   ui.createAddonMenu()
     .addSubMenu(ui.createMenu('Precision snap')
       .addItem('Dimension', 'menuSnapDimension')
@@ -96,7 +96,7 @@ function onOpen(event) {
       .addItem('90° (like Chartreuse)',    'menuSetColorHue90')
       .addItem('120° (Lime)',              'menuSetColorHue120')
       .addItem('150° (like Spring Green)', 'menuSetColorHue150')
-      .addItem('180° (Acqua)',             'menuSetColorHue180')
+      .addItem('180° (Aqua)',              'menuSetColorHue180')
       .addItem('210° (blue-ish)',          'menuSetColorHue210')
       .addItem('240° (Blue)',              'menuSetColorHue240')
       .addItem('270° (purple-ish)',        'menuSetColorHue270')
@@ -140,8 +140,8 @@ function onOpen(event) {
       .addItem('90% (towards white)', 'menuSetColorLuminosityAbs90'))
     .addSubMenu(ui.createMenu('Set transparency')
       .addItem('0% (opaque)', 'menuSetTransparency100')
-      .addItem('10%', 'menuSetTransparency90')              
-      .addItem('25%', 'menuSetTransparency75')              
+      .addItem('10%', 'menuSetTransparency90')
+      .addItem('25%', 'menuSetTransparency75')
       .addItem('33%', 'menuSetTransparency66')
       .addItem('50%', 'menuSetTransparency50')
       .addItem('66%', 'menuSetTransparency33')
@@ -153,187 +153,201 @@ function onOpen(event) {
     .addToUi();
 }
 
+// === MENU HELPER WRAPPERS ===
+function applyAlphaToSelection(alpha) {
+  withSelectedOrAllShapesOrGroupsRecursively((s) => setAlphaToShape(s, alpha));
+}
+
+function applyHslToSelection(valueChange, isAbsoluteChange, component) {
+  withSelectedOrAllShapesOrGroupsRecursively((s) => changeHSL(s, valueChange, isAbsoluteChange, component));
+}
+
 // === MENU FUNCTIONS ===
-function menuSnapPosition()  { withSelectedOrAllElements(function(e) { snapElement(e, true, false, false); }); }
-function menuSnapDimension() { withSelectedOrAllElements(function(e) { snapElement(e, false, true, false); }); }
-function menuSnapRotation()  { withSelectedOrAllElements(function(e) { snapElement(e, false, false, true); }); }
-function menuZeroRotation()  { withSelectedOrAllElements(function(e) { if (canRotateElement(e)) e.setRotation(0); }); }
+function menuSnapPosition()  { withSelectedOrAllElements((e) => snapElement(e, true,  false, false)); }
+function menuSnapDimension() { withSelectedOrAllElements((e) => snapElement(e, false, true,  false)); }
+function menuSnapRotation()  { withSelectedOrAllElements((e) => snapElement(e, false, false, true)); }
+function menuZeroRotation()  { withSelectedOrAllElements((e) => { if (canRotateElement(e)) e.setRotation(0); }); }
 
 function menuCopyWidth()          { resizeElementsToLastSelected(true,  false, false); }
-function menuCopyHeight()         { resizeElementsToLastSelected(false,  true, false); }
-function menuCopyWidthAndHeight() { resizeElementsToLastSelected(true,   true, false); } 
-function menuCopyRotation()       { resizeElementsToLastSelected(false, false,  true); } 
+function menuCopyHeight()         { resizeElementsToLastSelected(false, true,  false); }
+function menuCopyWidthAndHeight() { resizeElementsToLastSelected(true,  true,  false); }
+function menuCopyRotation()       { resizeElementsToLastSelected(false, false, true); }
 
-function menuAdjoinH() { adjoinSelectedElements(true,  true, 0*PPI); }
-function menuAdjoinV() { adjoinSelectedElements(false, true, 0*PPI); }
+function menuAdjoinH() { adjoinSelectedElements(true,  true, 0); }
+function menuAdjoinV() { adjoinSelectedElements(false, true, 0); }
 
-function menuAlignToInnerLeft()        { alignSelectOrAllElements(POSITION_X.LEFT, POSITION_Y.NOT_SET, false); }
-function menuAlignToInnerRight()       { alignSelectOrAllElements(POSITION_X.RIGHT, POSITION_Y.NOT_SET, false); }
-function menuAlignToInnerTop()         { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.TOP, false); }
-function menuAlignToInnerBottom()      { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.BOTTOM, false); }
-function menuAlignToOuterLeft()        { alignSelectOrAllElements(POSITION_X.LEFT, POSITION_Y.NOT_SET, true); }
-function menuAlignToOuterRight()       { alignSelectOrAllElements(POSITION_X.RIGHT, POSITION_Y.NOT_SET, true); }
-function menuAlignToOuterTop()         { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.TOP, true); }
-function menuAlignToOuterBottom()      { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.BOTTOM, true); }
-function menuAlignToVerticalCenter()   { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.CENTER, false); }
-function menuAlignToHorizontalCenter() { alignSelectOrAllElements(POSITION_X.CENTER, POSITION_Y.NOT_SET, false); }
+function menuAlignToInnerLeft()        { alignSelectOrAllElements(POSITION_X.LEFT,    POSITION_Y.NOT_SET, false); }
+function menuAlignToInnerRight()       { alignSelectOrAllElements(POSITION_X.RIGHT,   POSITION_Y.NOT_SET, false); }
+function menuAlignToInnerTop()         { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.TOP,     false); }
+function menuAlignToInnerBottom()      { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.BOTTOM,  false); }
+function menuAlignToOuterLeft()        { alignSelectOrAllElements(POSITION_X.LEFT,    POSITION_Y.NOT_SET, true); }
+function menuAlignToOuterRight()       { alignSelectOrAllElements(POSITION_X.RIGHT,   POSITION_Y.NOT_SET, true); }
+function menuAlignToOuterTop()         { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.TOP,     true); }
+function menuAlignToOuterBottom()      { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.BOTTOM,  true); }
+function menuAlignToVerticalCenter()   { alignSelectOrAllElements(POSITION_X.NOT_SET, POSITION_Y.CENTER,  false); }
+function menuAlignToHorizontalCenter() { alignSelectOrAllElements(POSITION_X.CENTER,  POSITION_Y.NOT_SET, false); }
 
 function menuInspectShapeColor() { inspectShapeColor(); }
 
-function menuSetTransparency0()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0   ); }); }
-function menuSetTransparency10()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.1 ); }); }
-function menuSetTransparency25()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.25); }); }
-function menuSetTransparency33()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.33); }); }
-function menuSetTransparency50()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.5 ); }); }
-function menuSetTransparency66()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.66); }); }
-function menuSetTransparency75()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.75); }); }
-function menuSetTransparency90()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 0.9 ); }); }
-function menuSetTransparency100() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setAlphaToShape(s, 1   ); }); }
+function menuSetTransparency0()   { applyAlphaToSelection(0); }
+function menuSetTransparency10()  { applyAlphaToSelection(0.1); }
+function menuSetTransparency25()  { applyAlphaToSelection(0.25); }
+function menuSetTransparency33()  { applyAlphaToSelection(0.33); }
+function menuSetTransparency50()  { applyAlphaToSelection(0.5); }
+function menuSetTransparency66()  { applyAlphaToSelection(0.66); }
+function menuSetTransparency75()  { applyAlphaToSelection(0.75); }
+function menuSetTransparency90()  { applyAlphaToSelection(0.9); }
+function menuSetTransparency100() { applyAlphaToSelection(1); }
 
-function menuSetColorSwap()        { withSelectedOrAllShapesOrGroupsRecursively(function(s) {           swapColorsOnShape(s); }); }
-function menuSetColorInverse()     { withSelectedOrAllShapesOrGroupsRecursively(function(s) {         invertColorsOnShape(s); }); }
-function menuSetColorMaxContrast() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { setMaxContrastToTextOnShape(s); }); }
+function menuSetColorSwap()        { withSelectedOrAllShapesOrGroupsRecursively((s) => swapColorsOnShape(s)); }
+function menuSetColorInverse()     { withSelectedOrAllShapesOrGroupsRecursively((s) => invertColorsOnShape(s)); }
+function menuSetColorMaxContrast() { withSelectedOrAllShapesOrGroupsRecursively((s) => setMaxContrastToTextOnShape(s)); }
 
-function menuSetColorSaturationMinus33() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.33, false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationMinus10() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.1,  false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationMinus5()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.05, false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationPlus5()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.05, false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationPlus10()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.1,  false, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationPlus33()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33, false, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationMinus33() { applyHslToSelection(-0.33, false, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationMinus10() { applyHslToSelection(-0.1,  false, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationMinus5()  { applyHslToSelection(-0.05, false, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationPlus5()   { applyHslToSelection( 0.05, false, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationPlus10()  { applyHslToSelection( 0.1,  false, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationPlus33()  { applyHslToSelection( 0.33, false, HSL_COMPONENT.SATURATION); }
 
-function menuSetColorSaturationAbs0()     { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0,     true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs10()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.10,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs25()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.25,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs33()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs50()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.5,   true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs66()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.66,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs75()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.75,  true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs90()    { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.9,   true, HSL_COMPONENT.SATURATION); }); }
-function menuSetColorSaturationAbs100()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  1.0,   true, HSL_COMPONENT.SATURATION); }); }
+function menuSetColorSaturationAbs0()   { applyHslToSelection(0,    true, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationAbs10()  { applyHslToSelection(0.1,  true, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationAbs25()  { applyHslToSelection(0.25, true, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationAbs33()  { applyHslToSelection(0.33, true, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationAbs50()  { applyHslToSelection(0.5,  true, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationAbs66()  { applyHslToSelection(0.66, true, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationAbs75()  { applyHslToSelection(0.75, true, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationAbs90()  { applyHslToSelection(0.9,  true, HSL_COMPONENT.SATURATION); }
+function menuSetColorSaturationAbs100() { applyHslToSelection(1.0,  true, HSL_COMPONENT.SATURATION); }
 
-function menuSetColorLuminosityMinus33() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.33, false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityMinus10() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.1,  false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityMinus5()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, -0.05, false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityPlus5()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.05, false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityPlus10()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.1,  false, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityPlus33()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33, false, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityMinus33() { applyHslToSelection(-0.33, false, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityMinus10() { applyHslToSelection(-0.1,  false, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityMinus5()  { applyHslToSelection(-0.05, false, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityPlus5()   { applyHslToSelection( 0.05, false, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityPlus10()  { applyHslToSelection( 0.1,  false, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityPlus33()  { applyHslToSelection( 0.33, false, HSL_COMPONENT.LUMINOSITY); }
 
-function menuSetColorLuminosityAbs10()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.10,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs25()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.25,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs33()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.33,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs50()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.5,   true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs66()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.66,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs75()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.75,  true, HSL_COMPONENT.LUMINOSITY); }); }
-function menuSetColorLuminosityAbs90()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  0.9,   true, HSL_COMPONENT.LUMINOSITY); }); }
+function menuSetColorLuminosityAbs10() { applyHslToSelection(0.1,  true, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityAbs25() { applyHslToSelection(0.25, true, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityAbs33() { applyHslToSelection(0.33, true, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityAbs50() { applyHslToSelection(0.5,  true, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityAbs66() { applyHslToSelection(0.66, true, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityAbs75() { applyHslToSelection(0.75, true, HSL_COMPONENT.LUMINOSITY); }
+function menuSetColorLuminosityAbs90() { applyHslToSelection(0.9,  true, HSL_COMPONENT.LUMINOSITY); }
 
-function menuSetColorHueMinus30() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  -30/360, false, HSL_COMPONENT.HUE); }); }
-function menuSetColorHueMinus15() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  -15/360, false, HSL_COMPONENT.HUE); }); }
-function menuSetColorHuePlus15()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,   15/360, false, HSL_COMPONENT.HUE); }); }
-function menuSetColorHuePlus30()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,   30/360, false, HSL_COMPONENT.HUE); }); }
+function menuSetColorHueMinus30() { applyHslToSelection(-30 / 360, false, HSL_COMPONENT.HUE); }
+function menuSetColorHueMinus15() { applyHslToSelection(-15 / 360, false, HSL_COMPONENT.HUE); }
+function menuSetColorHuePlus15()  { applyHslToSelection( 15 / 360, false, HSL_COMPONENT.HUE); }
+function menuSetColorHuePlus30()  { applyHslToSelection( 30 / 360, false, HSL_COMPONENT.HUE); }
 
-function menuSetColorHue0()   { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,   0/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue30()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  30/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue60()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  60/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue90()  { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s,  90/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue120() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 120/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue150() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 150/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue180() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 180/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue210() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 210/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue240() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 240/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue270() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 270/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue300() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 300/360, true, HSL_COMPONENT.HUE); }); }
-function menuSetColorHue330() { withSelectedOrAllShapesOrGroupsRecursively(function(s) { changeHSL(s, 330/360, true, HSL_COMPONENT.HUE); }); }
+function menuSetColorHue0()   { applyHslToSelection(  0 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue30()  { applyHslToSelection( 30 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue60()  { applyHslToSelection( 60 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue90()  { applyHslToSelection( 90 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue120() { applyHslToSelection(120 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue150() { applyHslToSelection(150 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue180() { applyHslToSelection(180 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue210() { applyHslToSelection(210 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue240() { applyHslToSelection(240 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue270() { applyHslToSelection(270 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue300() { applyHslToSelection(300 / 360, true, HSL_COMPONENT.HUE); }
+function menuSetColorHue330() { applyHslToSelection(330 / 360, true, HSL_COMPONENT.HUE); }
 
 function menuCenterOnPage() {
-  var pageRef = fakePageAsReferenceElement();
-  withSelectedOrAllElements(function(e) { alignShape(pageRef, e, POSITION_X.CENTER, POSITION_Y.CENTER, false); });
+  const pageRef = fakePageAsReferenceElement();
+  withSelectedOrAllElements((e) => alignShape(pageRef, e, POSITION_X.CENTER, POSITION_Y.CENTER, false));
 }
 
 function menuFlipH()  { flipLastTwoSelectedElements(true,  false); }
-function menuFlipV()  { flipLastTwoSelectedElements(false, true);  }
-function menuFlipHV() { flipLastTwoSelectedElements(true,  true);  }
+function menuFlipV()  { flipLastTwoSelectedElements(false, true); }
+function menuFlipHV() { flipLastTwoSelectedElements(true,  true); }
 
 function menuShowAboutPrompt() {
-  var message = SLIDES_POWER_TOYS + " is a simple, free and open source extension that adds some handy functions to Google Slides and make it behave like Microsoft PowerPoint.\n\nTHESE CAPABILITIES ARE PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google.\n\nFor user's guide, license and to report an issue, refer to the website at http://carlosmendonca.github.io/Slides-Power-Toys.";
-  var ui = SlidesApp.getUi();
-  ui.alert(
-    SLIDES_POWER_TOYS + " v" + VERSION,
-    message,
-    ui.ButtonSet.OK);
+  const message =
+    SLIDES_POWER_TOYS +
+    ' is a simple, free and open source extension that adds some handy functions to Google Slides and makes it behave like Microsoft PowerPoint.\n\n' +
+    'THESE CAPABILITIES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. Use them at your own risk as they are NOT endorsed nor supported by Google.\n\n' +
+    "For user's guide, license and to report an issue, refer to the website at https://carlosmendonca.github.io/Slides-Power-Toys.";
+  const ui = SlidesApp.getUi();
+  ui.alert(SLIDES_POWER_TOYS + ' v' + VERSION, message, ui.ButtonSet.OK);
 }
 
-// === MENU AUX FUNCTIONS
+// === MENU AUX FUNCTIONS ===
 function flipLastTwoSelectedElements(shouldFlipH, shouldFlipV) {
-  var selectedElements = getSelectedElementsOnPage(false);
+  const selectedElements = getSelectedElementsOnPage(false);
 
-  if (selectedElements.length < 2) { // need two or more elements to flip
-    SlidesApp.getUi().alert(
+  if (selectedElements.length < 2) {
+    const ui = SlidesApp.getUi();
+    ui.alert(
       SLIDES_POWER_TOYS,
-      "Select two elements to flip their position.",
-      SlidesApp.getUi().ButtonSet.OK);
+      'Select two elements to flip their position.',
+      ui.ButtonSet.OK
+    );
     return;
   }
-  
-  flipTwoElements(selectedElements.pop(), selectedElements.pop(), shouldFlipH, shouldFlipV); // order of elements does not matter
+
+  flipTwoElements(selectedElements.pop(), selectedElements.pop(), shouldFlipH, shouldFlipV);
 }
 
 function adjoinSelectedElements(shouldAdjoinInHorizontalDirection, shouldCenterOnFirst, paddingPoints) {
-  var elementArray = getSelectedElementsOnPage(false); // will not fallback to all elements on page, but maybe revist this later...
+  let elementArray = getSelectedElementsOnPage(false);
 
-  if (elementArray.length < 2) { // will only adjoin multiple elements
-    SlidesApp.getUi().alert(
+  if (elementArray.length < 2) {
+    const ui = SlidesApp.getUi();
+    ui.alert(
       SLIDES_POWER_TOYS,
-      "Select two or more elements to adjoin (combine by bringing together).",
-      SlidesApp.getUi().ButtonSet.OK);
+      'Select two or more elements to adjoin (combine by bringing together).',
+      ui.ButtonSet.OK
+    );
     return;
   }
-  
-  var referenceElement = elementArray.pop(); // taking the reference element out since we'll sort the selection array
-  
+
+  const referenceElement = elementArray.pop();
+
   // Pre-fetch sort keys (Schwartzian transform) to avoid O(N log N) RPC calls inside .sort().
   // Sorting by leftmost or topmost preserves on-screen order since Google Slides does not guarantee selection order.
-  var keyed = elementArray.map(function(el) {
-    return {
-      el: el,
-      pos: shouldAdjoinInHorizontalDirection ? el.getLeft() : el.getTop()
-    };
-  });
-  keyed.sort(function(a, b) { return a.pos - b.pos; });
-  elementArray = keyed.map(function(item) { return item.el; });
-  
-  elementArray.unshift(referenceElement); // putting the reference element back in, but at the beginning of the array since the adjoin loop below uses element 0 as anchor
-  var centerRef = shouldCenterOnFirst ? cacheElementBounds(referenceElement) : null;
-  
-  for (var i = 1; i < elementArray.length; i++) {
+  const keyed = elementArray.map((el) => ({
+    el,
+    pos: shouldAdjoinInHorizontalDirection ? el.getLeft() : el.getTop(),
+  }));
+  keyed.sort((a, b) => a.pos - b.pos);
+  elementArray = keyed.map((item) => item.el);
+
+  elementArray.unshift(referenceElement);
+  const centerRef = shouldCenterOnFirst ? cacheElementBounds(referenceElement) : null;
+
+  for (let i = 1; i < elementArray.length; i++) {
     adjoinTwoElements(
-      elementArray[i-1],
+      elementArray[i - 1],
       elementArray[i],
       shouldAdjoinInHorizontalDirection,
       centerRef,
-      paddingPoints);
+      paddingPoints
+    );
   }
 }
 
 function resizeElementsToLastSelected(copyWidth, copyHeight, copyRotation) {
-  var elementArray = getSelectedElementsOnPage(false);
+  const elementArray = getSelectedElementsOnPage(false);
 
   if (elementArray.length < 2) {
-    var ui = SlidesApp.getUi();
+    const ui = SlidesApp.getUi();
     ui.alert(
       SLIDES_POWER_TOYS,
-      "Select two or more elements to resize or rotate based on attributes of the last selected element.",
-      ui.ButtonSet.OK);
-    return; // no selection array or just one element in selection, so no point in continuing
+      'Select two or more elements to resize or rotate based on attributes of the last selected element.',
+      ui.ButtonSet.OK
+    );
+    return;
   }
 
-  var referenceElement = elementArray.pop();
-  var refWidth = copyWidth ? referenceElement.getWidth() : 0;
-  var refHeight = copyHeight ? referenceElement.getHeight() : 0;
-  var refRotation = copyRotation ? referenceElement.getRotation() : 0;
-  
-  elementArray.forEach(function(e) {
+  const referenceElement = elementArray.pop();
+  const refWidth = copyWidth ? referenceElement.getWidth() : 0;
+  const refHeight = copyHeight ? referenceElement.getHeight() : 0;
+  const refRotation = copyRotation ? referenceElement.getRotation() : 0;
+
+  elementArray.forEach((e) => {
     if ((copyWidth || copyHeight) && canResizeElement(e)) {
-      if (copyWidth)  e.setWidth(refWidth);
+      if (copyWidth) e.setWidth(refWidth);
       if (copyHeight) e.setHeight(refHeight);
     }
     if (copyRotation && canRotateElement(e)) e.setRotation(refRotation);
@@ -341,78 +355,70 @@ function resizeElementsToLastSelected(copyWidth, copyHeight, copyRotation) {
 }
 
 function alignSelectOrAllElements(positionX, positionY, isOuterEdge) {
-  var elementArray = getSelectedElementsOnPage(false);
-  var referenceElement;
+  let elementArray = getSelectedElementsOnPage(false);
+  let referenceElement;
 
   switch (elementArray.length) {
-    case 0: // no elements are selected, so fallback to getting all elements and position reference will be the page
-        elementArray = getSelectedElementsOnPage(true);
-        referenceElement = fakePageAsReferenceElement();
+    case 0: // fallback to all elements on page, aligned relative to page
+      elementArray = getSelectedElementsOnPage(true);
+      referenceElement = fakePageAsReferenceElement();
       break;
-    case 1: // only 1 element was selected, so position reference is the page
-        referenceElement = fakePageAsReferenceElement();
+    case 1: // single element aligned relative to page
+      referenceElement = fakePageAsReferenceElement();
       break;
-    default: // multiple elements were selected, so position reference is the last one
-        referenceElement = cacheElementBounds(elementArray.pop());
+    default: // multiple elements aligned relative to last selected element
+      referenceElement = cacheElementBounds(elementArray.pop());
       break;
   }
 
-  elementArray.forEach(function(e) { alignShape(referenceElement, e, positionX, positionY, isOuterEdge); });
+  elementArray.forEach((e) => alignShape(referenceElement, e, positionX, positionY, isOuterEdge));
 }
 
 function inspectShapeColor() {
-  var ui = SlidesApp.getUi();
-  var selectedShapes = getSelectedElementsOnPage(false)
-    .filter(function(e) { return e.getPageElementType() === SlidesApp.PageElementType.SHAPE; })
-    .map   (function(e) { return e.asShape(); });
+  const ui = SlidesApp.getUi();
+  const selectedShapes = getSelectedElementsOnPage(false)
+    .filter((e) => e.getPageElementType() === SlidesApp.PageElementType.SHAPE)
+    .map((e) => e.asShape());
 
-  if (selectedShapes.length === 0) { // need one shape in the selection array to inspect the color of that which was selected last
-    ui.alert(
-      SLIDES_POWER_TOYS,
-      "No individual shapes selected.",
-      ui.ButtonSet.OK);
+  if (selectedShapes.length === 0) {
+    ui.alert(SLIDES_POWER_TOYS, 'No individual shapes selected.', ui.ButtonSet.OK);
     return;
   }
 
-  var shape = selectedShapes[selectedShapes.length - 1]; // get shape which was selected last
-  var fill = shape.getFill();
-  if (fill.getType() !== SlidesApp.FillType.SOLID) { // must have a solid fill
-    ui.alert(
-      SLIDES_POWER_TOYS,
-      "Shape does not have a solid fill.",
-      ui.ButtonSet.OK);
+  const shape = selectedShapes[selectedShapes.length - 1];
+  const fill = shape.getFill();
+  if (fill.getType() !== SlidesApp.FillType.SOLID) {
+    ui.alert(SLIDES_POWER_TOYS, 'Shape does not have a solid fill.', ui.ButtonSet.OK);
     return;
   }
 
-  var solidFill = fill.getSolidFill();
-  var shapeColor = solidFill.getColor();
-  var colorType = shapeColor.getColorType();
-  var rgbColor = resolveRgbColor(shape, shapeColor);
+  const solidFill = fill.getSolidFill();
+  const shapeColor = solidFill.getColor();
+  const colorType = shapeColor.getColorType();
+  const rgbColor = resolveRgbColor(shape, shapeColor);
   if (!rgbColor) {
-    ui.alert(
-      SLIDES_POWER_TOYS,
-      "Shape fill color type is not supported.",
-      ui.ButtonSet.OK);
+    ui.alert(SLIDES_POWER_TOYS, 'Shape fill color type is not supported.', ui.ButtonSet.OK);
     return;
   }
-  var hslColorVector = convertRgbColorToHslColorVector(rgbColor);
-  var lchColorVector = convertRgbColorVectorToLchColorVector(convertRgbColorToRgbColorVector(rgbColor));
 
-  var message = "RGB: " + rgbColor.getRed() + ", " + rgbColor.getGreen() + ", " + rgbColor.getBlue() + " (" + rgbColor.asHexString() + ")";
-  message += "\nHSL: " + (hslColorVector[0]*360).toFixed(1) + "°, " + (hslColorVector[1]*100).toFixed(1) + "%, " + (hslColorVector[2]*100).toFixed(1) + "%";
-  message += "\nLCH: " + (lchColorVector[0]).toFixed(1) + "%, " + lchColorVector[1].toFixed(1) + ", " + lchColorVector[2].toFixed(1) + "°";
-  message += "\nTransparency: " + ((1 - solidFill.getAlpha())*100).toFixed(1) + "%";
+  const hslColorVector = convertRgbColorToHslColorVector(rgbColor);
+  const lchColorVector = convertRgbColorVectorToLchColorVector(convertRgbColorToRgbColorVector(rgbColor));
 
-  if (colorType === SlidesApp.ColorType.THEME)
+  let message =
+    'RGB: ' + rgbColor.getRed() + ', ' + rgbColor.getGreen() + ', ' + rgbColor.getBlue() + ' (' + rgbColor.asHexString() + ')';
+  message +=
+    '\nHSL: ' + (hslColorVector[0] * 360).toFixed(1) + '°, ' + (hslColorVector[1] * 100).toFixed(1) + '%, ' + (hslColorVector[2] * 100).toFixed(1) + '%';
+  message +=
+    '\nLCH: ' + lchColorVector[0].toFixed(1) + '%, ' + lchColorVector[1].toFixed(1) + ', ' + lchColorVector[2].toFixed(1) + '°';
+  message += '\nTransparency: ' + ((1 - solidFill.getAlpha()) * 100).toFixed(1) + '%';
+
+  if (colorType === SlidesApp.ColorType.THEME) {
     message += "\n\nThis is one of the deck's theme colors: '" + shapeColor.asThemeColor().getThemeColorType() + "'.";
+  }
 
-  if (selectedShapes.length > 1)
-    message += "\n\nMore than one shape was selected. Showing the color information of the last one.";
+  if (selectedShapes.length > 1) {
+    message += '\n\nMore than one shape was selected. Showing the color information of the last one.';
+  }
 
-  ui.alert(
-    SLIDES_POWER_TOYS,
-    message,
-    ui.ButtonSet.OK);
-
-  return;
+  ui.alert(SLIDES_POWER_TOYS, message, ui.ButtonSet.OK);
 }

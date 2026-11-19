@@ -574,6 +574,15 @@ function createGasEnv(options = {}) {
     vm.runInContext(code, context, { filename: filePath });
   }
 
+  // Expose top-level lexical `const` bindings on `context` for unit test convenience.
+  Object.assign(
+    context,
+    vm.runInContext(
+      '({ VERSION, PPI, POSITION_X, POSITION_Y, HSL_COMPONENT, SLIDES_POWER_TOYS })',
+      context
+    )
+  );
+
   return {
     ctx: context,
     SlidesApp,
