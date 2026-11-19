@@ -464,12 +464,13 @@ function gastTestRunner() {
     t.approxEqual(calculateRelativeLuminosity([0, 0, 0], [127, 127, 127]), 5.2446, 0.001);
   });
 
-  test('SET TRANSPARENCY AND SWAP COLORS', function(t) {
+  test('SET TRANSPARENCY AND SWAP COLORS (PRESERVING ALPHA & MULTI-RUN)', function(t) {
     withTestSlide(slidesDocument, function(testSlide) {
       var shape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1);
       shape.getFill().setSolidFill(255, 0, 0);
-      shape.getText().setText('abc');
-      shape.getText().getTextStyle().setForegroundColor(0, 255, 0);
+      shape.getText().setText('hello world');
+      shape.getText().getRange(0, 5).getTextStyle().setForegroundColor(0, 255, 0);
+      shape.getText().getRange(6, 11).getTextStyle().setBold(true);
 
       shape.select();
       menuSetTransparency50();
@@ -477,7 +478,50 @@ function gastTestRunner() {
 
       menuSetColorSwap();
       t.ok(isGreen(shape.getFill().getSolidFill().getColor().asRgbColor()), 'Fill swapped to green');
-      t.ok(isRed(shape.getText().getTextStyle().getForegroundColor().asRgbColor()), 'Text swapped to red');
+      t.approxEqual(shape.getFill().getSolidFill().getAlpha(), 0.5, 0.01, 'Swap preserves fill alpha');
+
+      var runs = shape.getText().getRuns();
+      for (var i = 0; i < runs.length; i++) {
+        if (runs[i].asString().trim().length > 0) {
+          t.ok(isRed(runs[i].getTextStyle().getForegroundColor().asRgbColor()), 'Run ' + i + ' swapped to red');
+        }
+      }
+    });
+  });
+
+  test('HUE WRAPPING AND ALPHA PRESERVATION ON COLOR TRANSFORMS', function(t) {
+    withTestSlide(slidesDocument, function(testSlide) {
+      var shape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1);
+      shape.getFill().setSolidFill(255, 0, 0, 0.6); // Red at 0° with 0.6 alpha
+
+      shape.select();
+      menuSetColorHueMinus30(); // Should wrap to 330° (255, 0, 128), NOT clamp at 0°
+
+      var wrappedRgb = shape.getFill().getSolidFill().getColor().asRgbColor();
+      t.equal(wrappedRgb.getRed(), 255, 'Wrapped hue -30° R');
+      t.equal(wrappedRgb.getGreen(), 0, 'Wrapped hue -30° G');
+      t.approxEqual(wrappedRgb.getBlue(), 128, 2, 'Wrapped hue -30° B');
+      t.approxEqual(shape.getFill().getSolidFill().getAlpha(), 0.6, 0.01, 'Hue shift preserves alpha');
+
+      menuSetColorInverse();
+      t.approxEqual(shape.getFill().getSolidFill().getAlpha(), 0.6, 0.01, 'Invert preserves alpha');
+    });
+  });
+
+  test('SNAP EDGE CASES: THIN SHAPE AND TABLE', function(t) {
+    withTestSlide(slidesDocument, function(testSlide) {
+      var thin = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, 0.02 * U1, 0.02 * U1);
+      var table = testSlide.insertTable(2, 2);
+
+      thin.select();
+      table.select(false);
+
+      menuSnapDimension();
+      t.ok(thin.getWidth() >= 0.09 * U1, 'Thin shape width clamped to positive minimum');
+      t.ok(thin.getHeight() >= 0.09 * U1, 'Thin shape height clamped to positive minimum');
+
+      menuZeroRotation();
+      t.ok(true, 'Straightening selection containing a table does not throw');
     });
   });
 

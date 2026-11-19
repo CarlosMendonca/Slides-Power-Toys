@@ -28,32 +28,32 @@ function withSelectedOrAllShapesOrGroupsRecursively(doStuff) {
 
 function withShapesOrGroupsRecursively(pageElementArray, doStuff) {
   var groupsArray = pageElementArray
-    .filter (function(e) { return e.getPageElementType() == SlidesApp.PageElementType.GROUP; });
-  
+    .filter(function(e) { return e.getPageElementType() == SlidesApp.PageElementType.GROUP; });
+
   var elementsArray = pageElementArray
-    .filter (function(e) { return e.getPageElementType() == SlidesApp.PageElementType.SHAPE; });
-  
-  // This cannot be achieved programmatically (hence, cannot be tested), but in
-  //   the UI is possible to select multiple elemments inside the group. In
-  //   that case, the selection array contains the individual elements *and*
-  //   the parent group, so to only apply the change (doStuff) to the selected
-  //   elements intead of the entire group, we need to skip the group
-  //   processing. The condition below describes only one group selected and
-  //   the any of the elments belong to it.
-  var shouldSkipGroup = groupsArray.length == 1
-    && elementsArray.length > 0
-    && elementsArray[0].getParentGroup() != null
-    && elementsArray[0].getParentGroup().getObjectId() == groupsArray[0].getObjectId();
+    .filter(function(e) { return e.getPageElementType() == SlidesApp.PageElementType.SHAPE; });
+
+  // In the Slides UI, selecting individual elements inside a group returns both
+  // the selected children and their ancestor group(s). Track all ancestor group
+  // IDs so we skip recursing into those container groups while still processing
+  // any other independently selected groups.
+  var ancestorGroupIds = new Set();
+  pageElementArray.forEach(function(e) {
+    var parent = e.getParentGroup();
+    while (parent != null) {
+      ancestorGroupIds.add(parent.getObjectId());
+      parent = parent.getParentGroup();
+    }
+  });
 
   // Handle shapes
   elementsArray
     .forEach(function(e) { doStuff(e.asShape()); });
-  
-  if (shouldSkipGroup) return;
-  
-  // Handle groups, recursively
+
+  // Handle groups, recursively (skipping ancestor groups of explicitly selected children)
   groupsArray
-    .forEach(function(e) { withShapesOrGroupsRecursively(e.asGroup().getChildren(), doStuff) });
+    .filter(function(g) { return !ancestorGroupIds.has(g.getObjectId()); })
+    .forEach(function(g) { withShapesOrGroupsRecursively(g.asGroup().getChildren(), doStuff); });
 }
 
 function withSelectedElements(doStuff) {

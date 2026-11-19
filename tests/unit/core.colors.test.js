@@ -31,7 +31,15 @@ describe('core.colors.js', () => {
       assert.equal(transparentShape.getFill().getType(), ENUMS.FillType.NONE);
     });
 
-    it.todo('Phase 3: preserves fill alpha when inverting colors');
+    it('preserves fill alpha when inverting colors', () => {
+      const env = createGasEnv();
+      const shape = env.createShape({ fillColor: [200, 100, 50], fillAlpha: 0.4 });
+
+      env.ctx.invertColorsOnShape(shape);
+
+      assert.deepEqual(getRgb(shape), [55, 155, 205]);
+      assert.equal(shape.getFill().getSolidFill().getAlpha(), 0.4);
+    });
   });
 
   describe('changeHSL', () => {
@@ -68,7 +76,24 @@ describe('core.colors.js', () => {
       assert.deepEqual(getRgb(shape), [0, 0, 0]);
     });
 
-    it.todo('Phase 3: wraps Hue modulo 360° instead of clamping and preserves fill alpha');
+    it('wraps Hue modulo 360° instead of clamping and preserves fill alpha', () => {
+      const env = createGasEnv();
+      const { HSL_COMPONENT } = env.ctx;
+
+      // Red (0°) minus 30° should wrap to 330° (deep pink: 255, 0, 128), NOT stay Red!
+      const red = env.createShape({ fillColor: [255, 0, 0], fillAlpha: 0.6 });
+      env.ctx.changeHSL(red, -30 / 360, false, HSL_COMPONENT.HUE);
+      assert.deepEqual(getRgb(red), [255, 0, 128]);
+      assert.equal(red.getFill().getSolidFill().getAlpha(), 0.6);
+
+      // 330° (quantized in 8-bit RGB as [255, 0, 128] ≈ 329.88°) plus 60° wraps past 360° to ~30° (orange)
+      env.ctx.changeHSL(red, 60 / 360, false, HSL_COMPONENT.HUE);
+      const [r, g, b] = getRgb(red);
+      assert.equal(r, 255);
+      assert.ok(Math.abs(g - 128) <= 1, `Expected G ≈ 128, got ${g}`);
+      assert.equal(b, 0);
+      assert.equal(red.getFill().getSolidFill().getAlpha(), 0.6);
+    });
   });
 
   describe('setMaxContrastToTextOnShape', () => {
@@ -127,6 +152,33 @@ describe('core.colors.js', () => {
       assert.deepEqual(getRgb(noText), [10, 20, 30]);
     });
 
-    it.todo('Phase 3: updates all text runs, handles null/unsupported textColor, and preserves fill alpha');
+    it('updates all text runs, handles null/unsupported textColor, and preserves fill alpha', () => {
+      const env = createGasEnv();
+      const multiRun = env.createShape({
+        fillColor: [10, 20, 30],
+        fillAlpha: 0.75,
+        runs: [
+          { text: 'Hello ', color: [200, 210, 220] },
+          { text: 'World', color: [50, 60, 70] },
+        ],
+      });
+
+      env.ctx.swapColorsOnShape(multiRun);
+
+      assert.deepEqual(getRgb(multiRun), [200, 210, 220]);
+      assert.equal(multiRun.getFill().getSolidFill().getAlpha(), 0.75);
+      for (const run of multiRun.getText().getRuns()) {
+        const fg = run.getTextStyle().getForegroundColor().asRgbColor();
+        assert.deepEqual([fg.getRed(), fg.getGreen(), fg.getBlue()], [10, 20, 30]);
+      }
+
+      // Null foreground color should safely no-op without throwing
+      const nullFg = env.createShape({
+        fillColor: [10, 20, 30],
+        runs: [{ text: 'inherited', color: null }],
+      });
+      assert.doesNotThrow(() => env.ctx.swapColorsOnShape(nullFg));
+      assert.deepEqual(getRgb(nullFg), [10, 20, 30]);
+    });
   });
 });

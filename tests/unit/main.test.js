@@ -31,6 +31,13 @@ describe('main.js', () => {
           `Menu item handler "${fnName}" is not a global function`
         );
       }
+
+      // Verify Hue submenu labels match hue wheel direction
+      const hueMenu = env.ui.addonMenus[0].items.find(
+        (i) => i.type === 'submenu' && i.menu.caption === 'Set color hue'
+      ).menu;
+      const subCaptions = hueMenu.items.filter((i) => i.type === 'submenu').map((i) => i.menu.caption);
+      assert.deepEqual(subCaptions, ['Decrease (towards pink)', 'Increase (towards orange)']);
     });
   });
 
@@ -147,6 +154,19 @@ describe('main.js', () => {
       assert.match(env.ui.alerts[1].prompt, /does not have a solid fill/);
     });
 
-    it.todo('Phase 3: labels LCH output as "LCH:" instead of "HCL:"');
+    it('labels LCH output as "LCH:" instead of "HCL:" and handles unsupported fill color', () => {
+      const env = createGasEnv();
+      const shape = env.createShape({ fillColor: [255, 0, 0] });
+
+      env.setSelection({ elements: [shape] });
+      env.ctx.menuInspectShapeColor();
+      assert.match(env.ui.alerts[0].prompt, /\nLCH: /);
+      assert.doesNotMatch(env.ui.alerts[0].prompt, /\nHCL: /);
+
+      const unsupported = env.createShape({ fillColor: { type: ENUMS.ColorType.UNSUPPORTED } });
+      env.setSelection({ elements: [unsupported] });
+      env.ctx.menuInspectShapeColor();
+      assert.match(env.ui.alerts[1].prompt, /not supported/);
+    });
   });
 });

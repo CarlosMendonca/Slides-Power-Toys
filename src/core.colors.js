@@ -19,11 +19,16 @@ function invertColorsOnShape(shape) {
         return;
 
     var rgbColor = getRgbColorFromShapeColor(shape);
+    if (!rgbColor)
+        return;
+
+    var alpha = shape.getFill().getSolidFill().getAlpha();
 
     shape.getFill().setSolidFill(
         255 - rgbColor.getRed(),
         255 - rgbColor.getGreen(),
-        255 - rgbColor.getBlue());
+        255 - rgbColor.getBlue(),
+        alpha);
 }
 
 function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
@@ -31,30 +36,40 @@ function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
         return;
 
     var rgbColor = getRgbColorFromShapeColor(shape);
+    if (!rgbColor)
+        return;
+
+    var alpha = shape.getFill().getSolidFill().getAlpha();
     var hslColorVector = convertRgbColorToHslColorVector(rgbColor);
 
     var baseValue = isAbsoluteChange ? 0 : hslColorVector[hslComponent];
-    hslColorVector[hslComponent] = clamp(baseValue + valueChange, 0, 1);
+    if (hslComponent === HSL_COMPONENT.HUE) {
+        hslColorVector[hslComponent] = (((baseValue + valueChange) % 1) + 1) % 1;
+    } else {
+        hslColorVector[hslComponent] = clamp(baseValue + valueChange, 0, 1);
+    }
 
     var rgbColorVector = convertHslColorVectorToRgbColorVector(hslColorVector);
 
     shape.getFill().setSolidFill(
         rgbColorVector[0],
         rgbColorVector[1],
-        rgbColorVector[2]
+        rgbColorVector[2],
+        alpha
     );
 }
   
 var setMaxContrastToTextOnShape = function(shape) { 
     if (doesShapeHaveSolidFill(shape) && doesShapeHaveText(shape)) { // must have SOLID fill and some text
-        var blackVsFillRelativeLuminosty = calculateRelativeLuminosity(
-            convertRgbColorToRgbColorVector(getRgbColorFromShapeColor(shape)),
-            [0,0,0]);
-        var whiteVsFillRelativeLuminosty = calculateRelativeLuminosity(
-            convertRgbColorToRgbColorVector(getRgbColorFromShapeColor(shape)),
-            [255,255,255]);
+        var rgbColor = getRgbColorFromShapeColor(shape);
+        if (!rgbColor)
+            return;
+
+        var fillRgbVector = convertRgbColorToRgbColorVector(rgbColor);
+        var blackVsFillContrast = calculateContrastRatio(fillRgbVector, [0, 0, 0]);
+        var whiteVsFillContrast = calculateContrastRatio(fillRgbVector, [255, 255, 255]);
         
-        if (blackVsFillRelativeLuminosty > whiteVsFillRelativeLuminosty)
+        if (blackVsFillContrast > whiteVsFillContrast)
             shape.getText().getTextStyle().setForegroundColor(0, 0, 0);
         else
             shape.getText().getTextStyle().setForegroundColor(255, 255, 255);
@@ -70,10 +85,23 @@ function setAlphaToShape(shape, amount) {
     
 function swapColorsOnShape(shape) {
     if (doesShapeHaveSolidFill(shape) && doesShapeHaveText(shape)) { // must have SOLID fill and some text
-        var textStyle = shape.getText().getRuns()[0].getTextStyle();
-        var textColor = textStyle.getForegroundColor();
-        
-        textStyle.setForegroundColor(shape.getFill().getSolidFill().getColor());
-        shape.getFill().setSolidFill(textColor);
+        var textRange = shape.getText();
+        var runs = textRange.getRuns();
+        if (!runs || runs.length === 0)
+            return;
+
+        var textColor = runs[0].getTextStyle().getForegroundColor();
+        if (!textColor || textColor.getColorType() === SlidesApp.ColorType.UNSUPPORTED)
+            return;
+
+        var solidFill = shape.getFill().getSolidFill();
+        var fillColor = solidFill.getColor();
+        if (!fillColor || fillColor.getColorType() === SlidesApp.ColorType.UNSUPPORTED)
+            return;
+
+        var fillAlpha = solidFill.getAlpha();
+
+        textRange.getTextStyle().setForegroundColor(fillColor);
+        shape.getFill().setSolidFill(textColor, fillAlpha);
     }
 }

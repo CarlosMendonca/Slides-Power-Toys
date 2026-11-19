@@ -12,7 +12,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 | :---: | --- | --- | :---: |
 | 1 | `staging-tests` | Local unit test suite + hardened GasT integration tests | [x] Complete (45 local + 95 Slides pass) |
 | 2 | `staging-devex` | Fix `deploy.sh`, config hygiene, manifest cleanup, JS type checking | [x] Complete |
-| 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [ ] Not started |
+| 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [~] Ready for manual `clasp push` verification |
 | 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [ ] Not started |
 | 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [ ] Not started |
 | 6 | `staging-sidebar` | Interactive Sidebar UI (keeping all existing Menu items) | [ ] Not started |
@@ -77,29 +77,29 @@ This plan breaks down all planned improvements into sequential, self-contained p
 **Why third:** With local tests and type checking in place, fix all identified functional bugs and add regression tests for each.
 
 ### Tasks
-- [ ] **Hue wrapping & menu labels (`src/core.colors.js`, `src/main.js`)**
+- [x] **Hue wrapping & menu labels (`src/core.colors.js`, `src/main.js`)**
   - Wrap `HSL_COMPONENT.HUE` modulo `1` instead of clamping to `[0, 1]` in `changeHSL`.
   - Fix swapped submenu labels `'Decrease (towards orange)'` / `'Increase (towards pink)'` in `onOpen`.
-- [ ] **Preserve fill transparency (`src/core.colors.js`)**
+- [x] **Preserve fill transparency (`src/core.colors.js`)**
   - Read existing `alpha` from `fill.getSolidFill().getAlpha()` and pass it to `setSolidFill(..., alpha)` in `invertColorsOnShape`, `changeHSL`, and `swapColorsOnShape`.
-- [ ] **Fix `swapColorsOnShape` (`src/core.colors.js`)**
+- [x] **Fix `swapColorsOnShape` (`src/core.colors.js`)**
   - Apply the new foreground color across the entire shape text (`shape.getText().getTextStyle().setForegroundColor(...)`) rather than only `getRuns()[0]`.
   - Guard against `null` or `UNSUPPORTED` foreground colors before calling `setSolidFill`.
-- [ ] **Fix `getRgbColorFromShapeColor` (`src/util.js`)**
+- [x] **Fix `getRgbColorFromShapeColor` (`src/util.js`)**
   - Remove implicit global assignment (`return rgbColor = ...`).
-  - Support `SLIDE`, `LAYOUT`, and `MASTER` parent pages via `getPageType()` instead of unconditionally calling `.asSlide()`.
+  - Support `SLIDE`, `LAYOUT`, and `MASTER` parent pages via `parentPage.getColorScheme()` instead of calling `.asSlide()`.
   - Return `null` cleanly for `UNSUPPORTED` colors or missing theme mappings, and guard all callers (`invertColorsOnShape`, `changeHSL`, `setMaxContrastToTextOnShape`, `inspectShapeColor`).
-- [ ] **Fix `inspectShapeColor` (`src/main.js`)**
+- [x] **Fix `inspectShapeColor` (`src/main.js`)**
   - Change `"HCL: "` label to `"LCH: "` to match `[L, C, H]` output order.
   - Handle unsupported color types gracefully with a clear user alert.
-- [ ] **Fix `snapElement` & `menuZeroRotation` (`src/core.js`, `src/main.js`)**
+- [x] **Fix `snapElement` & `menuZeroRotation` (`src/core.js`, `src/main.js`)**
   - Avoid setting width/height to `0` on thin elements (`< 0.05"`), clamping to a safe minimum or skipping zero-length line dimensions.
   - Guard `setRotation` against non-rotatable element types (such as `SlidesApp.PageElementType.TABLE`).
-- [ ] **Fix partial group selection (`src/selection.js`)**
+- [x] **Fix partial group selection (`src/selection.js`)**
   - Replace the single-group `shouldSkipGroup` heuristic in `withShapesOrGroupsRecursively` with ancestor-group ID tracking (`Set`) so selecting children inside nested or multiple groups only modifies the intended shapes.
-- [ ] **Fix WCAG 2.1 contrast calculation (`src/util.js`, `src/util.lch.js`)**
+- [x] **Fix WCAG 2.1 contrast calculation (`src/util.js`, `src/util.lch.js`)**
   - Update linearization threshold from `0.03928` (`<`) to `0.04045` (`<=`), reusing `linSrgb` from `util.lch.js` to eliminate duplication.
-  - Rename `calculateRelativeLuminosity` → `calculateContrastRatio` (keeping a thin alias if needed for test compatibility).
+  - Rename `calculateRelativeLuminosity` → `calculateContrastRatio` (keeping a thin alias for compatibility).
 
 ### Verification
 - All new regression unit tests pass via `npm test`.

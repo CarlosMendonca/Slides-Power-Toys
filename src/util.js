@@ -31,18 +31,20 @@ function calculateLuminosity(color) {
   return (max + min) / 2;
 }
 
-// According to WCAG 2.0 (https://www.w3.org/TR/WCAG20-TECHS/G17.html)
-function calculateRelativeLuminosity(rgbColorVector1, rgbColorVector2) {
-  var sRgbColorVector1 = rgbColorVector1.map((e) => { return e / 255; });
-  var sRgbColorVector2 = rgbColorVector2.map((e) => { return e / 255; });
-  
-  sRgbColorVector1.forEach((e, index, array) => { (e < 0.03928) ? array[index] = e/12.92 : array[index] = Math.pow(((e+0.055)/1.055),2.4); });
-  sRgbColorVector2.forEach((e, index, array) => { (e < 0.03928) ? array[index] = e/12.92 : array[index] = Math.pow(((e+0.055)/1.055),2.4); });
+// According to WCAG 2.1 (https://www.w3.org/TR/WCAG21/#dfn-contrast-ratio)
+function calculateContrastRatio(rgbColorVector1, rgbColorVector2) {
+  var lin1 = linSrgb(rgbColorVector1.map(function(e) { return e / 255; }));
+  var lin2 = linSrgb(rgbColorVector2.map(function(e) { return e / 255; }));
 
-  var L1 = 0.2126 * sRgbColorVector1[0] + 0.7152 * sRgbColorVector1[1] + 0.0722 * sRgbColorVector1[2];
-  var L2 = 0.2126 * sRgbColorVector2[0] + 0.7152 * sRgbColorVector2[1] + 0.0722 * sRgbColorVector2[2];
-  
-  return L1 > L2 ? (L1+0.05)/(L2+0.05) : (L2+0.05)/(L1+0.05);
+  var L1 = 0.2126 * lin1[0] + 0.7152 * lin1[1] + 0.0722 * lin1[2];
+  var L2 = 0.2126 * lin2[0] + 0.7152 * lin2[1] + 0.0722 * lin2[2];
+
+  return L1 > L2 ? (L1 + 0.05) / (L2 + 0.05) : (L2 + 0.05) / (L1 + 0.05);
+}
+
+// Backwards-compatible alias
+function calculateRelativeLuminosity(rgbColorVector1, rgbColorVector2) {
+  return calculateContrastRatio(rgbColorVector1, rgbColorVector2);
 }
 
 function convertHslColorVectorToRgbColorVector(hslColorVector) {
@@ -119,12 +121,24 @@ function clamp(val, min, max) {
 }
 
 function getRgbColorFromShapeColor(shape) {
-  var shapeColor = shape.getFill().getSolidFill().getColor();
-  
-  switch(shapeColor.getColorType()) {
-    case(SlidesApp.ColorType.RGB):
+  var solidFill = shape.getFill().getSolidFill();
+  if (!solidFill) return null;
+
+  var shapeColor = solidFill.getColor();
+  if (!shapeColor) return null;
+
+  switch (shapeColor.getColorType()) {
+    case SlidesApp.ColorType.RGB:
       return shapeColor.asRgbColor();
-    case(SlidesApp.ColorType.THEME):
-      return shape.getParentPage().asSlide().getColorScheme().getConcreteColor(shapeColor.asThemeColor().getThemeColorType()).asRgbColor();
+    case SlidesApp.ColorType.THEME: {
+      var parentPage = shape.getParentPage();
+      if (!parentPage) return null;
+      var concreteColor = parentPage
+        .getColorScheme()
+        .getConcreteColor(shapeColor.asThemeColor().getThemeColorType());
+      return concreteColor ? concreteColor.asRgbColor() : null;
+    }
+    default:
+      return null;
   }
 }

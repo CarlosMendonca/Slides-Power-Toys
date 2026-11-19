@@ -32,7 +32,32 @@ describe('core.js', () => {
       assert.equal(shape.getRotation(), 13);
     });
 
-    it.todo('Phase 3: does not collapse thin elements (< 0.05 in) to zero dimension and guards non-rotatable tables');
+    it('does not collapse thin elements (< 0.05 in) to zero dimension and preserves zero-axis lines', () => {
+      const env = createGasEnv();
+      const PPI = env.ctx.PPI;
+      const thinShape = env.createShape({ width: 0.02 * PPI, height: 0.03 * PPI });
+      const horizontalLine = env.createLine({ width: 2.34 * PPI, height: 0 });
+
+      env.ctx.snapElement(thinShape, false, true, false);
+      assert.ok(Math.abs(thinShape.getWidth() - 0.1 * PPI) < 1e-6);
+      assert.ok(Math.abs(thinShape.getHeight() - 0.1 * PPI) < 1e-6);
+
+      env.ctx.snapElement(horizontalLine, false, true, false);
+      assert.ok(Math.abs(horizontalLine.getWidth() - 2.3 * PPI) < 1e-6);
+      assert.equal(horizontalLine.getHeight(), 0);
+    });
+
+    it('skips rotation on non-rotatable tables in snapElement and menuZeroRotation', () => {
+      const env = createGasEnv();
+      const table = env.createTable({ rotation: 0 });
+      const shape = env.createShape({ rotation: 15.4 });
+
+      assert.doesNotThrow(() => env.ctx.snapElement(table, false, false, true));
+
+      env.setSelection({ elements: [table, shape] });
+      assert.doesNotThrow(() => env.ctx.menuZeroRotation());
+      assert.equal(shape.getRotation(), 0);
+    });
   });
 
   describe('alignShape', () => {

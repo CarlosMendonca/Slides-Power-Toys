@@ -114,6 +114,35 @@ describe('util.js', () => {
       assert.deepEqual([rgb2.getRed(), rgb2.getGreen(), rgb2.getBlue()], [255, 171, 64]);
     });
 
-    it.todo('Phase 3: getRgbColorFromShapeColor supports LAYOUT/MASTER pages and returns null on UNSUPPORTED colors without leaking globals');
+    it('supports LAYOUT/MASTER pages and returns null on UNSUPPORTED colors without leaking globals', () => {
+      const env = createGasEnv();
+      const layoutPage = env.createPage({ pageType: ENUMS.PageType.LAYOUT });
+      const masterPage = env.createPage({ pageType: ENUMS.PageType.MASTER });
+
+      const layoutShape = env.createShape({
+        parentPage: layoutPage,
+        fillColor: ENUMS.ThemeColorType.ACCENT1,
+      });
+      const masterShape = env.createShape({
+        parentPage: masterPage,
+        fillColor: ENUMS.ThemeColorType.ACCENT2,
+      });
+      const unsupportedShape = env.createShape({
+        fillColor: { type: ENUMS.ColorType.UNSUPPORTED },
+      });
+      const unmappedThemeShape = env.createShape({
+        fillColor: ENUMS.ThemeColorType.HYPERLINK,
+      });
+
+      const lRgb = env.ctx.getRgbColorFromShapeColor(layoutShape);
+      assert.deepEqual([lRgb.getRed(), lRgb.getGreen(), lRgb.getBlue()], [255, 171, 64]);
+
+      const mRgb = env.ctx.getRgbColorFromShapeColor(masterShape);
+      assert.deepEqual([mRgb.getRed(), mRgb.getGreen(), mRgb.getBlue()], [33, 150, 243]);
+
+      assert.equal(env.ctx.getRgbColorFromShapeColor(unsupportedShape), null);
+      assert.equal(env.ctx.getRgbColorFromShapeColor(unmappedThemeShape), null);
+      assert.equal('rgbColor' in env.ctx, false, 'Must not leak implicit global rgbColor');
+    });
   });
 });

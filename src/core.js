@@ -14,6 +14,19 @@
 
 // CORE LOGIC
 
+var MIN_SNAP_DIMENSION_INCHES = 0.1;
+
+function canRotateElement(element) {
+  return element.getPageElementType() !== SlidesApp.PageElementType.TABLE;
+}
+
+function snapDimensionPoints(points, isLine) {
+  if (isLine && points === 0) return 0;
+  var snappedInches = roundTo(points / PPI, 1);
+  if (snappedInches <= 0) snappedInches = MIN_SNAP_DIMENSION_INCHES;
+  return snappedInches * PPI;
+}
+
 function snapElement(element, shouldApplyToPosition, shouldApplyToDimension, shouldApplyToRotation) {
   if (shouldApplyToPosition) {
     element.setLeft(roundTo(element.getLeft()/PPI, 1)*PPI);
@@ -21,11 +34,18 @@ function snapElement(element, shouldApplyToPosition, shouldApplyToDimension, sho
   }
   
   if (shouldApplyToDimension) {
-    element.setWidth(roundTo(element.getWidth()/PPI, 1)*PPI);
-    element.setHeight(roundTo(element.getHeight()/PPI, 1)*PPI);
+    var isLine = element.getPageElementType() === SlidesApp.PageElementType.LINE;
+    var width = element.getWidth();
+    var height = element.getHeight();
+    if (!(isLine && width === 0)) {
+      element.setWidth(snapDimensionPoints(width, isLine));
+    }
+    if (!(isLine && height === 0)) {
+      element.setHeight(snapDimensionPoints(height, isLine));
+    }
   }
   
-  if (shouldApplyToRotation)
+  if (shouldApplyToRotation && canRotateElement(element))
     element.setRotation(roundTo(element.getRotation(), 0));
 }
 

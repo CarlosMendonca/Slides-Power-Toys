@@ -70,6 +70,36 @@ describe('selection.js', () => {
       assert.deepEqual(visited, ['c1']);
     });
 
-    it.todo('Phase 3: skips ancestor groups even when multiple groups or top-level shapes are also selected');
+    it('skips ancestor groups even when multiple groups, nested groups, or top-level shapes are also selected', () => {
+      const env = createGasEnv();
+      const topShape = env.createShape({ id: 'top' });
+      const c1 = env.createShape({ id: 'c1', addToPage: false });
+      const c2 = env.createShape({ id: 'c2', addToPage: false });
+      const g1 = env.createGroup([c1, c2], { id: 'g1' });
+
+      const c3 = env.createShape({ id: 'c3', addToPage: false });
+      const c4 = env.createShape({ id: 'c4', addToPage: false });
+      const g2 = env.createGroup([c3, c4], { id: 'g2' });
+
+      // Selected: topShape, c1 inside g1 (so g1 is in selection too), AND all of g2
+      const visited = [];
+      env.ctx.withShapesOrGroupsRecursively([topShape, g1, c1, g2], (shape) => {
+        visited.push(shape.getObjectId());
+      });
+
+      assert.deepEqual(visited, ['top', 'c1', 'c3', 'c4']);
+
+      // Nested group: outer -> inner -> deepChild (selected: [outer, inner, deepChild])
+      const deepChild = env.createShape({ id: 'deep1', addToPage: false });
+      const sibling = env.createShape({ id: 'deep2', addToPage: false });
+      const inner = env.createGroup([deepChild, sibling], { id: 'inner', addToPage: false });
+      const outer = env.createGroup([inner], { id: 'outer' });
+
+      const nestedVisited = [];
+      env.ctx.withShapesOrGroupsRecursively([outer, inner, deepChild], (shape) => {
+        nestedVisited.push(shape.getObjectId());
+      });
+      assert.deepEqual(nestedVisited, ['deep1']);
+    });
   });
 });

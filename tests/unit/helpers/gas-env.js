@@ -454,6 +454,17 @@ function createGasEnv(options = {}) {
     return el;
   };
 
+  const createLine = (opts = {}) => {
+    const el = createBaseElement({
+      ...opts,
+      type: ENUMS.PageElementType.LINE,
+    });
+    if (opts.addToPage !== false && el.getParentPage()) {
+      el.getParentPage()._addElement(el);
+    }
+    return el;
+  };
+
   const ui = {
     ButtonSet: Object.freeze({
       OK: 'OK',
@@ -569,6 +580,7 @@ function createGasEnv(options = {}) {
     createShape,
     createGroup,
     createTable,
+    createLine,
     createColor,
     createRgbColor,
     setSelection: ({

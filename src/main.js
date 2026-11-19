@@ -82,10 +82,10 @@ function onOpen(event) {
       .addItem('Invert background color', 'menuSetColorInverse')
       .addItem('Set text color to max contrast', 'menuSetColorMaxContrast'))
     .addSubMenu(SlidesApp.getUi().createMenu('Set color hue')
-      .addSubMenu(SlidesApp.getUi().createMenu('Decrease (towards orange)')
+      .addSubMenu(SlidesApp.getUi().createMenu('Decrease (towards pink)')
         .addItem('-30°', 'menuSetColorHueMinus30')
         .addItem('-15°', 'menuSetColorHueMinus15'))
-      .addSubMenu(SlidesApp.getUi().createMenu('Increase (towards pink)')
+      .addSubMenu(SlidesApp.getUi().createMenu('Increase (towards orange)')
         .addItem('+15°', 'menuSetColorHuePlus15')
         .addItem('+30°', 'menuSetColorHuePlus30'))
       .addSeparator()
@@ -156,7 +156,7 @@ function onOpen(event) {
 function menuSnapPosition()  { withSelectedOrAllElements(function(e) { snapElement(e, true, false, false); }); }
 function menuSnapDimension() { withSelectedOrAllElements(function(e) { snapElement(e, false, true, false); }); }
 function menuSnapRotation()  { withSelectedOrAllElements(function(e) { snapElement(e, false, false, true); }); }
-function menuZeroRotation()  { withSelectedOrAllElements(function(e) { e.setRotation(0); }); }
+function menuZeroRotation()  { withSelectedOrAllElements(function(e) { if (canRotateElement(e)) e.setRotation(0); }); }
 
 function menuCopyWidth()          { resizeElementsToLastSelected(true,  false, false); }
 function menuCopyHeight()         { resizeElementsToLastSelected(false,  true, false); }
@@ -369,12 +369,19 @@ function inspectShapeColor() {
 
   var colorType = shape.getFill().getSolidFill().getColor().getColorType();
   var rgbColor = getRgbColorFromShapeColor(shape);
+  if (!rgbColor) {
+    SlidesApp.getUi().alert(
+      SLIDES_POWER_TOYS,
+      "Shape fill color type is not supported.",
+      SlidesApp.getUi().ButtonSet.OK);
+    return;
+  }
   var hslColorVector = convertRgbColorToHslColorVector(rgbColor);
   var lchColorVector = convertRgbColorVectorToLchColorVector(convertRgbColorToRgbColorVector(rgbColor));
 
   var message = "RGB: " + rgbColor.getRed() + ", " + rgbColor.getGreen() + ", " + rgbColor.getBlue() + " (" + rgbColor.asHexString() + ")";
   message += "\nHSL: " + (hslColorVector[0]*360).toFixed(1) + "°, " + (hslColorVector[1]*100).toFixed(1) + "%, " + (hslColorVector[2]*100).toFixed(1) + "%";
-  message += "\nHCL: " + (lchColorVector[0]).toFixed(1) + "%, " + lchColorVector[1].toFixed(1) + ", " + lchColorVector[2].toFixed(1) + "°";
+  message += "\nLCH: " + (lchColorVector[0]).toFixed(1) + "%, " + lchColorVector[1].toFixed(1) + ", " + lchColorVector[2].toFixed(1) + "°";
   message += "\nTransparency: " + ((1-shape.getFill().getSolidFill().getAlpha())*100).toFixed(1) + "%";
 
   if (colorType == SlidesApp.ColorType.THEME)
