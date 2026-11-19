@@ -10,7 +10,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 
 | Phase | Branch | Goal | Status |
 | :---: | --- | --- | :---: |
-| 1 | `staging-tests` | Local unit test suite + hardened GasT integration tests | [~] Ready for manual `clasp push` verification |
+| 1 | `staging-tests` | Local unit test suite + hardened GasT integration tests | [x] Complete (45 local + 95 Slides pass) |
 | 2 | `staging-devex` | Fix `deploy.sh`, config hygiene, manifest cleanup, JS type checking | [ ] Not started |
 | 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [ ] Not started |
 | 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [ ] Not started |
