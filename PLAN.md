@@ -14,7 +14,7 @@ This plan breaks down all planned improvements into sequential, self-contained p
 | 2 | `staging-devex` | Fix `deploy.sh`, config hygiene, manifest cleanup, JS type checking | [x] Complete |
 | 3 | `staging-bugfixes` | Core bug fixes & edge-case hardening | [x] Complete |
 | 4 | `staging-performance` | Apps Script RPC reduction & loop optimizations | [x] Complete |
-| 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [~] Ready for manual `clasp push` verification |
+| 5 | `staging-modernize` | V8 modernization, dead code removal, typos & developer docs | [x] Complete |
 | 6 | `staging-sidebar` | Interactive Sidebar UI (keeping all existing Menu items) | [ ] Not started |
 
 ---
