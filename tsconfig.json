@@ -10,5 +10,6 @@
     "strictNullChecks": false,
     "types": ["google-apps-script"]
   },
-  "include": ["src/*.js"]
+  "include": ["src/*.js"],
+  "exclude": ["src/tests.js"]
 }
