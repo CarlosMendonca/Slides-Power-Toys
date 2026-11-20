@@ -96,6 +96,81 @@ describe('core.colors.js', () => {
     });
   });
 
+  describe('changeHSV', () => {
+    it('adjusts HSV hue, saturation, and value while preserving fill alpha', () => {
+      const env = createGasEnv();
+      const { HSV_COMPONENT } = env.ctx;
+      const shape = env.createShape({ fillColor: [255, 0, 0], fillAlpha: 0.7 });
+
+      // Value -> 50% gives dark red [128, 0, 0]
+      env.ctx.changeHSV(shape, 0.5, true, HSV_COMPONENT.VALUE);
+      assert.deepEqual(getRgb(shape), [128, 0, 0]);
+      assert.equal(shape.getFill().getSolidFill().getAlpha(), 0.7);
+
+      // Saturation -> 50% gives [128, 64, 64]
+      env.ctx.changeHSV(shape, 0.5, true, HSV_COMPONENT.SATURATION);
+      assert.deepEqual(getRgb(shape), [128, 64, 64]);
+      assert.equal(shape.getFill().getSolidFill().getAlpha(), 0.7);
+
+      // Hue wrap -120° from Red -> Blue-ish [64, 64, 128]
+      env.ctx.changeHSV(shape, -120 / 360, false, HSV_COMPONENT.HUE);
+      assert.deepEqual(getRgb(shape), [64, 64, 128]);
+    });
+  });
+
+  describe('changeHWB', () => {
+    it('adjusts HWB whiteness, blackness, and hue while preserving alpha and normalizing W+B>=1', () => {
+      const env = createGasEnv();
+      const { HWB_COMPONENT } = env.ctx;
+      const shape = env.createShape({ fillColor: [255, 0, 0], fillAlpha: 0.5 });
+
+      // Add 50% whiteness -> pink tint [255, 128, 128]
+      env.ctx.changeHWB(shape, 0.5, false, HWB_COMPONENT.WHITENESS);
+      assert.deepEqual(getRgb(shape), [255, 128, 128]);
+      assert.equal(shape.getFill().getSolidFill().getAlpha(), 0.5);
+
+      // Set blackness to 50% -> W=0.5, B=0.5 -> achromatic mid-gray [128, 128, 128]
+      env.ctx.changeHWB(shape, 0.5, true, HWB_COMPONENT.BLACKNESS);
+      assert.deepEqual(getRgb(shape), [128, 128, 128]);
+      assert.equal(shape.getFill().getSolidFill().getAlpha(), 0.5);
+    });
+  });
+
+  describe('changeOKLCH', () => {
+    it('adjusts OKLCH lightness, chroma, and hue with wrapping, gamut mapping, and alpha preservation', () => {
+      const env = createGasEnv();
+      const { OKLCH_COMPONENT } = env.ctx;
+      const shape = env.createShape({ fillColor: [255, 0, 0], fillAlpha: 0.8 });
+
+      // Absolute chroma 0 -> achromatic gray preserving lightness (~0.628)
+      env.ctx.changeOKLCH(shape, 0, true, OKLCH_COMPONENT.CHROMA);
+      const [gr, gg, gb] = getRgb(shape);
+      assert.equal(gr, gg);
+      assert.equal(gg, gb);
+      assert.ok(gr > 120 && gr < 155, `Expected mid-light gray for L≈0.628, got ${gr}`);
+      assert.equal(shape.getFill().getSolidFill().getAlpha(), 0.8);
+
+      // Vivid color with high chroma + hue wrap around 0°/360°
+      const blue = env.createShape({ fillColor: [33, 150, 243], fillAlpha: 0.65 });
+      const before = Array.from(env.ctx.convertRgbColorToOklchColorVector(blue.getFill().getSolidFill().getColor().asRgbColor()));
+
+      // Shift hue by +15° preserving perceived lightness closely
+      env.ctx.changeOKLCH(blue, 15, false, OKLCH_COMPONENT.HUE);
+      const after = Array.from(env.ctx.convertRgbColorToOklchColorVector(blue.getFill().getSolidFill().getColor().asRgbColor()));
+      assert.ok(Math.abs(after[0] - before[0]) < 0.02, `Expected L preserved: ${before[0]} -> ${after[0]}`);
+      assert.ok(Math.abs(after[2] - (before[2] + 15)) < 2.0, `Expected H shifted +15°: ${before[2]} -> ${after[2]}`);
+      assert.equal(blue.getFill().getSolidFill().getAlpha(), 0.65);
+
+      // Push lightness up +0.20 (gamut-mapped cleanly into valid RGB)
+      env.ctx.changeOKLCH(blue, 0.2, false, OKLCH_COMPONENT.LIGHTNESS);
+      const rgb = getRgb(blue);
+      for (const ch of rgb) {
+        assert.ok(ch >= 0 && ch <= 255);
+      }
+      assert.equal(blue.getFill().getSolidFill().getAlpha(), 0.65);
+    });
+  });
+
   describe('setMaxContrastToTextOnShape', () => {
     it('chooses black or white text according to WCAG contrast ratio', () => {
       const env = createGasEnv();

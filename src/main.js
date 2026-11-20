@@ -35,6 +35,24 @@ const HSL_COMPONENT = Object.freeze({
   LUMINOSITY: 2,
 });
 
+const HSV_COMPONENT = Object.freeze({
+  HUE: 0,
+  SATURATION: 1,
+  VALUE: 2,
+});
+
+const HWB_COMPONENT = Object.freeze({
+  HUE: 0,
+  WHITENESS: 1,
+  BLACKNESS: 2,
+});
+
+const OKLCH_COMPONENT = Object.freeze({
+  LIGHTNESS: 0,
+  CHROMA: 1,
+  HUE: 2,
+});
+
 const SLIDES_POWER_TOYS = 'Slides Power Toys';
 
 // === INIT ===
@@ -401,15 +419,25 @@ function inspectShapeColor() {
     return;
   }
 
+  const rgbVector = convertRgbColorToRgbColorVector(rgbColor);
   const hslColorVector = convertRgbColorToHslColorVector(rgbColor);
-  const lchColorVector = convertRgbColorVectorToLchColorVector(convertRgbColorToRgbColorVector(rgbColor));
+  const hsvColorVector = convertRgbColorVectorToHsvColorVector(rgbVector);
+  const hwbColorVector = convertRgbColorVectorToHwbColorVector(rgbVector);
+  const oklchColorVector = convertRgbColorVectorToOklchColorVector(rgbVector);
+  const lchColorVector = convertRgbColorVectorToLchColorVector(rgbVector);
 
   let message =
     'RGB: ' + rgbColor.getRed() + ', ' + rgbColor.getGreen() + ', ' + rgbColor.getBlue() + ' (' + rgbColor.asHexString() + ')';
   message +=
     '\nHSL: ' + (hslColorVector[0] * 360).toFixed(1) + '°, ' + (hslColorVector[1] * 100).toFixed(1) + '%, ' + (hslColorVector[2] * 100).toFixed(1) + '%';
   message +=
-    '\nLCH: ' + lchColorVector[0].toFixed(1) + '%, ' + lchColorVector[1].toFixed(1) + ', ' + lchColorVector[2].toFixed(1) + '°';
+    '\nHSV: ' + (hsvColorVector[0] * 360).toFixed(1) + '°, ' + (hsvColorVector[1] * 100).toFixed(1) + '%, ' + (hsvColorVector[2] * 100).toFixed(1) + '%';
+  message +=
+    '\nHWB: ' + (hwbColorVector[0] * 360).toFixed(1) + '°, ' + (hwbColorVector[1] * 100).toFixed(1) + '%, ' + (hwbColorVector[2] * 100).toFixed(1) + '%';
+  message +=
+    '\nOKLCH: ' + (oklchColorVector[0] * 100).toFixed(1) + '%, ' + oklchColorVector[1].toFixed(3) + ', ' + oklchColorVector[2].toFixed(1) + '°';
+  message +=
+    '\nCIE LCH: ' + lchColorVector[0].toFixed(1) + '%, ' + lchColorVector[1].toFixed(1) + ', ' + lchColorVector[2].toFixed(1) + '°';
   message += '\nTransparency: ' + ((1 - solidFill.getAlpha()) * 100).toFixed(1) + '%';
 
   if (colorType === SlidesApp.ColorType.THEME) {

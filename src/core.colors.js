@@ -32,7 +32,15 @@ function invertColorsOnShape(shape) {
   );
 }
 
-function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
+function applyColorVectorTransform(
+  shape,
+  toSpaceFn,
+  fromSpaceFn,
+  component,
+  valueChange,
+  isAbsoluteChange,
+  options
+) {
   const fill = shape.getFill();
   if (fill.getType() !== SlidesApp.FillType.SOLID) return;
 
@@ -41,22 +49,90 @@ function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
   if (!rgbColor) return;
 
   const alpha = solidFill.getAlpha();
-  const hslColorVector = convertRgbColorToHslColorVector(rgbColor);
+  const vec = toSpaceFn(rgbColor);
+  const baseValue = isAbsoluteChange ? 0 : vec[component];
 
-  const baseValue = isAbsoluteChange ? 0 : hslColorVector[hslComponent];
-  if (hslComponent === HSL_COMPONENT.HUE) {
-    hslColorVector[hslComponent] = (((baseValue + valueChange) % 1) + 1) % 1;
+  if (options && options.wrapPeriod) {
+    const period = options.wrapPeriod;
+    vec[component] = (((baseValue + valueChange) % period) + period) % period;
   } else {
-    hslColorVector[hslComponent] = clamp(baseValue + valueChange, 0, 1);
+    const min = options && typeof options.min === 'number' ? options.min : 0;
+    const max = options && typeof options.max === 'number' ? options.max : 1;
+    vec[component] = clamp(baseValue + valueChange, min, max);
   }
 
-  const rgbColorVector = convertHslColorVectorToRgbColorVector(hslColorVector);
+  const rgbColorVector = fromSpaceFn(vec);
 
   fill.setSolidFill(
     rgbColorVector[0],
     rgbColorVector[1],
     rgbColorVector[2],
     alpha
+  );
+}
+
+function changeHSL(shape, valueChange, isAbsoluteChange, hslComponent) {
+  const opts = hslComponent === HSL_COMPONENT.HUE
+    ? { wrapPeriod: 1 }
+    : { min: 0, max: 1 };
+  applyColorVectorTransform(
+    shape,
+    convertRgbColorToHslColorVector,
+    convertHslColorVectorToRgbColorVector,
+    hslComponent,
+    valueChange,
+    isAbsoluteChange,
+    opts
+  );
+}
+
+function changeHSV(shape, valueChange, isAbsoluteChange, hsvComponent) {
+  const opts = hsvComponent === HSV_COMPONENT.HUE
+    ? { wrapPeriod: 1 }
+    : { min: 0, max: 1 };
+  applyColorVectorTransform(
+    shape,
+    convertRgbColorToHsvColorVector,
+    convertHsvColorVectorToRgbColorVector,
+    hsvComponent,
+    valueChange,
+    isAbsoluteChange,
+    opts
+  );
+}
+
+function changeHWB(shape, valueChange, isAbsoluteChange, hwbComponent) {
+  const opts = hwbComponent === HWB_COMPONENT.HUE
+    ? { wrapPeriod: 1 }
+    : { min: 0, max: 1 };
+  applyColorVectorTransform(
+    shape,
+    convertRgbColorToHwbColorVector,
+    convertHwbColorVectorToRgbColorVector,
+    hwbComponent,
+    valueChange,
+    isAbsoluteChange,
+    opts
+  );
+}
+
+function changeOKLCH(shape, valueChange, isAbsoluteChange, oklchComponent) {
+  let opts;
+  if (oklchComponent === OKLCH_COMPONENT.HUE) {
+    opts = { wrapPeriod: 360 };
+  } else if (oklchComponent === OKLCH_COMPONENT.CHROMA) {
+    opts = { min: 0, max: 0.4 };
+  } else {
+    opts = { min: 0, max: 1 };
+  }
+  applyColorVectorTransform(
+    shape,
+    convertRgbColorToOklchColorVector,
+    convertOklchColorVectorToRgbColorVector,
+    oklchComponent,
+    valueChange,
+    isAbsoluteChange,
+    opts
   );
 }
 

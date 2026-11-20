@@ -185,7 +185,7 @@ Adds full color inspection and incremental editing across **OKLCH**, **HSL**, **
 | Phase | Branch | Goal | Status |
 | :---: | --- | --- | :---: |
 | 1 | `staging-colors-math` | Bidirectional HSV, HWB, OKLCH conversions + gamut mapping + unit tests | [x] Complete |
-| 2 | `staging-colors-core` | Unified color-component transform engine + upgraded Inspector + tests | [ ] Not started |
+| 2 | `staging-colors-core` | Unified color-component transform engine + upgraded Inspector + tests | [~] Ready for manual `clasp push` verification |
 | 3 | `staging-colors-menus` | 4 top-level color space menus (`src/menu.colors.js`) + handler & Slides tests | [ ] Not started |
 | 4 | `staging-colors-docs` | User guide, README, and developer docs | [ ] Not started |
 
@@ -203,9 +203,9 @@ Adds full color inspection and incremental editing across **OKLCH**, **HSL**, **
 ## v8 Phase 2 — `staging-colors-core`: Unified Transform Engine & Upgraded Inspector
 
 ### Tasks
-- [ ] Add `HSV_COMPONENT`, `HWB_COMPONENT`, `OKLCH_COMPONENT` enums and unified `changeColorComponent(shape, space, component, delta, isAbsolute)` in `src/core.colors.js` (with `changeHSL`, `changeHSV`, `changeHWB`, `changeOKLCH` wrappers preserving alpha and using a single `getFill()` RPC).
-- [ ] Update `inspectShapeColor()` in `src/main.js` to display **RGB (Hex), HSL, HSV, HWB, OKLCH, CIE LCH, Transparency, and Theme**.
-- [ ] Add unit tests, RPC-count tests, and Slides integration tests in `src/tests/tests.js`.
+- [x] Add `HSV_COMPONENT`, `HWB_COMPONENT`, `OKLCH_COMPONENT` enums and unified `applyColorVectorTransform` in `src/core.colors.js` (with `changeHSL`, `changeHSV`, `changeHWB`, `changeOKLCH` wrappers preserving alpha and using a single `getFill()` RPC).
+- [x] Update `inspectShapeColor()` in `src/main.js` to display **RGB (Hex), HSL, HSV, HWB, OKLCH, CIE LCH, Transparency, and Theme**.
+- [x] Add unit tests, RPC-count tests, and Slides integration tests in `src/tests/tests.js`.
 
 ---
 

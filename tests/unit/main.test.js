@@ -125,7 +125,7 @@ describe('main.js', () => {
   });
 
   describe('inspectShapeColor', () => {
-    it('shows RGB, HSL, transparency, and theme info in an alert', () => {
+    it('shows RGB, HSL, HSV, HWB, OKLCH, CIE LCH, transparency, and theme info in an alert', () => {
       const env = createGasEnv();
       const shape = env.createShape({
         fillColor: ENUMS.ThemeColorType.ACCENT1,
@@ -138,6 +138,11 @@ describe('main.js', () => {
       assert.equal(env.ui.alerts.length, 1);
       const { prompt } = env.ui.alerts[0];
       assert.match(prompt, /RGB: 255, 171, 64 \(#ffab40\)/);
+      assert.match(prompt, /\nHSL: /);
+      assert.match(prompt, /\nHSV: /);
+      assert.match(prompt, /\nHWB: /);
+      assert.match(prompt, /\nOKLCH: /);
+      assert.match(prompt, /\nCIE LCH: /);
       assert.match(prompt, /Transparency: 25\.0%/);
       assert.match(prompt, /ACCENT1/);
     });
@@ -154,13 +159,14 @@ describe('main.js', () => {
       assert.match(env.ui.alerts[1].prompt, /does not have a solid fill/);
     });
 
-    it('labels LCH output as "LCH:" instead of "HCL:" and handles unsupported fill color', () => {
+    it('labels OKLCH and CIE LCH cleanly (no HCL typo) and handles unsupported fill color', () => {
       const env = createGasEnv();
       const shape = env.createShape({ fillColor: [255, 0, 0] });
 
       env.setSelection({ elements: [shape] });
       env.ctx.menuInspectShapeColor();
-      assert.match(env.ui.alerts[0].prompt, /\nLCH: /);
+      assert.match(env.ui.alerts[0].prompt, /\nOKLCH: 62\.8%, 0\.258, 29\.2°/);
+      assert.match(env.ui.alerts[0].prompt, /\nCIE LCH: /);
       assert.doesNotMatch(env.ui.alerts[0].prompt, /\nHCL: /);
 
       const unsupported = env.createShape({ fillColor: { type: ENUMS.ColorType.UNSUPPORTED } });

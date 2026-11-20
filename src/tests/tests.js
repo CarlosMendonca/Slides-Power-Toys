@@ -554,6 +554,38 @@ function gastTestRunner() {
     });
   });
 
+  test('MULTI-COLOR-SPACE TRANSFORMS (HSV, HWB, OKLCH)', function(t) {
+    withTestSlide(slidesDocument, function(testSlide) {
+      var shape = testSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, U1, U1);
+      shape.getFill().setSolidFill(255, 0, 0, 0.7);
+
+      // HSV: value -> 50% gives dark red [128, 0, 0] preserving alpha
+      changeHSV(shape, 0.5, true, HSV_COMPONENT.VALUE);
+      var hsvRgb = shape.getFill().getSolidFill().getColor().asRgbColor();
+      t.approxEqual(hsvRgb.getRed(), 128, 1, 'HSV V=50% R');
+      t.equal(hsvRgb.getGreen(), 0, 'HSV V=50% G');
+      t.equal(hsvRgb.getBlue(), 0, 'HSV V=50% B');
+      t.approxEqual(shape.getFill().getSolidFill().getAlpha(), 0.7, 0.01, 'HSV preserves alpha');
+
+      // HWB: set back to red, add 50% whiteness -> [255, 128, 128]
+      shape.getFill().setSolidFill(255, 0, 0, 0.6);
+      changeHWB(shape, 0.5, false, HWB_COMPONENT.WHITENESS);
+      var hwbRgb = shape.getFill().getSolidFill().getColor().asRgbColor();
+      t.equal(hwbRgb.getRed(), 255, 'HWB W+50% R');
+      t.approxEqual(hwbRgb.getGreen(), 128, 1, 'HWB W+50% G');
+      t.approxEqual(hwbRgb.getBlue(), 128, 1, 'HWB W+50% B');
+      t.approxEqual(shape.getFill().getSolidFill().getAlpha(), 0.6, 0.01, 'HWB preserves alpha');
+
+      // OKLCH: chroma 0 -> achromatic gray preserving lightness & alpha
+      shape.getFill().setSolidFill(33, 150, 243, 0.8);
+      changeOKLCH(shape, 0, true, OKLCH_COMPONENT.CHROMA);
+      var oklchRgb = shape.getFill().getSolidFill().getColor().asRgbColor();
+      t.equal(oklchRgb.getRed(), oklchRgb.getGreen(), 'OKLCH C=0 R==G');
+      t.equal(oklchRgb.getGreen(), oklchRgb.getBlue(), 'OKLCH C=0 G==B');
+      t.approxEqual(shape.getFill().getSolidFill().getAlpha(), 0.8, 0.01, 'OKLCH preserves alpha');
+    });
+  });
+
   return test.finish();
 }
 

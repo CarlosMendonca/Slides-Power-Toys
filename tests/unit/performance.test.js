@@ -91,6 +91,18 @@ describe('performance (RPC call counts)', () => {
     assert.equal(env.rpcCounts.getFill, 1);
 
     env.resetRpcCounts();
+    env.ctx.changeHSV(shape, 0.1, false, env.ctx.HSV_COMPONENT.VALUE);
+    assert.equal(env.rpcCounts.getFill, 1);
+
+    env.resetRpcCounts();
+    env.ctx.changeHWB(shape, 0.1, false, env.ctx.HWB_COMPONENT.WHITENESS);
+    assert.equal(env.rpcCounts.getFill, 1);
+
+    env.resetRpcCounts();
+    env.ctx.changeOKLCH(shape, 15, false, env.ctx.OKLCH_COMPONENT.HUE);
+    assert.equal(env.rpcCounts.getFill, 1);
+
+    env.resetRpcCounts();
     env.ctx.setMaxContrastToTextOnShape(shape);
     assert.equal(env.rpcCounts.getFill, 1);
 

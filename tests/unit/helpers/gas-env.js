@@ -579,7 +579,7 @@ function createGasEnv(options = {}) {
   Object.assign(
     context,
     vm.runInContext(
-      '({ VERSION, PPI, POSITION_X, POSITION_Y, HSL_COMPONENT, SLIDES_POWER_TOYS })',
+      '({ VERSION, PPI, POSITION_X, POSITION_Y, HSL_COMPONENT, HSV_COMPONENT, HWB_COMPONENT, OKLCH_COMPONENT, SLIDES_POWER_TOYS })',
       context
     )
   );
