@@ -187,7 +187,7 @@ Adds full color inspection and incremental editing across **OKLCH**, **HSL**, **
 | 1 | `staging-colors-math` | Bidirectional HSV, HWB, OKLCH conversions + gamut mapping + unit tests | [x] Complete |
 | 2 | `staging-colors-core` | Unified color-component transform engine + upgraded Inspector + tests | [x] Complete |
 | 3 | `staging-colors-menus` | 4 top-level color space menus (`src/menu.colors.js`) + handler & Slides tests | [x] Complete (77 local + 120 Slides pass) |
-| 4 | `staging-colors-docs` | User guide, README, and developer docs | [ ] Not started |
+| 4 | `staging-colors-docs` | User guide, README, and developer docs | [x] Complete |
 
 ---
 
@@ -221,5 +221,5 @@ Adds full color inspection and incremental editing across **OKLCH**, **HSL**, **
 ## v8 Phase 4 — `staging-colors-docs`: Documentation
 
 ### Tasks
-- [ ] Document OKLCH, HWB, HSL, and HSV inspection & editing in `README.md` and `docs/users-guide/`.
-- [ ] Update `PLAN.md` statuses.
+- [x] Document OKLCH, HWB, HSL, and HSV inspection & editing in `README.md` and `docs/users-guide/command-colors.md` (plus `docs/developers-guide/`).
+- [x] Update `PLAN.md` statuses.

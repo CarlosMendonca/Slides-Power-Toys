@@ -27,6 +27,12 @@ Alignment commands to arrange shapes relative to the last selected element. Also
 Commands to round various shape attributes to the closest decimal. A width of 1.23 inches becomes 1.2 inches. Select the elements to apply transformation to or select the slide to apply transformation to all elements.
 
 ## Color commands
+### Inspect shape color
+Inspect the last selected shape's solid fill across **RGB (Hex)**, **HSL**, **HSV**, **HWB**, **OKLCH**, and **CIE LCH**, plus transparency and theme color metadata.
+
+### Color spaces (OKLCH, HSL, HSV, HWB)
+Incrementally adjust or set individual components across **OKLCH** (Lightness, Chroma, Hue with CSS Color 4 chroma-reduction gamut mapping), **HSL** (Hue, Saturation, Luminosity), **HSV** (Hue, Saturation, Value), and **HWB** (Hue, Whiteness, Blackness) while preserving shape transparency and supporting groups.
+
 ### Transparency
 Easily set transparency to selected shapes while preserving original colors.
 

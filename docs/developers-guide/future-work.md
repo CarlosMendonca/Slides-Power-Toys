@@ -9,8 +9,7 @@ nav_order: 3
 
 Planned and potential enhancements for Slides Power Toys:
 
-- **Interactive Sidebar UI**: A persistent sidebar panel alongside the existing menu bar with live color inspection, continuous HSL/transparency sliders, configurable Adjoin padding, and metric/imperial Precision Snap units.
-- **LCH / OKLCH Color Adjustments**: Perceptually uniform lightness and chroma adjustments building on `src/util.lch.js`.
+- **Native CardService Sidebar UI**: A server-side Google Workspace Add-on side panel (under exploration on `staging-sidebar`) requiring zero extra OAuth scopes, offering configurable Adjoin padding and metric/imperial Precision Snap units alongside the existing menu bar.
 - **Advanced Slides API Batching**: Optional `Slides.Presentations.batchUpdate` path for very large slides where single-request batching outperforms sequential `SlidesApp` calls.
 - **Multi-slide & Master/Layout Bulk Actions**: Additional utilities for standardizing formatting across an entire presentation.
 

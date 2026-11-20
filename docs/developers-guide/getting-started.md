@@ -49,9 +49,10 @@ Use `src/deploy.sh` from either the repo root or `src/`:
 ## Project Structure
 
 - `src/main.js` — Add-on menu setup, command entrypoints, and UI prompts
+- `src/menu.colors.js` — OKLCH, HSL, HSV, and HWB menu builders and handlers
 - `src/core.js` — Geometry & alignment operations (snap, align, flip, adjoin)
-- `src/core.colors.js` — Color transformations (invert, HSL, WCAG contrast, alpha, swap)
+- `src/core.colors.js` — Color transformations (OKLCH, HSL, HSV, HWB, invert, WCAG 2.1 contrast, alpha, swap)
 - `src/selection.js` — Selection traversal & recursive group handling
-- `src/util.js` & `src/util.lch.js` — Color space conversions and shared helpers
+- `src/util.js`, `src/util.colors.js`, & `src/util.lch.js` — Color space conversions (HSL, HSV, HWB, OKLCH, CIE LCH) and shared helpers
 - `src/tests/tests.js` — Apps Script integration tests (pushed only via `deploy.sh test`)
 - `tests/unit/` — Fast local Node.js unit test suite
