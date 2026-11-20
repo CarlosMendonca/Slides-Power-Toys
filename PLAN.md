@@ -173,3 +173,53 @@ This plan breaks down all planned improvements into sequential, self-contained p
 ### Verification
 - Unit test server bridge functions (`src/sidebar.js`) locally via `npm test`.
 - Push with `./deploy.sh test` and manually verify both the Sidebar and all legacy Menu items in Google Slides.
+
+---
+
+# v8 Roadmap — Multi-Color-Space Control (OKLCH, HWB, HSL, HSV)
+
+Adds full color inspection and incremental editing across **OKLCH**, **HSL**, **HSV**, and **HWB** (keeping CIE LCH in the inspector and placing all 4 color spaces at the top menu level to minimize nesting).
+
+## Status Overview (v8)
+
+| Phase | Branch | Goal | Status |
+| :---: | --- | --- | :---: |
+| 1 | `staging-colors-math` | Bidirectional HSV, HWB, OKLCH conversions + gamut mapping + unit tests | [x] Complete |
+| 2 | `staging-colors-core` | Unified color-component transform engine + upgraded Inspector + tests | [ ] Not started |
+| 3 | `staging-colors-menus` | 4 top-level color space menus (`src/menu.colors.js`) + handler & Slides tests | [ ] Not started |
+| 4 | `staging-colors-docs` | User guide, README, and developer docs | [ ] Not started |
+
+---
+
+## v8 Phase 1 — `staging-colors-math`: Color Space Conversions & Unit Tests
+
+### Tasks
+- [x] Create `src/util.colors.js` with pure bidirectional sRGB ↔ **HSV**, **HWB** (CSS Color 4 `W + B >= 1` normalization), and **OKLCH** (Björn Ottosson OKLab matrices + binary-search chroma-reduction gamut mapping).
+- [x] Wire `src/util.colors.js` into `tests/unit/helpers/gas-env.js`.
+- [x] Add comprehensive local unit tests in `tests/unit/util.colors.test.js` verifying reference values, round-trips, achromatic cases, HWB normalization, and out-of-gamut OKLCH preservation of L and H.
+
+---
+
+## v8 Phase 2 — `staging-colors-core`: Unified Transform Engine & Upgraded Inspector
+
+### Tasks
+- [ ] Add `HSV_COMPONENT`, `HWB_COMPONENT`, `OKLCH_COMPONENT` enums and unified `changeColorComponent(shape, space, component, delta, isAbsolute)` in `src/core.colors.js` (with `changeHSL`, `changeHSV`, `changeHWB`, `changeOKLCH` wrappers preserving alpha and using a single `getFill()` RPC).
+- [ ] Update `inspectShapeColor()` in `src/main.js` to display **RGB (Hex), HSL, HSV, HWB, OKLCH, CIE LCH, Transparency, and Theme**.
+- [ ] Add unit tests, RPC-count tests, and Slides integration tests in `src/tests/tests.js`.
+
+---
+
+## v8 Phase 3 — `staging-colors-menus`: 4 Top-Level Color Menus (`src/menu.colors.js`)
+
+### Tasks
+- [ ] Create `src/menu.colors.js` with menu builders and global `menuSetColor*` handlers for **OKLCH**, **HSL**, **HSV**, and **HWB** (flattening Decrease/Increase with separators so nesting stays ≤ 4 levels; sharing RGB-cylindrical Hue handlers across HSL/HSV/HWB; accurate OKLCH hue color names).
+- [ ] Wire the 4 top-level menus (`Color (OKLCH)`, `Color (HSL)`, `Color (HSV)`, `Color (HWB)`) into `onOpen()` in `src/main.js`.
+- [ ] Add unit tests (verifying every menu item resolves to a global function, `onOpen` still uses 1 `getUi()` RPC, and zero Apps Script filename collisions) + live Slides integration tests.
+
+---
+
+## v8 Phase 4 — `staging-colors-docs`: Documentation
+
+### Tasks
+- [ ] Document OKLCH, HWB, HSL, and HSV inspection & editing in `README.md` and `docs/users-guide/`.
+- [ ] Update `PLAN.md` statuses.

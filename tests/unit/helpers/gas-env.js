@@ -10,6 +10,7 @@ const SOURCE_FILES = [
   'version.js',
   'util.js',
   'util.lch.js',
+  'util.colors.js',
   'selection.js',
   'core.js',
   'core.colors.js',
