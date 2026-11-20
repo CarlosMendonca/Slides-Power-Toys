@@ -100,62 +100,10 @@ function onOpen(event) {
       .addItem('Swap text and background colors', 'menuSetColorSwap')
       .addItem('Invert background color', 'menuSetColorInverse')
       .addItem('Set text color to max contrast', 'menuSetColorMaxContrast'))
-    .addSubMenu(ui.createMenu('Set color hue')
-      .addSubMenu(ui.createMenu('Decrease (towards pink)')
-        .addItem('-30°', 'menuSetColorHueMinus30')
-        .addItem('-15°', 'menuSetColorHueMinus15'))
-      .addSubMenu(ui.createMenu('Increase (towards orange)')
-        .addItem('+15°', 'menuSetColorHuePlus15')
-        .addItem('+30°', 'menuSetColorHuePlus30'))
-      .addSeparator()
-      .addItem('0° (Red)',                 'menuSetColorHue0')
-      .addItem('30° (like Dark Orange)',   'menuSetColorHue30')
-      .addItem('60° (Yellow)',             'menuSetColorHue60')
-      .addItem('90° (like Chartreuse)',    'menuSetColorHue90')
-      .addItem('120° (Lime)',              'menuSetColorHue120')
-      .addItem('150° (like Spring Green)', 'menuSetColorHue150')
-      .addItem('180° (Aqua)',              'menuSetColorHue180')
-      .addItem('210° (blue-ish)',          'menuSetColorHue210')
-      .addItem('240° (Blue)',              'menuSetColorHue240')
-      .addItem('270° (purple-ish)',        'menuSetColorHue270')
-      .addItem('300° (Fuchsia/Magenta)',   'menuSetColorHue300')
-      .addItem('330° (like Deep Pink)',    'menuSetColorHue330'))
-    .addSubMenu(ui.createMenu('Set color saturation')
-      .addSubMenu(ui.createMenu('Decrease')
-        .addItem('-33%', 'menuSetColorSaturationMinus33')
-        .addItem('-10%', 'menuSetColorSaturationMinus10')
-        .addItem('-5%',  'menuSetColorSaturationMinus5'))
-      .addSubMenu(ui.createMenu('Increase')
-        .addItem('+5%',  'menuSetColorSaturationPlus5')
-        .addItem('+10%', 'menuSetColorSaturationPlus10')
-        .addItem('+33%', 'menuSetColorSaturationPlus33'))
-      .addSeparator()
-      .addItem('Desaturate (greyscale)', 'menuSetColorSaturationAbs0')
-      .addItem('10%', 'menuSetColorSaturationAbs10')
-      .addItem('25%', 'menuSetColorSaturationAbs25')
-      .addItem('33%', 'menuSetColorSaturationAbs33')
-      .addItem('50%', 'menuSetColorSaturationAbs50')
-      .addItem('66%', 'menuSetColorSaturationAbs66')
-      .addItem('75%', 'menuSetColorSaturationAbs75')
-      .addItem('90%', 'menuSetColorSaturationAbs90')
-      .addItem('100% (towards color)', 'menuSetColorSaturationAbs100'))
-    .addSubMenu(ui.createMenu('Set color luminosity')
-      .addSubMenu(ui.createMenu('Decrease')
-        .addItem('-33%', 'menuSetColorLuminosityMinus33')
-        .addItem('-10%', 'menuSetColorLuminosityMinus10')
-        .addItem('-5%',  'menuSetColorLuminosityMinus5'))
-      .addSubMenu(ui.createMenu('Increase')
-        .addItem('+5%',  'menuSetColorLuminosityPlus5')
-        .addItem('+10%', 'menuSetColorLuminosityPlus10')
-        .addItem('+33%', 'menuSetColorLuminosityPlus33'))
-      .addSeparator()
-      .addItem('10% (towards black)', 'menuSetColorLuminosityAbs10')
-      .addItem('25%', 'menuSetColorLuminosityAbs25')
-      .addItem('33%', 'menuSetColorLuminosityAbs33')
-      .addItem('50%', 'menuSetColorLuminosityAbs50')
-      .addItem('66%', 'menuSetColorLuminosityAbs66')
-      .addItem('75%', 'menuSetColorLuminosityAbs75')
-      .addItem('90% (towards white)', 'menuSetColorLuminosityAbs90'))
+    .addSubMenu(buildOklchMenu(ui))
+    .addSubMenu(buildHslMenu(ui))
+    .addSubMenu(buildHsvMenu(ui))
+    .addSubMenu(buildHwbMenu(ui))
     .addSubMenu(ui.createMenu('Set transparency')
       .addItem('0% (opaque)', 'menuSetTransparency100')
       .addItem('10%', 'menuSetTransparency90')
@@ -174,10 +122,6 @@ function onOpen(event) {
 // === MENU HELPER WRAPPERS ===
 function applyAlphaToSelection(alpha) {
   withSelectedOrAllShapesOrGroupsRecursively((s) => setAlphaToShape(s, alpha));
-}
-
-function applyHslToSelection(valueChange, isAbsoluteChange, component) {
-  withSelectedOrAllShapesOrGroupsRecursively((s) => changeHSL(s, valueChange, isAbsoluteChange, component));
 }
 
 // === MENU FUNCTIONS ===
@@ -220,56 +164,6 @@ function menuSetTransparency100() { applyAlphaToSelection(1); }
 function menuSetColorSwap()        { withSelectedOrAllShapesOrGroupsRecursively((s) => swapColorsOnShape(s)); }
 function menuSetColorInverse()     { withSelectedOrAllShapesOrGroupsRecursively((s) => invertColorsOnShape(s)); }
 function menuSetColorMaxContrast() { withSelectedOrAllShapesOrGroupsRecursively((s) => setMaxContrastToTextOnShape(s)); }
-
-function menuSetColorSaturationMinus33() { applyHslToSelection(-0.33, false, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationMinus10() { applyHslToSelection(-0.1,  false, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationMinus5()  { applyHslToSelection(-0.05, false, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationPlus5()   { applyHslToSelection( 0.05, false, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationPlus10()  { applyHslToSelection( 0.1,  false, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationPlus33()  { applyHslToSelection( 0.33, false, HSL_COMPONENT.SATURATION); }
-
-function menuSetColorSaturationAbs0()   { applyHslToSelection(0,    true, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationAbs10()  { applyHslToSelection(0.1,  true, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationAbs25()  { applyHslToSelection(0.25, true, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationAbs33()  { applyHslToSelection(0.33, true, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationAbs50()  { applyHslToSelection(0.5,  true, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationAbs66()  { applyHslToSelection(0.66, true, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationAbs75()  { applyHslToSelection(0.75, true, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationAbs90()  { applyHslToSelection(0.9,  true, HSL_COMPONENT.SATURATION); }
-function menuSetColorSaturationAbs100() { applyHslToSelection(1.0,  true, HSL_COMPONENT.SATURATION); }
-
-function menuSetColorLuminosityMinus33() { applyHslToSelection(-0.33, false, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityMinus10() { applyHslToSelection(-0.1,  false, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityMinus5()  { applyHslToSelection(-0.05, false, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityPlus5()   { applyHslToSelection( 0.05, false, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityPlus10()  { applyHslToSelection( 0.1,  false, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityPlus33()  { applyHslToSelection( 0.33, false, HSL_COMPONENT.LUMINOSITY); }
-
-function menuSetColorLuminosityAbs10() { applyHslToSelection(0.1,  true, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityAbs25() { applyHslToSelection(0.25, true, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityAbs33() { applyHslToSelection(0.33, true, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityAbs50() { applyHslToSelection(0.5,  true, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityAbs66() { applyHslToSelection(0.66, true, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityAbs75() { applyHslToSelection(0.75, true, HSL_COMPONENT.LUMINOSITY); }
-function menuSetColorLuminosityAbs90() { applyHslToSelection(0.9,  true, HSL_COMPONENT.LUMINOSITY); }
-
-function menuSetColorHueMinus30() { applyHslToSelection(-30 / 360, false, HSL_COMPONENT.HUE); }
-function menuSetColorHueMinus15() { applyHslToSelection(-15 / 360, false, HSL_COMPONENT.HUE); }
-function menuSetColorHuePlus15()  { applyHslToSelection( 15 / 360, false, HSL_COMPONENT.HUE); }
-function menuSetColorHuePlus30()  { applyHslToSelection( 30 / 360, false, HSL_COMPONENT.HUE); }
-
-function menuSetColorHue0()   { applyHslToSelection(  0 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue30()  { applyHslToSelection( 30 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue60()  { applyHslToSelection( 60 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue90()  { applyHslToSelection( 90 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue120() { applyHslToSelection(120 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue150() { applyHslToSelection(150 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue180() { applyHslToSelection(180 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue210() { applyHslToSelection(210 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue240() { applyHslToSelection(240 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue270() { applyHslToSelection(270 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue300() { applyHslToSelection(300 / 360, true, HSL_COMPONENT.HUE); }
-function menuSetColorHue330() { applyHslToSelection(330 / 360, true, HSL_COMPONENT.HUE); }
 
 function menuCenterOnPage() {
   const pageRef = fakePageAsReferenceElement();

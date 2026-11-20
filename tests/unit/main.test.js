@@ -1,12 +1,14 @@
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const { createGasEnv, ENUMS } = require('./helpers/gas-env');
 
 describe('main.js', () => {
   describe('onOpen', () => {
-    it('builds the Slides Power Toys add-on menu with valid handler functions', () => {
+    it('builds the Slides Power Toys add-on menu with 4 top-level color spaces, bounded nesting, and valid handlers', () => {
       const env = createGasEnv();
       env.ctx.onOpen({});
 
@@ -21,8 +23,19 @@ describe('main.js', () => {
         return names;
       };
 
-      const fnNames = collectFnNames(env.ui.addonMenus[0]);
-      assert.ok(fnNames.length > 50, `Expected >50 menu items, got ${fnNames.length}`);
+      const maxSubMenuDepth = (menu, depth = 0) => {
+        let max = depth;
+        for (const item of menu.items) {
+          if (item.type === 'submenu') {
+            max = Math.max(max, maxSubMenuDepth(item.menu, depth + 1));
+          }
+        }
+        return max;
+      };
+
+      const rootMenu = env.ui.addonMenus[0];
+      const fnNames = collectFnNames(rootMenu);
+      assert.ok(fnNames.length > 150, `Expected >150 menu items across 4 color spaces, got ${fnNames.length}`);
 
       for (const fnName of fnNames) {
         assert.equal(
@@ -32,12 +45,26 @@ describe('main.js', () => {
         );
       }
 
-      // Verify Hue submenu labels match hue wheel direction
-      const hueMenu = env.ui.addonMenus[0].items.find(
-        (i) => i.type === 'submenu' && i.menu.caption === 'Set color hue'
-      ).menu;
-      const subCaptions = hueMenu.items.filter((i) => i.type === 'submenu').map((i) => i.menu.caption);
-      assert.deepEqual(subCaptions, ['Decrease (towards pink)', 'Increase (towards orange)']);
+      // Verify all 4 color space submenus exist at top level with max depth 2 (Color (X) -> Component -> Item)
+      const topSubMenus = rootMenu.items.filter((i) => i.type === 'submenu').map((i) => i.menu.caption);
+      for (const expected of ['Color (OKLCH)', 'Color (HSL)', 'Color (HSV)', 'Color (HWB)']) {
+        assert.ok(topSubMenus.includes(expected), `Missing top-level submenu "${expected}"`);
+      }
+      assert.ok(maxSubMenuDepth(rootMenu) <= 2, `Expected max submenu depth <= 2, got ${maxSubMenuDepth(rootMenu)}`);
+    });
+
+    it('ensures no two .js/.html files in src/ share the same extensionless Apps Script name', () => {
+      const srcDir = path.resolve(__dirname, '../../src');
+      const entries = fs
+        .readdirSync(srcDir)
+        .filter((f) => f.endsWith('.js') || f.endsWith('.html'))
+        .filter((f) => f !== 'tests.js');
+      const seen = new Map();
+      for (const file of entries) {
+        const base = file.replace(/\.(js|html)$/, '');
+        assert.equal(seen.has(base), false, `Apps Script filename collision: ${file} vs ${seen.get(base)}`);
+        seen.set(base, file);
+      }
     });
   });
 

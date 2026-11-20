@@ -14,6 +14,7 @@ const SOURCE_FILES = [
   'selection.js',
   'core.js',
   'core.colors.js',
+  'menu.colors.js',
   'main.js',
 ];
 

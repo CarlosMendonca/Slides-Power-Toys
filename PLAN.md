@@ -186,7 +186,7 @@ Adds full color inspection and incremental editing across **OKLCH**, **HSL**, **
 | :---: | --- | --- | :---: |
 | 1 | `staging-colors-math` | Bidirectional HSV, HWB, OKLCH conversions + gamut mapping + unit tests | [x] Complete |
 | 2 | `staging-colors-core` | Unified color-component transform engine + upgraded Inspector + tests | [x] Complete |
-| 3 | `staging-colors-menus` | 4 top-level color space menus (`src/menu.colors.js`) + handler & Slides tests | [ ] Not started |
+| 3 | `staging-colors-menus` | 4 top-level color space menus (`src/menu.colors.js`) + handler & Slides tests | [~] Ready for manual `clasp push` verification |
 | 4 | `staging-colors-docs` | User guide, README, and developer docs | [ ] Not started |
 
 ---
@@ -212,9 +212,9 @@ Adds full color inspection and incremental editing across **OKLCH**, **HSL**, **
 ## v8 Phase 3 — `staging-colors-menus`: 4 Top-Level Color Menus (`src/menu.colors.js`)
 
 ### Tasks
-- [ ] Create `src/menu.colors.js` with menu builders and global `menuSetColor*` handlers for **OKLCH**, **HSL**, **HSV**, and **HWB** (flattening Decrease/Increase with separators so nesting stays ≤ 4 levels; sharing RGB-cylindrical Hue handlers across HSL/HSV/HWB; accurate OKLCH hue color names).
-- [ ] Wire the 4 top-level menus (`Color (OKLCH)`, `Color (HSL)`, `Color (HSV)`, `Color (HWB)`) into `onOpen()` in `src/main.js`.
-- [ ] Add unit tests (verifying every menu item resolves to a global function, `onOpen` still uses 1 `getUi()` RPC, and zero Apps Script filename collisions) + live Slides integration tests.
+- [x] Create `src/menu.colors.js` with menu builders and global `menuSetColor*` handlers for **OKLCH**, **HSL**, **HSV**, and **HWB** (flattening Decrease/Increase with separators so nesting stays ≤ 2 submenu levels; sharing RGB-cylindrical Hue handlers across HSL/HSV/HWB; accurate OKLCH hue color names).
+- [x] Wire the 4 top-level menus (`Color (OKLCH)`, `Color (HSL)`, `Color (HSV)`, `Color (HWB)`) into `onOpen()` in `src/main.js`.
+- [x] Add unit tests (verifying every menu item resolves to a global function, `onOpen` still uses 1 `getUi()` RPC, and zero Apps Script filename collisions) + live Slides integration tests.
 
 ---
 

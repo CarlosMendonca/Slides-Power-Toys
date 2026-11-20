@@ -583,6 +583,21 @@ function gastTestRunner() {
       t.equal(oklchRgb.getRed(), oklchRgb.getGreen(), 'OKLCH C=0 R==G');
       t.equal(oklchRgb.getGreen(), oklchRgb.getBlue(), 'OKLCH C=0 G==B');
       t.approxEqual(shape.getFill().getSolidFill().getAlpha(), 0.8, 0.01, 'OKLCH preserves alpha');
+
+      // Menu-level handlers for OKLCH, HSV, HWB
+      shape.getFill().setSolidFill(255, 0, 0, 0.75);
+      shape.select();
+      menuSetColorHsvValueAbs50();
+      t.approxEqual(shape.getFill().getSolidFill().getColor().asRgbColor().getRed(), 128, 1, 'menuSetColorHsvValueAbs50');
+
+      shape.getFill().setSolidFill(255, 0, 0, 0.75);
+      menuSetColorHwbWhitenessAbs50();
+      t.approxEqual(shape.getFill().getSolidFill().getColor().asRgbColor().getGreen(), 128, 1, 'menuSetColorHwbWhitenessAbs50');
+
+      menuSetColorOklchChromaAbs0();
+      var menuOklchRgb = shape.getFill().getSolidFill().getColor().asRgbColor();
+      t.equal(menuOklchRgb.getRed(), menuOklchRgb.getGreen(), 'menuSetColorOklchChromaAbs0');
+      t.approxEqual(shape.getFill().getSolidFill().getAlpha(), 0.75, 0.01, 'Menu handlers preserve alpha');
     });
   });
 
