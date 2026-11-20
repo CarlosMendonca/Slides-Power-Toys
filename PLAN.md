@@ -186,7 +186,7 @@ Adds full color inspection and incremental editing across **OKLCH**, **HSL**, **
 | :---: | --- | --- | :---: |
 | 1 | `staging-colors-math` | Bidirectional HSV, HWB, OKLCH conversions + gamut mapping + unit tests | [x] Complete |
 | 2 | `staging-colors-core` | Unified color-component transform engine + upgraded Inspector + tests | [x] Complete |
-| 3 | `staging-colors-menus` | 4 top-level color space menus (`src/menu.colors.js`) + handler & Slides tests | [~] Ready for manual `clasp push` verification |
+| 3 | `staging-colors-menus` | 4 top-level color space menus (`src/menu.colors.js`) + handler & Slides tests | [x] Complete (77 local + 120 Slides pass) |
 | 4 | `staging-colors-docs` | User guide, README, and developer docs | [ ] Not started |
 
 ---
